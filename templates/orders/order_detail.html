@@ -19,6 +19,10 @@
   </div>
 {% endif %}
 
+{% if order.invoice %}
+  <div class="notice info">{% translate "Your receipt for this order is ready." %} <a href="{% url 'orders:order_invoice' order.number %}">{% translate "Download receipt" %}</a></div>
+{% endif %}
+
 <div class="block">
   <table class="table">
     <thead><tr><th>{% translate "Item" %}</th><th>{% translate "Qty" %}</th><th class="num">{% translate "Price" %}</th><th class="num">{% translate "Total" %}</th></tr></thead>

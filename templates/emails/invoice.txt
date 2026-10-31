@@ -1,0 +1,7 @@
+{% load i18n %}{% autoescape off %}{% blocktranslate with no=order.number %}Receipt for order {{ no }}{% endblocktranslate %}
+{% blocktranslate with name=customer.first_name|default:customer.email %}Hello {{ name }},{% endblocktranslate %}
+
+{% blocktranslate with no=order.number %}Attached is the receipt for your order {{ no }}. You can also download it from your account at any time:{% endblocktranslate %}
+{{ site_url }}{{ order.get_absolute_url }}
+
+{% include "emails/_signature.txt" %}{% endautoescape %}

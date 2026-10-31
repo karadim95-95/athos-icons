@@ -81,6 +81,19 @@ class ArchiveFilter(admin.SimpleListFilter):
         return queryset.filter(archived_at__isnull=True)
 
 
+class ReceiptFilter(admin.SimpleListFilter):
+    title = _("receipt")
+    parameter_name = "receipt"
+
+    def lookups(self, request, model_admin):
+        return [("missing", _("Shipped, no receipt yet"))]
+
+    def queryset(self, request, queryset):
+        if self.value() == "missing":
+            return queryset.needing_receipt()
+        return queryset
+
+
 class TrackingProblemFilter(admin.SimpleListFilter):
     title = _("delivery")
     parameter_name = "tracking"
@@ -162,6 +175,12 @@ class OrderAdminForm(ReplyFields):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if "invoice" in self.fields:
+            self.fields["invoice"].widget = forms.FileInput(attrs={
+                "accept": ".pdf,image/jpeg,image/png",
+                "data-dropzone": _("Drop the receipt here (PDF), or click to choose it"),
+                "data-saving": _("Saving and emailing"),
+            })
         if tracking.enabled() and "courier" in self.fields:
             self.fields["courier"].help_text = _(
                 "ACS and Geniki Taxydromiki parcels are tracked automatically: the order moves to In transit and "
@@ -184,16 +203,18 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
     form = OrderAdminForm
     inlines = [OrderItemInline, OrderEventInline]
     list_display = ["number", "created_at", "customer", "type_badge", "status_display", "total_display"]
-    list_filter = [ArchiveFilter, "status", "is_business", UnreadFilter, TrackingProblemFilter, "created_at"]
+    list_filter = [ArchiveFilter, "status", "is_business", UnreadFilter, TrackingProblemFilter, ReceiptFilter,
+                   "created_at"]
     search_fields = ["number", "full_name", "email", "company_name", "phone", "vat_number"]
     date_hierarchy = "created_at"
     list_select_related = ["user"]
     actions = ["accept", "mark_paid", "mark_shipped", "mark_delivered", "check_tracking", "archive", "unarchive"]
     readonly_fields = ["number", "customer_link", "created_at", "archived_at", "totals", "customer_notes",
-                       "conversation", "custom_request_link", "courier_tracking"]
+                       "conversation", "custom_request_link", "courier_tracking", "receipt_status"]
     fieldsets = [
         (_("Status"), {"fields": [("number", "created_at", "archived_at"), "status", "notify_customer", "status_note",
                                   ("courier", "tracking_number"), "tracking_url", "courier_tracking"]}),
+        (_("Receipt / invoice"), {"fields": ["invoice", "receipt_status"]}),
         (_("Customer"), {"fields": ["customer_link", ("full_name", "email", "phone"),
                                     ("company_name", "vat_number", "tax_office"), "customer_notes",
                                     "custom_request_link"]}),
@@ -245,6 +266,21 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
         url = reverse("admin:orders_customrequest_change", args=[obj.custom_request_id])
         return format_html('<a href="{}">{}</a>', url, obj.custom_request)
 
+    class Media:
+        js = ["js/admin_dropzone.js"]
+        css = {"all": ["css/admin_dropzone.css"]}
+
+    @admin.display(description=_("sent to the customer"))
+    def receipt_status(self, obj):
+        if not obj.invoice:
+            return _("No receipt yet.")
+        link = format_html('<a href="{}">{}</a>', reverse("orders:order_invoice", args=[obj.number]),
+                           obj.invoice_download_name)
+        if not obj.invoice_sent_at:
+            return format_html("{} · {}", link, _("not emailed (drop it again to retry)"))
+        return format_html("{} · {} {}", link, _("emailed on"),
+                           timezone.localtime(obj.invoice_sent_at).strftime("%d/%m/%Y %H:%M"))
+
     @admin.display(description=_("automatic tracking"))
     def courier_tracking(self, obj):
         if not tracking.courier_for(obj):
@@ -262,6 +298,17 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
             obj.get_tracking_status_display() or "—", obj.tracking_event, f" ({when})" if when else "",
             _("Last checked:"), timezone.localtime(obj.tracking_checked_at).strftime("%d/%m/%Y %H:%M"),
         )
+
+    def send_receipt(self, request, order, previous):
+        if previous and previous.name != order.invoice.name:
+            order.invoice.storage.delete(previous.name)  # the replaced file
+        order.invoice_sent_at = timezone.now() if emails.invoice(order) else None
+        order.save(update_fields=["invoice_sent_at"])
+        if order.invoice_sent_at:
+            messages.success(request, _("The receipt was emailed to the customer."))
+        else:
+            messages.warning(request, _("The receipt was saved, but the email could not be sent. "
+                                        "Check the email settings and drop it again."))
 
     def track_now(self, request, order, new_parcel):
         if new_parcel:  # forget what the courier said about the previous number
@@ -293,6 +340,8 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
         if order.archived_at and "status" in form.changed_data:
             messages.info(request, _("The order was moved to the archive. You can find it with the search box "
                                      "or the Archive filter."))
+        if "invoice" in form.changed_data:
+            self.send_receipt(request, order, form.initial.get("invoice"))
         new_parcel = bool({"courier", "tracking_number"} & set(form.changed_data))
         if tracking.courier_for(order) and order.status in Order.ON_THE_WAY and (new_parcel or "status" in form.changed_data):
             self.track_now(request, order, new_parcel)

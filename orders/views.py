@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext as _
@@ -127,6 +128,14 @@ def order_detail(request, number):
         "order": order, "form": form, "on_the_way": order.status in Order.ON_THE_WAY,
         "steps": [(Order.Status(status).label, i <= reached) for i, status in enumerate(order.FLOW)],
     })
+
+
+@login_required
+def order_invoice(request, number):
+    """The receipt you uploaded, for the customer who placed the order (and for you)."""
+    orders = Order.objects.all() if request.user.is_staff else request.user.orders.all()
+    order = get_object_or_404(orders.exclude(invoice=""), number=number)
+    return FileResponse(order.invoice.open("rb"), as_attachment=True, filename=order.invoice_download_name)
 
 
 @login_required

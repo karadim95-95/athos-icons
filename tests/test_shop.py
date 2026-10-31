@@ -31,6 +31,7 @@ from orders.couriers import acs, geniki
 from orders.models import CustomRequest, Order
 
 MEDIA = tempfile.mkdtemp()
+PRIVATE = tempfile.mkdtemp()
 
 
 def jpeg(size=(3000, 2000), name="photo.jpg"):
@@ -39,13 +40,14 @@ def jpeg(size=(3000, 2000), name="photo.jpg"):
     return SimpleUploadedFile(name, buf.getvalue(), content_type="image/jpeg")
 
 
-@override_settings(MEDIA_ROOT=MEDIA, LANGUAGE_CODE="en",
+@override_settings(MEDIA_ROOT=MEDIA, PRIVATE_ROOT=PRIVATE, LANGUAGE_CODE="en",
                    CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}})
 class ShopTestCase(TestCase):
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(MEDIA, ignore_errors=True)
+        shutil.rmtree(PRIVATE, ignore_errors=True)
 
     def setUp(self):
         cache.clear()
@@ -979,3 +981,76 @@ class SizeShopTests(ShopTestCase):
         self.add(self.small)
         self.small.delete()
         self.assertNotContains(self.client.get(reverse("orders:cart")), "14 x 18 cm")
+
+
+def pdf(name="receipt.pdf", content=b"%PDF-1.4 receipt"):
+    return SimpleUploadedFile(name, content, content_type="application/pdf")
+
+
+class ReceiptTests(ShopTestCase):
+    """You drop the receipt you issued on the order; the customer gets it by email and in their account."""
+
+    def shipped_order(self):
+        order = self.order_for(self.customer)
+        for status in [Order.Status.AWAITING_PAYMENT, Order.Status.PAID, Order.Status.SHIPPED]:
+            services.set_order_status(order, status, notify=False)
+        return order
+
+    def drop(self, order, file, **extra):
+        """What the drop zone does: save the order page with the file (and stay on it)."""
+        return self.admin_post(order, invoice=file, tracking_number="ACS1", **extra)
+
+    def test_dropping_the_receipt_emails_it_to_the_customer(self):
+        order = self.shipped_order()
+        mail.outbox.clear()
+        response = self.drop(order, pdf(), _continue="1", follow=True)
+        self.assertContains(response, "The receipt was emailed to the customer.")
+        order.refresh_from_db()
+        self.assertTrue(order.invoice.path.startswith(PRIVATE))  # not in the public media folder
+        self.assertIsNotNone(order.invoice_sent_at)
+        email = mail.outbox[0]
+        self.assertEqual(email.to, ["maria@example.com"])
+        self.assertIn(order.number, email.subject)
+        self.assertEqual(email.attachments, [(f"{order.number}.pdf", b"%PDF-1.4 receipt", "application/pdf")])
+
+    def test_only_the_customer_and_you_can_download_it(self):
+        order = self.shipped_order()
+        self.drop(order, pdf())
+        url = reverse("orders:order_invoice", args=[order.number])
+        for user, status in [(None, 302), (self.business, 404), (self.customer, 200), (self.owner, 200)]:
+            self.client.logout()
+            if user:
+                self.client.force_login(user)
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, status, user)
+        self.client.force_login(self.customer)
+        response = self.client.get(url)
+        self.assertEqual(b"".join(response.streaming_content), b"%PDF-1.4 receipt")
+        self.assertIn(f'filename="{order.number}.pdf"', response["Content-Disposition"])
+        self.assertContains(self.client.get(order.get_absolute_url()), "Download receipt")
+
+    def test_a_new_receipt_replaces_the_old_one(self):
+        order = self.shipped_order()
+        self.drop(order, pdf())
+        order.refresh_from_db()
+        first = order.invoice.path
+        self.drop(order, pdf("corrected.pdf", b"%PDF-1.4 corrected"))
+        order.refresh_from_db()
+        self.assertFalse(Path(first).exists())
+        self.assertEqual(order.invoice.read(), b"%PDF-1.4 corrected")
+
+    def test_shipped_orders_without_a_receipt_are_listed(self):
+        order = self.shipped_order()
+        self.client.force_login(self.owner)
+        self.assertContains(self.client.get(reverse("admin:index")), "Shipped orders without a receipt")
+        missing = reverse("admin:orders_order_changelist") + "?receipt=missing"
+        self.assertEqual(list(self.client.get(missing).context["cl"].result_list), [order])
+        self.drop(order, pdf())
+        self.assertEqual(list(self.client.get(missing).context["cl"].result_list), [])
+
+    def test_only_documents_are_accepted(self):
+        order = self.shipped_order()
+        response = self.drop(order, SimpleUploadedFile("notes.txt", b"hello", content_type="text/plain"))
+        self.assertEqual(response.status_code, 200)  # the form comes back with an error
+        order.refresh_from_db()
+        self.assertFalse(order.invoice)

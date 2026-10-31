@@ -39,6 +39,8 @@ def admin_attention():
          link(Order, f"?status__exact={S.AWAITING_PAYMENT}")),
         (_("Paid orders to ship"), Order.objects.filter(status=S.PAID).count(),
          link(Order, f"?status__exact={S.PAID}")),
+        (_("Shipped orders without a receipt"), Order.objects.needing_receipt().count(),
+         link(Order, "?receipt=missing")),
         (_("New custom requests"), CustomRequest.objects.filter(status=R.NEW).count(),
          link(CustomRequest, f"?status__exact={R.NEW}")),
         (_("Orders with unanswered messages"),

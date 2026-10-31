@@ -4,6 +4,7 @@ each rendered template is the subject, the rest is the body.
 """
 
 import logging
+import mimetypes
 
 from django.conf import settings
 from django.core.mail import EmailMessage
@@ -15,8 +16,10 @@ from core.models import SiteSettings
 log = logging.getLogger(__name__)
 
 
-def send(to, template, context, language=None, reply_to=None):
-    """Render and send one email. Returns True on success; failures are logged, never raised."""
+def send(to, template, context, language=None, reply_to=None, attachments=()):
+    """Render and send one email. Returns True on success; failures are logged, never raised.
+
+    attachments: (file name, content, MIME type) tuples."""
     if not to:
         return False
     site = SiteSettings.load()
@@ -29,6 +32,7 @@ def send(to, template, context, language=None, reply_to=None):
         body=body.strip() + "\n",
         to=[to] if isinstance(to, str) else to,
         reply_to=reply_to or ([site.contact_email] if site.contact_email else None),
+        attachments=list(attachments),
     )
     try:
         message.send()
@@ -38,8 +42,9 @@ def send(to, template, context, language=None, reply_to=None):
         return False
 
 
-def to_customer(user, template, context):
-    return send(user.email, template, {"customer": user, **context}, language=user.language)
+def to_customer(user, template, context, attachments=()):
+    return send(user.email, template, {"customer": user, **context}, language=user.language,
+                attachments=attachments)
 
 
 def to_shop(title, lines, link, reply_to=None):
@@ -54,6 +59,14 @@ def to_shop(title, lines, link, reply_to=None):
 
 def order_status(order, note=""):
     return to_customer(order.user, "order_status", {"order": order, "note": note})
+
+
+def invoice(order):
+    """The receipt / invoice you uploaded, attached."""
+    with order.invoice.open("rb") as file:
+        content = file.read()
+    return to_customer(order.user, "invoice", {"order": order},
+                       attachments=[(order.invoice_download_name, content, mimetypes.guess_type(order.invoice.name)[0])])
 
 
 def request_status(custom_request, note=""):

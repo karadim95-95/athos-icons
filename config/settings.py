@@ -132,6 +132,8 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path(env("MEDIA_ROOT", BASE_DIR / "media"))
+# Customers' receipts: downloaded through the shop by their owner only, never served directly.
+PRIVATE_ROOT = Path(env("PRIVATE_ROOT", SQLITE_PATH.parent / "private"))
 
 # Shared by all web workers; used to count attempts for the anti-bot limits.
 CACHES = {

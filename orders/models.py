@@ -1,7 +1,8 @@
+import os
 from decimal import Decimal
 
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
@@ -10,9 +11,14 @@ from django.utils.translation import gettext_lazy as _
 
 from catalog.models import money
 from core.images import delete_files, process_image_field, upload_to, validate_image_size
+from core.storage import PrivateStorage
 
 
 class OrderQuerySet(models.QuerySet):
+    def needing_receipt(self):
+        """Shipped (or delivered) orders you have not uploaded a receipt for yet."""
+        return self.filter(status__in=[*Order.ON_THE_WAY, Order.Status.DELIVERED], invoice="")
+
     def with_tracking_problem(self):
         """Orders on their way whose courier reports a problem, or that could not be tracked."""
         return self.filter(status__in=Order.ON_THE_WAY).filter(
@@ -98,6 +104,12 @@ class Order(models.Model):
     tracking_checked_at = models.DateTimeField(null=True, blank=True, editable=False)
     tracking_error = models.CharField(max_length=300, blank=True, editable=False)
     internal_notes = models.TextField(_("private notes"), blank=True, help_text=_("Only you can see these."))
+    invoice = models.FileField(
+        _("receipt / invoice"), upload_to=upload_to("receipts"), storage=PrivateStorage(), blank=True,
+        validators=[FileExtensionValidator(["pdf", "jpg", "jpeg", "png"]), validate_image_size],
+        help_text=_("The receipt or invoice you issued (PDF). It is emailed to the customer as soon as you add it."),
+    )
+    invoice_sent_at = models.DateTimeField(_("receipt emailed"), null=True, blank=True, editable=False)
     # Delivered orders leave the admin's order list but are kept, and still show up in searches.
     archived_at = models.DateTimeField(_("archived"), null=True, blank=True, editable=False, db_index=True)
 
@@ -134,6 +146,10 @@ class Order(models.Model):
     @property
     def can_cancel(self):
         return self.status == self.Status.PENDING
+
+    @property
+    def invoice_download_name(self):
+        return f"{self.number}{os.path.splitext(self.invoice.name)[1]}" if self.invoice else ""
 
     # --- Totals ------------------------------------------------------------
     @property

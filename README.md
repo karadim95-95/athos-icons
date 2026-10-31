@@ -90,6 +90,16 @@ what customers will pay. For many products at once, select them in the product l
 For an EU business outside Greece with a valid VAT number, set the order's VAT rate to 0 before accepting
 (reverse charge).
 
+### Receipts and invoices
+
+Issue the receipt or invoice as usual (e.g. in AADE's timologio app), then open the order in the admin and
+**drag the PDF onto the "Receipt / invoice" box** (or click it). It is saved and emailed to the customer at once,
+and they can download it from their order page. Dropping a new file replaces the old one and emails it again.
+The admin home page shows "Shipped orders without a receipt" so none is forgotten.
+
+Receipts are kept in a private folder (`PRIVATE_ROOT`, inside the `shopdata` volume on the server): the web
+server never serves it, and only the customer who placed the order (and you) can download the file.
+
 ### Automatic parcel tracking (ACS, Geniki Taxydromiki)
 
 When you mark an order *Shipped*, choose the **courier** and enter the **tracking number** (the voucher number);

@@ -14,6 +14,7 @@ urlpatterns = [
     path("account/orders/<str:number>/", views.order_detail, name="order_detail"),
     path("account/orders/<str:number>/thank-you/", views.order_placed, name="order_placed"),
     path("account/orders/<str:number>/cancel/", views.order_cancel, name="order_cancel"),
+    path("account/orders/<str:number>/receipt/", views.order_invoice, name="order_invoice"),
     path("account/requests/", views.request_list, name="request_list"),
     path("account/requests/<str:number>/", views.request_detail, name="request_detail"),
     path("account/requests/<str:number>/accept/", views.quote_accept, name="quote_accept"),

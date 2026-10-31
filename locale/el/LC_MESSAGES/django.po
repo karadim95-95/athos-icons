@@ -810,6 +810,10 @@ msgid "Paid orders to ship"
 msgstr "Πληρωμένες παραγγελίες για αποστολή"
 
 #: core/templatetags/shop.py
+msgid "Shipped orders without a receipt"
+msgstr "Απεσταλμένες παραγγελίες χωρίς απόδειξη"
+
+#: core/templatetags/shop.py
 msgid "New custom requests"
 msgstr "Νέα αιτήματα κατά παραγγελία"
 
@@ -845,6 +849,10 @@ msgstr "Φόρμα επικοινωνίας: %(name)s"
 #: orders/admin.py
 msgid "archive"
 msgstr "αρχείο"
+
+#: orders/admin.py
+msgid "receipt"
+msgstr "απόδειξη"
 
 #: orders/admin.py
 msgid "delivery"
@@ -925,6 +933,10 @@ msgid "Status"
 msgstr "Κατάσταση"
 
 #: orders/admin.py
+msgid "Receipt / invoice"
+msgstr "Απόδειξη / τιμολόγιο"
+
+#: orders/admin.py
 msgid "Shipping address"
 msgstr "Διεύθυνση αποστολής"
 
@@ -975,6 +987,18 @@ msgstr "Σύνολο πληρωμής"
 #: orders/admin.py
 msgid "totals"
 msgstr "σύνολα"
+
+#: orders/admin.py
+msgid "No receipt yet."
+msgstr "Δεν έχει προστεθεί απόδειξη."
+
+#: orders/admin.py
+msgid "emailed on"
+msgstr "στάλθηκε με email στις"
+
+#: orders/admin.py
+msgid "sent to the customer"
+msgstr "αποστολή στον πελάτη"
 
 #: orders/admin.py
 msgid ""
@@ -1064,6 +1088,10 @@ msgid "All orders"
 msgstr "Όλες οι παραγγελίες"
 
 #: orders/admin.py
+msgid "Shipped, no receipt yet"
+msgstr "Απεστάλη, χωρίς απόδειξη"
+
+#: orders/admin.py
 msgid "Delivery problems"
 msgstr "Προβλήματα παράδοσης"
 
@@ -1084,6 +1112,22 @@ msgid ""
 msgstr ""
 "Αλλάξτε τιμές ειδών ή μεταφορικά παρακάτω πριν την αποδοχή. Τα σύνολα "
 "ενημερώνονται με την αποθήκευση."
+
+#: orders/admin.py
+msgid "not emailed (drop it again to retry)"
+msgstr "δεν στάλθηκε (ρίξτε την ξανά για νέα προσπάθεια)"
+
+#: orders/admin.py
+msgid "The receipt was emailed to the customer."
+msgstr "Η απόδειξη στάλθηκε με email στον πελάτη."
+
+#: orders/admin.py
+msgid ""
+"The receipt was saved, but the email could not be sent. Check the email "
+"settings and drop it again."
+msgstr ""
+"Η απόδειξη αποθηκεύτηκε, αλλά το email δεν στάλθηκε. Ελέγξτε τις ρυθμίσεις "
+"email και ρίξτε την ξανά."
 
 #: orders/admin.py
 msgid ""
@@ -1177,6 +1221,14 @@ msgstr "Η προσφορά στάλθηκε στον πελάτη με email."
 #: orders/admin.py
 msgid "Offer saved, but the email could not be sent."
 msgstr "Η προσφορά αποθηκεύτηκε, αλλά το email δεν στάλθηκε."
+
+#: orders/admin.py
+msgid "Drop the receipt here (PDF), or click to choose it"
+msgstr "Σύρετε εδώ την απόδειξη (PDF) ή κάντε κλικ για να την επιλέξετε"
+
+#: orders/admin.py
+msgid "Saving and emailing"
+msgstr "Αποθήκευση και αποστολή"
 
 #: orders/admin.py
 #, python-format
@@ -1342,6 +1394,14 @@ msgstr "τελευταία ενημέρωση courier"
 #: orders/models.py
 msgid "private notes"
 msgstr "ιδιωτικές σημειώσεις"
+
+#: orders/models.py
+msgid "receipt / invoice"
+msgstr "απόδειξη / τιμολόγιο"
+
+#: orders/models.py
+msgid "receipt emailed"
+msgstr "απόδειξη στάλθηκε"
 
 #: orders/models.py
 msgid "archived"
@@ -1557,6 +1617,14 @@ msgstr "Συμπληρώνεται αυτόματα για ACS και Γενικ
 #: orders/models.py
 msgid "Only you can see these."
 msgstr "Τις βλέπετε μόνο εσείς."
+
+#: orders/models.py
+msgid ""
+"The receipt or invoice you issued (PDF). It is emailed to the customer as "
+"soon as you add it."
+msgstr ""
+"Η απόδειξη ή το τιμολόγιο που εκδώσατε (PDF). Στέλνεται με email στον πελάτη"
+" μόλις το προσθέσετε."
 
 #: orders/models.py
 msgid "Received"
@@ -2351,6 +2419,20 @@ msgstr ""
 "Ο επαγγελματικός λογαριασμός για «%(company)s» εγκρίθηκε. Όταν συνδέεστε θα "
 "βλέπετε τις τιμές επιχειρήσεων, χωρίς ΦΠΑ."
 
+#: templates/emails/invoice.txt
+#, python-format
+msgid "Receipt for order %(no)s"
+msgstr "Απόδειξη για την παραγγελία %(no)s"
+
+#: templates/emails/invoice.txt
+#, python-format
+msgid ""
+"Attached is the receipt for your order %(no)s. You can also download it from"
+" your account at any time:"
+msgstr ""
+"Σας επισυνάπτουμε την απόδειξη για την παραγγελία σας %(no)s. Μπορείτε "
+"επίσης να τη βρίσκετε πάντα στον λογαριασμό σας:"
+
 #: templates/emails/new_message.txt
 #, python-format
 msgid "New message about %(no)s"
@@ -2816,6 +2898,14 @@ msgstr ""
 #: templates/orders/order_detail.html
 msgid "Your order is on its way."
 msgstr "Η παραγγελία σας είναι καθ’ οδόν."
+
+#: templates/orders/order_detail.html
+msgid "Your receipt for this order is ready."
+msgstr "Η απόδειξη για αυτή την παραγγελία είναι έτοιμη."
+
+#: templates/orders/order_detail.html
+msgid "Download receipt"
+msgstr "Λήψη απόδειξης"
 
 #: templates/orders/order_detail.html
 msgid "Item"
