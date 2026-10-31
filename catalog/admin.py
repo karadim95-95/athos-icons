@@ -124,8 +124,9 @@ class ProductAdminForm(forms.ModelForm):
         self.fields["options"].choices = list(groups.items())
         self.fields["options"].help_text = format_html(
             '{} <a href="{}">{}</a>',
-            _("Click what customers can choose on this icon; the first option of each choice is pre-selected. "
-              "The percentage is added to the size's price."),
+            _("Click every option you make this icon in. The customer picks exactly one of each choice "
+              "(flat or carved, rectangular or oval…); the first one is pre-selected and the percentage "
+              "is added to the size's price."),
             reverse("admin:catalog_variation_changelist"), _("Add or change the choices and percentages"))
         if self.instance.pk:
             self.fields["price_net"].initial = money(self.instance.price / self.vat)

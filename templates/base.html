@@ -100,7 +100,7 @@
     <div>
       <a class="logo" href="{% url 'core:home' %}">{% include "partials/logo_mark.html" %}<span class="logo-text">{{ shop.shop_name }}</span></a>
       <p>{{ shop.local_tagline }}</p>
-      {% if shop.social_links %}<h4 class="follow">{% translate "Follow us" %}</h4>{% include "partials/social.html" %}{% endif %}
+      {% if shop.social_links or user.is_staff %}<h4 class="follow">{% translate "Follow us" %}</h4>{% include "partials/social.html" %}{% endif %}
     </div>
     <div>
       <h4>{% translate "Shop" %}</h4>

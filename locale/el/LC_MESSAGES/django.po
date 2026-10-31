@@ -332,12 +332,13 @@ msgstr ""
 
 #: catalog/admin.py
 msgid ""
-"Click what customers can choose on this icon; the first option of each "
-"choice is pre-selected. The percentage is added to the size's price."
+"Click every option you make this icon in. The customer picks exactly one of "
+"each choice (flat or carved, rectangular or oval…); the first one is pre-"
+"selected and the percentage is added to the size's price."
 msgstr ""
-"Κάντε κλικ σε ό,τι μπορεί να επιλέξει ο πελάτης για αυτή την εικόνα· η πρώτη"
-" επιλογή κάθε ομάδας είναι προεπιλεγμένη. Το ποσοστό προστίθεται στην τιμή "
-"του μεγέθους."
+"Κάντε κλικ σε κάθε επιλογή που φτιάχνετε αυτή την εικόνα. Ο πελάτης διαλέγει"
+" ακριβώς μία από κάθε ομάδα (επίπεδη ή σκαφτή, ορθογώνια ή οβάλ…)· η πρώτη "
+"είναι προεπιλεγμένη και το ποσοστό προστίθεται στην τιμή του μεγέθους."
 
 #: catalog/admin.py
 msgid "Add or change the choices and percentages"
@@ -1845,8 +1846,8 @@ msgstr "Απορρίψατε την προσφορά. Αν αλλάξετε γν
 
 #: orders/views.py
 #, python-format
-msgid "Please choose: %(choice)s."
-msgstr "Επιλέξτε: %(choice)s."
+msgid "Please choose one option for: %(choice)s."
+msgstr "Επιλέξτε μία επιλογή για: %(choice)s."
 
 #: templates/404.html
 msgid "Page not found"
@@ -3152,6 +3153,15 @@ msgstr[1] "%(n)s μεγέθη"
 #: templates/partials/product_card.html
 msgid "Sold out"
 msgstr "Εξαντλήθηκε"
+
+#: templates/partials/social.html
+#, python-format
+msgid "Add your %(name)s page in Shop settings"
+msgstr "Προσθέστε τη σελίδα σας στο %(name)s από τις Ρυθμίσεις καταστήματος"
+
+#: templates/partials/social.html
+msgid "Only you see these until you add your pages:"
+msgstr "Τα βλέπετε μόνο εσείς μέχρι να προσθέσετε τις σελίδες σας:"
 
 #: templates/partials/steps.html
 msgid "Send your order"

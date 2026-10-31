@@ -51,7 +51,8 @@ SKIP = (".github/", "tests/", "demo/build.py", "demo/files/", "demo/RELEASE_NOTE
 
 
 def project_files():
-    listed = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+    """The files in git, so stray files lying in the project folder never end up in the demo."""
+    listed = subprocess.run(["git", "ls-files"],
                             cwd=ROOT, check=True, capture_output=True, text=True).stdout.splitlines()
     return [f for f in listed if not f.startswith(SKIP) and (ROOT / f).is_file()]
 

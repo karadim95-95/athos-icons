@@ -114,6 +114,10 @@ p { margin: 0 0 1em; }
 .social-big a:hover { background: var(--crimson); border-color: var(--crimson); color: #fff; }
 .social-big svg { width: 20px; height: 20px; }
 .footer .follow { margin: 22px 0 12px; }
+/* Shown only to the shop staff until the profile addresses are filled in. */
+.social-empty a { border-style: dashed; opacity: .55; }
+.social-empty a:hover { opacity: 1; }
+.social-hint { margin: 10px 0 0; font-size: .82rem; opacity: .85; }
 .lang-switch button { background: none; border: 0; color: #b79f86; font: 600 .75rem var(--sans); letter-spacing: .08em; cursor: pointer; padding: 4px 6px; }
 .lang-switch button[aria-current="true"] { color: var(--gold-light); }
 

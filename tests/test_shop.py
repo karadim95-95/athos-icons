@@ -28,6 +28,7 @@ from catalog.models import (Category, Material, Product, ProductImage, ProductSi
 from catalog.pricing import price_info
 from core import antispam
 from core.models import SiteSettings
+from core.storage import FreshStaticStorage
 from orders import services, tracking
 from orders.couriers import acs, geniki
 from orders.models import CustomRequest, Order
@@ -1110,6 +1111,15 @@ class MaterialTechniqueTests(ShopTestCase):
         self.assertTrue(Material.objects.filter(name="Ξύλο").exists())
 
 
+class FreshStaticTests(TestCase):
+    def test_stylesheet_address_changes_with_the_file(self):
+        """While developing, browsers must never keep showing an old shop.css."""
+        storage = FreshStaticStorage()
+        modified = int((Path(__file__).resolve().parent.parent / "static/css/shop.css").stat().st_mtime)
+        self.assertEqual(storage.url("css/shop.css"), f"/static/css/shop.css?v={modified}")
+        self.assertEqual(storage.url("css/missing.css"), "/static/css/missing.css")
+
+
 class SocialMediaTests(ShopTestCase):
     def test_icons_appear_for_the_profiles_you_fill_in(self):
         self.assertNotContains(self.client.get(reverse("core:home")), 'class="social')
@@ -1124,6 +1134,16 @@ class SocialMediaTests(ShopTestCase):
         self.assertContains(home, "Follow us")
         self.assertContains(self.client.get(reverse("core:contact")), 'href="https://www.tiktok.com/@athosicons"',
                             count=3)
+
+    def test_staff_see_a_placeholder_until_the_profiles_are_filled_in(self):
+        self.client.force_login(self.owner)
+        home = self.client.get(reverse("core:home"))
+        settings_url = reverse("admin:core_sitesettings_changelist")
+        self.assertContains(home, "social-empty", count=3)  # top bar, footer, homepage
+        self.assertContains(home, f'href="{settings_url}" aria-label="Instagram"', count=3)
+        self.assertContains(home, "Only you see these until you add your pages")
+        self.client.force_login(self.customer)
+        self.assertNotContains(self.client.get(reverse("core:home")), 'class="social')
 
 
 class ConfiguratorTests(ShopTestCase):
@@ -1186,7 +1206,7 @@ class ConfiguratorTests(ShopTestCase):
         response = self.client.post(reverse("orders:cart_add", args=[self.product.pk]),
                                     {"quantity": 1, "size": self.large.pk, f"option_{self.kind.pk}": self.carved.pk},
                                     follow=True)
-        self.assertContains(response, "Please choose: Shape.")
+        self.assertContains(response, "Please choose one option for: Shape.")
         self.assertEqual(self.client.session.get("cart", {}), {})
 
     def test_order_with_two_configurations(self):
@@ -1201,9 +1221,28 @@ class ConfiguratorTests(ShopTestCase):
             "Παναγία Γλυκοφιλούσα – 14 x 18 cm, Επίπεδη, Ορθογώνια": (2, Decimal("37.20")),
         })
 
+    def test_an_icon_is_never_flat_and_carved_or_rectangular_and_arched(self):
+        page = self.client.get(self.product.get_absolute_url())
+        self.assertContains(page, f'type="radio" name="option_{self.kind.pk}"', count=2)  # one of them only
+        self.assertContains(page, f'type="radio" name="option_{self.shape.pk}"', count=2)
+        url = reverse("orders:cart_add", args=[self.product.pk])
+        both = {"quantity": 1, "size": self.large.pk, f"option_{self.kind.pk}": [self.flat.pk, self.carved.pk],
+                f"option_{self.shape.pk}": self.arched.pk}
+        self.assertContains(self.client.post(url, both, follow=True), "Please choose one option for: Type.")
+        both[f"option_{self.kind.pk}"] = self.carved.pk
+        both[f"option_{self.shape.pk}"] = [self.rectangular.pk, self.arched.pk]
+        self.assertContains(self.client.post(url, both, follow=True), "Please choose one option for: Shape.")
+        self.assertEqual(self.client.session.get("cart", {}), {})
+        # A cart line that somehow holds two options of one choice is dropped.
+        session = self.client.session
+        session["cart"] = {f"{self.product.pk}:{self.large.pk}:{self.flat.pk}.{self.carved.pk}": 1}
+        session.save()
+        self.assertNotContains(self.client.get(reverse("orders:cart")), "Carved")
+        self.assertEqual(self.client.session["cart"], {})
+
     def test_options_not_offered_are_refused(self):
         oval = VariationOption.objects.create(variation=self.shape, name="Οβάλ", price_change=15)
-        self.assertContains(self.add(self.large, self.carved, oval), "Please choose: Shape.")
+        self.assertContains(self.add(self.large, self.carved, oval), "Please choose one option for: Shape.")
         self.add(self.large, self.carved, self.arched)
         self.product.options.remove(self.arched)  # you stop offering it
         self.assertNotContains(self.client.get(reverse("orders:cart")), "Arched")

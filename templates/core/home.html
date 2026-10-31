@@ -97,7 +97,7 @@
   </div>
 </section>
 
-{% if shop.social_links %}
+{% if shop.social_links or user.is_staff %}
 <section class="section follow-us" style="padding-top:0">
   <div class="wrap center">
     <div class="section-head centered"><span class="ornament">✠</span><h2>{% translate "Follow us" %}</h2></div>

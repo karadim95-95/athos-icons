@@ -1,3 +1,5 @@
 {% load i18n %}{% if shop.social_links %}<ul class="social{% if style %} social-{{ style }}{% endif %}">
   {% for link in shop.social_links %}<li><a href="{{ link.url }}" target="_blank" rel="noopener" aria-label="{{ link.name }}" title="{{ link.name }}">{% include "partials/social_icon.html" with key=link.key %}{% if style == "big" %}<span>{{ link.name }}</span>{% endif %}</a></li>{% endfor %}
-</ul>{% endif %}
+</ul>{% elif user.is_staff %}{% url 'admin:core_sitesettings_changelist' as settings_url %}<ul class="social social-empty{% if style %} social-{{ style }}{% endif %}">
+  {% for key, name in shop.SOCIAL %}<li><a href="{{ settings_url }}" aria-label="{{ name }}" title="{% blocktranslate %}Add your {{ name }} page in Shop settings{% endblocktranslate %}">{% include "partials/social_icon.html" %}{% if style == "big" %}<span>{{ name }}</span>{% endif %}</a></li>{% endfor %}
+</ul>{% if style != "small" %}<p class="social-hint">{% translate "Only you see these until you add your pages:" %} <a href="{{ settings_url }}">{% translate "Shop settings" %} → Facebook, Instagram…</a></p>{% endif %}{% endif %}

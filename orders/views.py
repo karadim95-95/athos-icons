@@ -34,9 +34,11 @@ def cart_add(request, product_id):
         return redirect(product)
     options = []
     for variation, group in product.option_groups:
-        option = {str(o.pk): o for o in group}.get(request.POST.get(f"option_{variation.pk}", ""))
+        # Exactly one option of each choice: an icon is flat or carved, rectangular or oval, never both.
+        chosen = request.POST.getlist(f"option_{variation.pk}")
+        option = {str(o.pk): o for o in group}.get(chosen[0]) if len(chosen) == 1 else None
         if option is None:
-            messages.error(request, _("Please choose: %(choice)s.") % {"choice": variation.local_name})
+            messages.error(request, _("Please choose one option for: %(choice)s.") % {"choice": variation.local_name})
             return redirect(product)
         options.append(option)
     try:
