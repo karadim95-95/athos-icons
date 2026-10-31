@@ -26,12 +26,18 @@ def cart_detail(request):
 @require_POST
 def cart_add(request, product_id):
     product = get_object_or_404(Product.objects.visible(), pk=product_id, is_available=True)
+    sizes = {str(option.pk): option for option in product.size_options}
+    size = sizes.get(request.POST.get("size", ""))
+    if sizes and size is None:
+        messages.error(request, _("Please choose a size."))
+        return redirect(product)
     try:
         quantity = max(1, int(request.POST.get("quantity", 1)))
     except ValueError:
         quantity = 1
-    Cart(request).add(product.pk, quantity)
-    messages.success(request, _("“%(name)s” was added to your cart.") % {"name": product.local_name})
+    Cart(request).add(Cart.key(product, size), quantity)
+    name = f"{product.local_name} – {size.size}" if size else product.local_name
+    messages.success(request, _("“%(name)s” was added to your cart.") % {"name": name})
     next_url = request.POST.get("next")
     if not url_has_allowed_host_and_scheme(next_url, {request.get_host()}, request.is_secure()):
         next_url = "orders:cart"
@@ -44,7 +50,7 @@ def cart_update(request):
     for key, value in request.POST.items():
         if key.startswith("qty_"):
             try:
-                cart.set(int(key[4:]), int(value or 0))
+                cart.set(key[4:], int(value or 0))
             except ValueError:
                 continue
     return redirect("orders:cart")

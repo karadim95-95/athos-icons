@@ -83,7 +83,8 @@ def verify_email_confirm(request, uidb64, token):
         messages.info(request, _("Your email is already confirmed."))
         return redirect("accounts:dashboard" if request.user == user else "accounts:login")
     if user is None or not user.is_active or not email_verification_token.check_token(user, token):
-        messages.error(request, _("This link is not valid any more. Log in to get a new one."))
+        messages.error(request, _("This link is not valid any more: it was already used or is older than 24 hours. "
+                                  "Log in to get a new one."))
         return redirect("accounts:verify_email" if request.user.is_authenticated else "accounts:login")
 
     user.email_verified = True

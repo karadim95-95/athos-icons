@@ -245,8 +245,12 @@ msgid "Your email is already confirmed."
 msgstr "Το email σας είναι ήδη επιβεβαιωμένο."
 
 #: accounts/views.py
-msgid "This link is not valid any more. Log in to get a new one."
-msgstr "Ο σύνδεσμος δεν ισχύει πια. Συνδεθείτε για να λάβετε νέο."
+msgid ""
+"This link is not valid any more: it was already used or is older than 24 "
+"hours. Log in to get a new one."
+msgstr ""
+"Ο σύνδεσμος δεν ισχύει πια: έχει ήδη χρησιμοποιηθεί ή είναι παλαιότερος από "
+"24 ώρες. Συνδεθείτε για να λάβετε νέο."
 
 #: accounts/views.py
 msgid ""
@@ -327,6 +331,10 @@ msgstr ""
 "τες στη λίστα παρακάτω."
 
 #: catalog/admin.py
+msgid "Customers pay"
+msgstr "Ο πελάτης πληρώνει"
+
+#: catalog/admin.py
 msgid "Price"
 msgstr "Τιμή"
 
@@ -355,8 +363,8 @@ msgstr ""
 "φωτογραφίες και κάντε τα ορατά."
 
 #: catalog/admin.py
-msgid "Duplicate (e.g. to create another size)"
-msgstr "Αντιγραφή (π.χ. για άλλο μέγεθος)"
+msgid "Duplicate"
+msgstr "Αντίγραφο"
 
 #: catalog/admin.py
 msgid "Remove discount"
@@ -371,12 +379,49 @@ msgid "Mark as available"
 msgstr "Σήμανση ως διαθέσιμο"
 
 #: catalog/admin.py
+msgid "no discount"
+msgstr "χωρίς έκπτωση"
+
+#: catalog/admin.py
 msgid ""
-"Individuals pay the price incl. VAT. Approved businesses see prices excl. "
-"VAT (the business price, or the retail price minus VAT)."
+"Fill in the price incl. or excl. VAT: the other is calculated. Individuals "
+"pay the price incl. VAT; approved businesses see prices excl. VAT."
 msgstr ""
-"Οι ιδιώτες πληρώνουν την τιμή με ΦΠΑ. Οι εγκεκριμένες επιχειρήσεις βλέπουν "
-"τιμές χωρίς ΦΠΑ (την τιμή επιχειρήσεων ή την τιμή λιανικής χωρίς ΦΠΑ)."
+"Συμπληρώστε την τιμή με ή χωρίς ΦΠΑ: η άλλη υπολογίζεται αυτόματα. Οι "
+"ιδιώτες πληρώνουν την τιμή με ΦΠΑ· οι εγκεκριμένες επιχειρήσεις βλέπουν "
+"τιμές χωρίς ΦΠΑ."
+
+#: catalog/admin.py
+msgid "price excl. VAT (€)"
+msgstr "τιμή χωρίς ΦΠΑ (€)"
+
+#: catalog/admin.py
+msgid "excl. VAT (€)"
+msgstr "χωρίς ΦΠΑ (€)"
+
+#: catalog/admin.py
+msgid ""
+"Tick the sizes this icon comes in and give each one its price (empty = the "
+"price above)."
+msgstr ""
+"Τσεκάρετε τα μεγέθη στα οποία διατίθεται η εικόνα και δώστε την τιμή του "
+"καθενός (κενό = η τιμή παραπάνω)."
+
+#: catalog/admin.py
+msgid "Add or rename sizes"
+msgstr "Προσθήκη ή μετονομασία μεγεθών"
+
+#: catalog/admin.py
+msgid "No sizes defined yet."
+msgstr "Δεν έχουν οριστεί ακόμη μεγέθη."
+
+#: catalog/admin.py
+msgid "Add sizes"
+msgstr "Προσθήκη μεγεθών"
+
+#: catalog/admin.py
+msgid "Sizes"
+msgstr "Μεγέθη"
 
 #: catalog/admin.py
 #, python-format
@@ -384,6 +429,31 @@ msgid "%d product updated."
 msgid_plural "%d products updated."
 msgstr[0] "Ενημερώθηκε %d προϊόν."
 msgstr[1] "Ενημερώθηκαν %d προϊόντα."
+
+#: catalog/admin.py
+#, python-format
+msgid "Discount {}%%"
+msgstr "Έκπτωση {}%%"
+
+#: catalog/admin.py
+msgid "Enter the price for this size."
+msgstr "Συμπληρώστε την τιμή για αυτό το μέγεθος."
+
+#: catalog/admin.py
+msgid ""
+"Leave this empty for icons with sizes: businesses pay each size's price "
+"without VAT."
+msgstr ""
+"Αφήστε το κενό για εικόνες με μεγέθη: οι επιχειρήσεις πληρώνουν την τιμή "
+"κάθε μεγέθους χωρίς ΦΠΑ."
+
+#: catalog/admin.py
+msgid "Enter the price incl. or excl. VAT."
+msgstr "Συμπληρώστε την τιμή με ή χωρίς ΦΠΑ."
+
+#: catalog/admin.py
+msgid "incl. VAT (€)"
+msgstr "με ΦΠΑ (€)"
 
 #: catalog/admin.py
 msgid "copy"
@@ -432,6 +502,14 @@ msgstr "κατηγορία"
 #: catalog/models.py
 msgid "categories"
 msgstr "κατηγορίες"
+
+#: catalog/models.py
+msgid "size"
+msgstr "μέγεθος"
+
+#: catalog/models.py
+msgid "sizes"
+msgstr "μεγέθη"
 
 #: catalog/models.py
 msgid "dimensions"
@@ -486,8 +564,20 @@ msgid "e.g. 20 x 26 cm"
 msgstr "π.χ. 20 x 26 εκ."
 
 #: catalog/models.py
-msgid "Retail price that individuals pay, VAT included."
-msgstr "Τιμή λιανικής που πληρώνουν οι ιδιώτες, με ΦΠΑ."
+msgid ""
+"e.g. 20 x 26 cm. For icons that come in one size only; otherwise tick the "
+"sizes below."
+msgstr ""
+"π.χ. 20 x 26 εκ. Για εικόνες σε ένα μόνο μέγεθος· αλλιώς τσεκάρετε τα μεγέθη"
+" παρακάτω."
+
+#: catalog/models.py
+msgid ""
+"Retail price that individuals pay, VAT included. With sizes, it is set to "
+"the lowest size price."
+msgstr ""
+"Τιμή λιανικής που πληρώνουν οι ιδιώτες, με ΦΠΑ. Με μεγέθη, ορίζεται αυτόματα"
+" στη χαμηλότερη τιμή μεγέθους."
 
 #: catalog/models.py
 msgid "0 = no discount. Applies to individuals and businesses."
@@ -496,10 +586,11 @@ msgstr "0 = χωρίς έκπτωση. Ισχύει για ιδιώτες και
 #: catalog/models.py
 msgid ""
 "Optional wholesale price. If empty, businesses see the retail price without "
-"VAT."
+"VAT. Not used with sizes: businesses then pay each size's price without VAT."
 msgstr ""
 "Προαιρετική τιμή χονδρικής. Αν μείνει κενό, οι επιχειρήσεις βλέπουν την τιμή"
-" λιανικής χωρίς ΦΠΑ."
+" λιανικής χωρίς ΦΠΑ. Δεν ισχύει με μεγέθη: τότε οι επιχειρήσεις πληρώνουν "
+"την τιμή κάθε μεγέθους χωρίς ΦΠΑ."
 
 #: catalog/models.py
 msgid ""
@@ -821,13 +912,13 @@ msgstr ""
 
 #: orders/admin.py
 msgid ""
-"Automatic tracking is on: with the number (and the courier's link), the "
-"order moves to In transit and Delivered by itself and the customer is "
-"emailed each time."
+"ACS and Geniki Taxydromiki parcels are tracked automatically: the order "
+"moves to In transit and Delivered by itself and the customer is emailed each"
+" time."
 msgstr ""
-"Η αυτόματη παρακολούθηση είναι ενεργή: με τον αριθμό (και τον σύνδεσμο της "
-"εταιρείας courier), η παραγγελία περνά μόνη της σε «Σε μεταφορά» και "
-"«Παραδόθηκε» και ο πελάτης ενημερώνεται με email κάθε φορά."
+"Οι αποστολές ACS και Γενικής Ταχυδρομικής παρακολουθούνται αυτόματα: η "
+"παραγγελία περνά μόνη της σε «Σε μεταφορά» και «Παραδόθηκε» και ο πελάτης "
+"ενημερώνεται με email κάθε φορά."
 
 #: orders/admin.py
 msgid "Status"
@@ -887,20 +978,17 @@ msgstr "σύνολα"
 
 #: orders/admin.py
 msgid ""
-"Off. Add a 17TRACK API key (TRACKING_API_KEY) to update shipped orders "
-"automatically."
+"Automatic for ACS and Geniki Taxydromiki: choose the courier and enter the "
+"tracking number."
 msgstr ""
-"Ανενεργή. Προσθέστε ένα κλειδί API του 17TRACK (TRACKING_API_KEY) για "
-"αυτόματη ενημέρωση των απεσταλμένων παραγγελιών."
+"Αυτόματη για ACS και Γενική Ταχυδρομική: επιλέξτε την εταιρεία courier και "
+"συμπληρώστε τον αριθμό αποστολής."
 
 #: orders/admin.py
-msgid "Starts when you save the order as Shipped with a tracking number."
+msgid "Checked when you save the order as Shipped, then every 2 hours."
 msgstr ""
-"Ξεκινά όταν αποθηκεύσετε την παραγγελία ως «Απεστάλη» με αριθμό αποστολής."
-
-#: orders/admin.py
-msgid "Waiting for the first update from the courier."
-msgstr "Αναμονή για την πρώτη ενημέρωση από την εταιρεία courier."
+"Ελέγχεται όταν αποθηκεύσετε την παραγγελία ως «Απεστάλη» και μετά κάθε 2 "
+"ώρες."
 
 #: orders/admin.py
 msgid "Last checked:"
@@ -999,14 +1087,6 @@ msgstr ""
 
 #: orders/admin.py
 msgid ""
-"Automatic tracking is on: the order will move to In transit and Delivered by"
-" itself."
-msgstr ""
-"Η αυτόματη παρακολούθηση ενεργοποιήθηκε: η παραγγελία θα περάσει μόνη της σε"
-" «Σε μεταφορά» και «Παραδόθηκε»."
-
-#: orders/admin.py
-msgid ""
 "The order was moved to the archive. You can find it with the search box or "
 "the Archive filter."
 msgstr ""
@@ -1029,10 +1109,12 @@ msgid "%(n)s order(s) brought back to the active list."
 msgstr "%(n)s παραγγελία(-ες) επανήλθαν στις ενεργές."
 
 #: orders/admin.py
-msgid "Automatic tracking is off: add a 17TRACK API key (TRACKING_API_KEY)."
+msgid ""
+"Automatic tracking is off: add the ACS or Geniki Taxydromiki API details "
+"(see README)."
 msgstr ""
-"Η αυτόματη παρακολούθηση είναι ανενεργή: προσθέστε ένα κλειδί API του "
-"17TRACK (TRACKING_API_KEY)."
+"Η αυτόματη παρακολούθηση είναι ανενεργή: προσθέστε τα στοιχεία API της ACS ή"
+" της Γενικής Ταχυδρομικής (δείτε το README)."
 
 #: orders/admin.py
 #, python-format
@@ -1054,8 +1136,27 @@ msgstr ""
 
 #: orders/admin.py
 #, python-format
-msgid "Automatic tracking could not start: %(error)s"
-msgstr "Η αυτόματη παρακολούθηση δεν ξεκίνησε: %(error)s"
+msgid "Off for %(courier)s: its API details are not set yet (see README)."
+msgstr ""
+"Ανενεργή για %(courier)s: δεν έχουν οριστεί ακόμη τα στοιχεία API (δείτε το "
+"README)."
+
+#: orders/admin.py
+#, python-format
+msgid ""
+"The courier could not track this parcel yet: %(error)s. It will try again "
+"every 2 hours."
+msgstr ""
+"Η εταιρεία courier δεν μπόρεσε ακόμη να εντοπίσει την αποστολή: %(error)s. "
+"Θα ξαναδοκιμάσει κάθε 2 ώρες."
+
+#: orders/admin.py
+msgid ""
+"Automatic tracking is on: the order will move to In transit and Delivered by"
+" itself."
+msgstr ""
+"Η αυτόματη παρακολούθηση ενεργοποιήθηκε: η παραγγελία θα περάσει μόνη της σε"
+" «Σε μεταφορά» και «Παραδόθηκε»."
 
 #: orders/admin.py
 msgid ""
@@ -1079,17 +1180,9 @@ msgstr "Η προσφορά αποθηκεύτηκε, αλλά το email δεν
 
 #: orders/admin.py
 #, python-format
-msgid ""
-"Automatic tracking could not start (%(error)s). It will try again at the "
-"next check."
+msgid "The courier already reports: %(stage)s. The customer was emailed."
 msgstr ""
-"Η αυτόματη παρακολούθηση δεν ξεκίνησε (%(error)s). Θα ξαναδοκιμάσει στον "
-"επόμενο έλεγχο."
-
-#: orders/admin.py
-#, python-format
-msgid "Could not check the couriers: %(error)s"
-msgstr "Δεν ήταν δυνατός ο έλεγχος των courier: %(error)s"
+"Η εταιρεία courier αναφέρει ήδη: %(stage)s. Ο πελάτης ενημερώθηκε με email."
 
 #: orders/admin.py
 #, python-format
@@ -1099,6 +1192,25 @@ msgstr "Ο πελάτης ενημερώθηκε με email: %(status)s"
 #: orders/apps.py
 msgid "Orders & requests"
 msgstr "Παραγγελίες & αιτήματα"
+
+#: orders/couriers/acs.py
+msgid "ACS refused the API key (ACS_API_KEY)."
+msgstr "Η ACS απέρριψε το κλειδί API (ACS_API_KEY)."
+
+#: orders/couriers/geniki.py
+msgid "Geniki Taxydromiki refused the user name, password or application key."
+msgstr ""
+"Η Γενική Ταχυδρομική απέρριψε το όνομα χρήστη, τον κωδικό ή το κλειδί "
+"εφαρμογής."
+
+#: orders/couriers/geniki.py
+msgid "Geniki Taxydromiki does not know this voucher number."
+msgstr "Η Γενική Ταχυδρομική δεν αναγνωρίζει αυτόν τον αριθμό αποστολής."
+
+#: orders/couriers/geniki.py
+msgid "This voucher was not sent from your Geniki Taxydromiki account."
+msgstr ""
+"Αυτή η αποστολή δεν έγινε από τον λογαριασμό σας στη Γενική Ταχυδρομική."
 
 #: orders/forms.py
 msgid "Full name"
@@ -1206,6 +1318,10 @@ msgstr "σημειώσεις πελάτη"
 #: orders/models.py
 msgid "shipping cost (€)"
 msgstr "μεταφορικά (€)"
+
+#: orders/models.py
+msgid "courier"
+msgstr "εταιρεία courier"
 
 #: orders/models.py
 msgid "tracking number"
@@ -1384,6 +1500,10 @@ msgid "Cancelled"
 msgstr "Ακυρώθηκε"
 
 #: orders/models.py
+msgid "Other"
+msgstr "Άλλη"
+
+#: orders/models.py
 msgid "No information from the courier yet"
 msgstr "Δεν υπάρχει ακόμη ενημέρωση από την εταιρεία courier"
 
@@ -1409,10 +1529,6 @@ msgid "Problem with the shipment"
 msgstr "Πρόβλημα με την αποστολή"
 
 #: orders/models.py
-msgid "No courier updates for a long time"
-msgstr "Καμία ενημέρωση από την εταιρεία courier για μεγάλο διάστημα"
-
-#: orders/models.py
 msgid ""
 "Ticked for individuals. Unticked for businesses: VAT is added on top of the "
 "item prices."
@@ -1433,6 +1549,10 @@ msgid ""
 msgstr ""
 "Ίδια βάση με τις τιμές των ειδών (με ΦΠΑ για ιδιώτες, χωρίς ΦΠΑ για "
 "επιχειρήσεις)."
+
+#: orders/models.py
+msgid "Filled in automatically for ACS and Geniki Taxydromiki."
+msgstr "Συμπληρώνεται αυτόματα για ACS και Γενική Ταχυδρομική."
 
 #: orders/models.py
 msgid "Only you can see these."
@@ -1529,16 +1649,12 @@ msgid "Delivery problem with order %(no)s"
 msgstr "Πρόβλημα παράδοσης στην παραγγελία %(no)s"
 
 #: orders/tracking.py
-msgid ""
-"The courier could not be recognised from the tracking number. Add the "
-"courier's tracking link as well."
-msgstr ""
-"Η εταιρεία courier δεν αναγνωρίστηκε από τον αριθμό αποστολής. Προσθέστε και"
-" τον σύνδεσμο παρακολούθησης της εταιρείας."
-
-#: orders/tracking.py
 msgid "Tracking number"
 msgstr "Αριθμός αποστολής"
+
+#: orders/views.py
+msgid "Please choose a size."
+msgstr "Επιλέξτε μέγεθος."
 
 #: orders/views.py
 #, python-format
@@ -1958,6 +2074,10 @@ msgstr "Κερδίζετε %(d)s%%"
 #: templates/catalog/product_detail.html
 msgid "Available to order"
 msgstr "Διαθέσιμο για παραγγελία"
+
+#: templates/catalog/product_detail.html
+msgid "Size"
+msgstr "Μέγεθος"
 
 #: templates/catalog/product_detail.html
 msgid "Quantity"
@@ -2490,11 +2610,11 @@ msgstr ""
 
 #: templates/emails/verify_email.txt
 msgid ""
-"The link works for 3 days. Until you confirm, you cannot send order "
+"The link works for 24 hours. Until you confirm, you cannot send order "
 "requests. If you did not create this account, just ignore this email and it "
 "will be removed."
 msgstr ""
-"Ο σύνδεσμος ισχύει για 3 ημέρες. Μέχρι να επιβεβαιώσετε, δεν μπορείτε να "
+"Ο σύνδεσμος ισχύει για 24 ώρες. Μέχρι να επιβεβαιώσετε, δεν μπορείτε να "
 "στέλνετε αιτήματα παραγγελίας. Αν δεν δημιουργήσατε εσείς αυτόν τον "
 "λογαριασμό, αγνοήστε αυτό το email και ο λογαριασμός θα διαγραφεί."
 
@@ -2826,6 +2946,17 @@ msgstr "προαιρετικό"
 #: templates/partials/form_errors.html
 msgid "Please check the fields marked below."
 msgstr "Ελέγξτε τα πεδία που επισημαίνονται παρακάτω."
+
+#: templates/partials/price.html
+msgid "from"
+msgstr "από"
+
+#: templates/partials/product_card.html
+#, python-format
+msgid "%(n)s size"
+msgid_plural "%(n)s sizes"
+msgstr[0] "%(n)s μέγεθος"
+msgstr[1] "%(n)s μεγέθη"
 
 #: templates/partials/product_card.html
 msgid "Sold out"

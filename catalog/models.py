@@ -72,7 +72,24 @@ class Category(models.Model):
 
 class ProductQuerySet(models.QuerySet):
     def visible(self):
-        return self.filter(is_active=True).filter(models.Q(category__isnull=True) | models.Q(category__is_active=True))
+        return (self.filter(is_active=True)
+                .filter(models.Q(category__isnull=True) | models.Q(category__is_active=True))
+                .prefetch_related("sizes__size"))
+
+
+class Size(models.Model):
+    """A size you offer, e.g. 20 x 26 cm. On each product you tick the sizes it comes in."""
+
+    name = models.CharField(_("size"), max_length=50, unique=True, help_text=_("e.g. 20 x 26 cm"))
+    order = models.PositiveIntegerField(_("position"), default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+        verbose_name = _("size")
+        verbose_name_plural = _("sizes")
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
@@ -84,12 +101,15 @@ class Product(models.Model):
     slug = models.SlugField(_("address"), max_length=220, unique=True, blank=True, allow_unicode=True)
     description = models.TextField(_("description (Greek)"), blank=True)
     description_en = models.TextField(_("description (English)"), blank=True)
-    dimensions = models.CharField(_("dimensions"), max_length=100, blank=True, help_text=_("e.g. 20 x 26 cm"))
+    dimensions = models.CharField(_("dimensions"), max_length=100, blank=True,
+                                  help_text=_("e.g. 20 x 26 cm. For icons that come in one size only; "
+                                              "otherwise tick the sizes below."))
     materials = models.CharField(_("materials / technique"), max_length=200, blank=True)
 
     price = models.DecimalField(
         _("price incl. VAT (€)"), max_digits=10, decimal_places=2, validators=[MinValueValidator(0)],
-        help_text=_("Retail price that individuals pay, VAT included."),
+        help_text=_("Retail price that individuals pay, VAT included. "
+                    "With sizes, it is set to the lowest size price."),
     )
     discount_percent = models.PositiveSmallIntegerField(
         _("discount %"), default=0, validators=[MaxValueValidator(90)],
@@ -98,7 +118,8 @@ class Product(models.Model):
     business_price = models.DecimalField(
         _("business price excl. VAT (€)"), max_digits=10, decimal_places=2, null=True, blank=True,
         validators=[MinValueValidator(0)],
-        help_text=_("Optional wholesale price. If empty, businesses see the retail price without VAT."),
+        help_text=_("Optional wholesale price. If empty, businesses see the retail price without VAT. "
+                    "Not used with sizes: businesses then pay each size's price without VAT."),
     )
 
     is_active = models.BooleanField(_("visible in shop"), default=True)
@@ -146,20 +167,46 @@ class Product(models.Model):
         images = list(self.images.all())  # uses prefetch_related when present
         return images[0] if images else None
 
+    @property
+    def size_options(self):
+        return list(self.sizes.all())  # uses prefetch_related when present
+
     # --- Pricing -----------------------------------------------------------
     # Individuals: price includes VAT. Approved businesses: price excludes VAT.
+    # `size` is one of the product's ProductSize rows, for icons that come in several sizes.
     def _apply_discount(self, amount):
         if self.discount_percent:
             amount = amount * (100 - self.discount_percent) / 100
         return money(amount)
 
-    def base_price_for(self, business, vat_multiplier):
+    def base_price_for(self, business, vat_multiplier, size=None):
+        gross = size.price if size else self.price
         if business:
-            return money(self.business_price if self.business_price is not None else self.price / vat_multiplier)
-        return money(self.price)
+            if size is None and self.business_price is not None:
+                return money(self.business_price)
+            return money(gross / vat_multiplier)
+        return money(gross)
 
-    def price_for(self, business, vat_multiplier):
-        return self._apply_discount(self.base_price_for(business, vat_multiplier))
+    def price_for(self, business, vat_multiplier, size=None):
+        return self._apply_discount(self.base_price_for(business, vat_multiplier, size))
+
+
+class ProductSize(models.Model):
+    """A size a product comes in, with its own price."""
+
+    product = models.ForeignKey(Product, related_name="sizes", on_delete=models.CASCADE)
+    size = models.ForeignKey(Size, verbose_name=_("size"), related_name="+", on_delete=models.PROTECT)
+    price = models.DecimalField(_("price incl. VAT (€)"), max_digits=10, decimal_places=2,
+                                validators=[MinValueValidator(0)])
+
+    class Meta:
+        ordering = ["size__order", "size__id"]
+        constraints = [models.UniqueConstraint(fields=["product", "size"], name="unique_product_size")]
+        verbose_name = _("size")
+        verbose_name_plural = _("sizes")
+
+    def __str__(self):
+        return f"{self.product} – {self.size}"
 
 
 class ProductImage(models.Model):

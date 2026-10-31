@@ -30,8 +30,13 @@ class Order(models.Model):
         REJECTED = "rejected", _("Declined")
         CANCELLED = "cancelled", _("Cancelled")
 
+    class Courier(models.TextChoices):
+        ACS = "acs", "ACS Courier"
+        GENIKI = "geniki", "Γενική Ταχυδρομική"
+        OTHER = "other", _("Other")
+
     class CourierStatus(models.TextChoices):
-        """Parcel stages as reported by 17TRACK."""
+        """Parcel stages, as reported by the courier (orders/couriers/)."""
         NOT_FOUND = "NotFound", _("No information from the courier yet")
         INFO_RECEIVED = "InfoReceived", _("Courier has the details, parcel not picked up yet")
         IN_TRANSIT = "InTransit", _("In transit")
@@ -40,10 +45,9 @@ class Order(models.Model):
         DELIVERY_FAILURE = "DeliveryFailure", _("Delivery attempt failed")
         DELIVERED = "Delivered", _("Delivered")
         EXCEPTION = "Exception", _("Problem with the shipment")
-        EXPIRED = "Expired", _("No courier updates for a long time")
 
     # Courier stages you are emailed about, since you may need to contact the customer or courier.
-    COURIER_PROBLEMS = [CourierStatus.DELIVERY_FAILURE, CourierStatus.EXCEPTION, CourierStatus.EXPIRED]
+    COURIER_PROBLEMS = [CourierStatus.DELIVERY_FAILURE, CourierStatus.EXCEPTION]
 
     OPEN_STATUSES = [Status.PENDING, Status.AWAITING_PAYMENT, Status.PAID, Status.SHIPPED, Status.IN_TRANSIT]
     ON_THE_WAY = [Status.SHIPPED, Status.IN_TRANSIT]
@@ -82,10 +86,11 @@ class Order(models.Model):
         validators=[MinValueValidator(0)],
         help_text=_("Same basis as the item prices (incl. VAT for individuals, excl. VAT for businesses)."),
     )
+    courier = models.CharField(_("courier"), max_length=20, blank=True, choices=Courier.choices)
     tracking_number = models.CharField(_("tracking number"), max_length=100, blank=True)
-    tracking_url = models.URLField(_("tracking link"), blank=True)
+    tracking_url = models.URLField(_("tracking link"), blank=True,
+                                   help_text=_("Filled in automatically for ACS and Geniki Taxydromiki."))
     # Filled in by automatic tracking (orders/tracking.py).
-    tracking_registered = models.CharField(max_length=100, blank=True, editable=False)
     tracking_status = models.CharField(_("courier status"), max_length=30, blank=True, editable=False,
                                        choices=CourierStatus.choices)
     tracking_event = models.CharField(_("latest courier update"), max_length=300, blank=True, editable=False)

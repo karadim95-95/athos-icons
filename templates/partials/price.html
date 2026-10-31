@@ -1,5 +1,6 @@
 {% load i18n shop %}<div class="price{% if big %} big{% endif %}">
-  <strong>{{ p.final|euro }}</strong>
-  {% if p.has_discount %}<s>{{ p.original|euro }}</s>{% endif %}
+  {% if p.from_price %}<span class="from">{% translate "from" %}</span>{% endif %}
+  <strong data-price-final>{{ p.final|euro }}</strong>
+  {% if p.has_discount %}<s data-price-original>{{ p.original|euro }}</s>{% endif %}
   {% if p.business %}<span class="vat">{% translate "excl. VAT" %}</span>{% elif big %}<span class="vat">{% translate "incl. VAT" %}</span>{% endif %}
 </div>

@@ -14,6 +14,7 @@ from catalog.models import Product
 from catalog.pricing import price_info
 from core.models import SiteSettings
 from orders import emails, services
+from orders.couriers import acs, geniki
 from orders.models import CustomRequest, Order
 
 PASSWORD = "demo1234"
@@ -67,11 +68,11 @@ class Command(BaseCommand):
         order(maria, [(products[0], 1)])  # waiting for you to accept it
         order(maria, [(products[1], 1), (products[2], 2)], Order.Status.AWAITING_PAYMENT)
         order(maria, [(products[3], 1)], Order.Status.AWAITING_PAYMENT, Order.Status.PAID, Order.Status.SHIPPED,
-              tracking_number="7400123456",
-              tracking_url="https://www.acscourier.net/el/myacs/anafores-apostolwn/anazitisi-apostolwn/"
-                           "?trackingNumber=7400123456")
+              courier=Order.Courier.ACS, tracking_number="7400123456",
+              tracking_url=acs.TRACKING_URL.format("7400123456"))
         order(church, [(products[0], 10)], Order.Status.AWAITING_PAYMENT, Order.Status.PAID,
-              Order.Status.SHIPPED, Order.Status.DELIVERED, tracking_number="4012345678")
+              Order.Status.SHIPPED, Order.Status.DELIVERED, courier=Order.Courier.GENIKI,
+              tracking_number="4012345678", tracking_url=geniki.TRACKING_URL.format("4012345678"))
 
         request = services.create_custom_request(maria, {
             "subject": "Άγιος Σπυρίδων", "description": "Εικόνα με χρυσό φόντο για δώρο βάπτισης.",

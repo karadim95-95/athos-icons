@@ -20,8 +20,8 @@ services:
   web:
     <<: *app
 
-  # Background jobs every 2 hours: asks the couriers about shipped orders (only if
-  # TRACKING_API_KEY is set) and removes accounts whose email was never confirmed.
+  # Background jobs every 2 hours: asks ACS / Geniki Taxydromiki about shipped orders (once
+  # their API details are set) and removes accounts whose email was never confirmed.
   jobs:
     <<: *app
     command: sh -c "sleep 60; while true; do python manage.py update_tracking; python manage.py delete_unverified_accounts; sleep 7200; done"

@@ -162,15 +162,20 @@ class OrderAdminForm(ReplyFields):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if tracking.enabled() and "tracking_number" in self.fields:
-            self.fields["tracking_number"].help_text = _(
-                "Automatic tracking is on: with the number (and the courier's link), the order moves to "
-                "In transit and Delivered by itself and the customer is emailed each time.")
+        if tracking.enabled() and "courier" in self.fields:
+            self.fields["courier"].help_text = _(
+                "ACS and Geniki Taxydromiki parcels are tracked automatically: the order moves to In transit and "
+                "Delivered by itself and the customer is emailed each time.")
 
     def clean(self):
         data = super().clean()
         if data.get("status") in Order.ON_THE_WAY and not (data.get("tracking_number") or data.get("tracking_url")):
             self.add_error("tracking_number", _("Add a tracking number or link so the customer can follow the parcel."))
+        # The courier's tracking page, unless you entered another link yourself.
+        previous = tracking.tracking_url(self.initial.get("courier"), self.initial.get("tracking_number"))
+        if data.get("tracking_number") and data.get("tracking_url", "") in ("", previous):
+            data["tracking_url"] = tracking.tracking_url(data.get("courier"), data["tracking_number"]) or \
+                data.get("tracking_url", "")
         return data
 
 
@@ -188,7 +193,7 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
                        "conversation", "custom_request_link", "courier_tracking"]
     fieldsets = [
         (_("Status"), {"fields": [("number", "created_at", "archived_at"), "status", "notify_customer", "status_note",
-                                  ("tracking_number", "tracking_url"), "courier_tracking"]}),
+                                  ("courier", "tracking_number"), "tracking_url", "courier_tracking"]}),
         (_("Customer"), {"fields": ["customer_link", ("full_name", "email", "phone"),
                                     ("company_name", "vat_number", "tax_office"), "customer_notes",
                                     "custom_request_link"]}),
@@ -242,14 +247,15 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
 
     @admin.display(description=_("automatic tracking"))
     def courier_tracking(self, obj):
-        if not tracking.enabled():
-            return _("Off. Add a 17TRACK API key (TRACKING_API_KEY) to update shipped orders automatically.")
+        if not tracking.courier_for(obj):
+            if obj.courier in tracking.COURIERS:
+                return _("Off for %(courier)s: its API details are not set yet (see README).") % {
+                    "courier": obj.get_courier_display()}
+            return _("Automatic for ACS and Geniki Taxydromiki: choose the courier and enter the tracking number.")
         if obj.tracking_error:
             return format_html('<span style="color:#b3261e">{}</span>', obj.tracking_error)
-        if not obj.tracking_registered:
-            return _("Starts when you save the order as Shipped with a tracking number.")
         if not obj.tracking_checked_at:
-            return _("Waiting for the first update from the courier.")
+            return _("Checked when you save the order as Shipped, then every 2 hours.")
         when = timezone.localtime(obj.tracking_event_at).strftime("%d/%m/%Y %H:%M") if obj.tracking_event_at else ""
         return format_html(
             "<b>{}</b><br>{}{}<br><small>{} {}</small>",
@@ -257,16 +263,17 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
             _("Last checked:"), timezone.localtime(obj.tracking_checked_at).strftime("%d/%m/%Y %H:%M"),
         )
 
-    def start_tracking(self, request, order):
-        try:
-            tracking.register([order])
-        except tracking.TrackingError as error:
-            messages.warning(request, _("Automatic tracking could not start (%(error)s). "
-                                        "It will try again at the next check.") % {"error": error})
-            return
+    def track_now(self, request, order, new_parcel):
+        if new_parcel:  # forget what the courier said about the previous number
+            order.tracking_status = order.tracking_event = order.tracking_error = ""
+            order.tracking_event_at = order.tracking_checked_at = None
+        moved = tracking.check(order)
         if order.tracking_error:
-            messages.warning(request, _("Automatic tracking could not start: %(error)s") % {
-                "error": order.tracking_error})
+            messages.warning(request, _("The courier could not track this parcel yet: %(error)s. "
+                                        "It will try again every 2 hours.") % {"error": order.tracking_error})
+        elif moved:
+            messages.success(request, _("The courier already reports: %(stage)s. The customer was emailed.") % {
+                "stage": order.get_tracking_status_display()})
         else:
             messages.success(request, _("Automatic tracking is on: the order will move to In transit and "
                                         "Delivered by itself."))
@@ -286,8 +293,9 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
         if order.archived_at and "status" in form.changed_data:
             messages.info(request, _("The order was moved to the archive. You can find it with the search box "
                                      "or the Archive filter."))
-        if tracking.enabled() and order.status in Order.ON_THE_WAY and tracking.needs_registration(order):
-            self.start_tracking(request, order)
+        new_parcel = bool({"courier", "tracking_number"} & set(form.changed_data))
+        if tracking.courier_for(order) and order.status in Order.ON_THE_WAY and (new_parcel or "status" in form.changed_data):
+            self.track_now(request, order, new_parcel)
         self.send_reply(request, order, form)
 
     def _bulk_status(self, request, queryset, status, allowed_from):
@@ -333,15 +341,10 @@ class OrderAdmin(ThreadAdminMixin, admin.ModelAdmin):
     @admin.action(description=_("Check the couriers now"))
     def check_tracking(self, request, queryset):
         if not tracking.enabled():
-            self.message_user(request, _("Automatic tracking is off: add a 17TRACK API key (TRACKING_API_KEY)."),
-                              messages.WARNING)
+            self.message_user(request, _("Automatic tracking is off: add the ACS or Geniki Taxydromiki API details "
+                                         "(see README)."), messages.WARNING)
             return
-        try:
-            moved = tracking.sync(queryset)
-        except tracking.TrackingError as error:
-            self.message_user(request, _("Could not check the couriers: %(error)s") % {"error": error},
-                              messages.ERROR)
-            return
+        moved = tracking.sync(queryset)
         self.message_user(request, _("Couriers checked. %(n)s order(s) moved on and their customers were emailed.")
                           % {"n": moved}, messages.SUCCESS)
 

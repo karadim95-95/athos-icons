@@ -17,7 +17,7 @@
     <aside class="panel summary">
       <h3>{% translate "Your order" %}</h3>
       {% for line in lines %}
-        <div class="summary-row small"><span>{{ line.quantity }} × {{ line.product.local_name }}</span><span>{{ line.line_total|euro }}</span></div>
+        <div class="summary-row small"><span>{{ line.quantity }} × {{ line.product.local_name }}{% if line.size %} ({{ line.size.size }}){% endif %}</span><span>{{ line.line_total|euro }}</span></div>
       {% endfor %}
       <div class="summary-row"><span>{% translate "Shipping (estimate)" %}</span><span>{% if estimated_shipping %}{{ estimated_shipping|euro }}{% else %}{% translate "free" %}{% endif %}</span></div>
       <div class="summary-row total"><span>{% translate "Estimated total" %}</span><span>{{ estimated_total|euro }}</span></div>

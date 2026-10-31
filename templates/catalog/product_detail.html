@@ -4,7 +4,6 @@
 {% block og_title %}{{ product.local_name }}{% endblock %}
 {% block og_extra %}{% with img=product.main_image %}{% if img %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ img.image.url }}">{% endif %}{% endwith %}{% endblock %}
 {% block content %}
-{% price product as p %}
 <div class="wrap">
   <div class="breadcrumbs" style="margin-top:24px"><a href="{% url 'core:home' %}">{% translate "Home" %}</a> / <a href="{% url 'catalog:products' %}">{% translate "Icons" %}</a>{% if product.category %} / <a href="{{ product.category.get_absolute_url }}">{{ product.category.local_name }}</a>{% endif %}</div>
   <div class="product">
@@ -31,6 +30,14 @@
           <p class="stock in" style="margin:10px 0 0">● {% translate "Available to order" %}</p>
           <form method="post" action="{% url 'orders:cart_add' product.pk %}">{% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path }}">
+            {% if sizes %}
+            <fieldset class="size-picker">
+              <legend>{% translate "Size" %}</legend>
+              {% for s in sizes %}
+              <label><input type="radio" name="size" value="{{ s.option.pk }}"{% if forloop.first %} checked{% endif %} data-final="{{ s.price.final|euro }}" data-original="{{ s.price.original|euro }}"><span>{{ s.option.size }}<small>{{ s.price.final|euro }}</small></span></label>
+              {% endfor %}
+            </fieldset>
+            {% endif %}
             <div class="buy-row">
               <label class="visually-hidden" for="qty">{% translate "Quantity" %}</label>
               <input id="qty" type="number" name="quantity" value="1" min="1" max="999">
@@ -44,9 +51,10 @@
         {% endif %}
       </div>
 
-      {% if product.dimensions or product.materials %}
+      {% if sizes or product.dimensions or product.materials %}
       <table class="specs">
-        {% if product.dimensions %}<tr><th>{% translate "Dimensions" %}</th><td>{{ product.dimensions }}</td></tr>{% endif %}
+        {% if sizes %}<tr><th>{% translate "Sizes" %}</th><td>{% for s in sizes %}{{ s.option.size }}{% if not forloop.last %} · {% endif %}{% endfor %}</td></tr>
+        {% elif product.dimensions %}<tr><th>{% translate "Dimensions" %}</th><td>{{ product.dimensions }}</td></tr>{% endif %}
         {% if product.materials %}<tr><th>{% translate "Materials / technique" %}</th><td>{{ product.materials }}</td></tr>{% endif %}
       </table>
       {% endif %}

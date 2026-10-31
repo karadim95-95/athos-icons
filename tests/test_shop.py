@@ -1,13 +1,14 @@
+import json
 import re
 import shutil
 import tempfile
-from datetime import timedelta
+from datetime import datetime, timedelta
 from decimal import Decimal
 from io import BytesIO, StringIO
 from pathlib import Path
 
 from unittest import mock
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit
 
 from django.core import mail
@@ -21,10 +22,12 @@ from PIL import Image
 
 from accounts import vat
 from accounts.models import User
-from catalog.models import Category, Product, ProductImage
+from accounts.tokens import email_verification_token
+from catalog.models import Category, Product, ProductImage, ProductSize, Size
 from core import antispam
 from core.models import SiteSettings
 from orders import services, tracking
+from orders.couriers import acs, geniki
 from orders.models import CustomRequest, Order
 
 MEDIA = tempfile.mkdtemp()
@@ -68,7 +71,8 @@ class ShopTestCase(TestCase):
 
     def order_for(self, user, qty=2):
         self.client.force_login(user)
-        self.client.post(reverse("orders:cart_add", args=[self.product.pk]), {"quantity": qty})
+        if qty:  # 0: check out what is already in the cart
+            self.client.post(reverse("orders:cart_add", args=[self.product.pk]), {"quantity": qty})
         data = {"full_name": "Test Person", "phone": "690", "address": "Odos 1", "city": "Athens",
                 "postal_code": "10552", "country": "Greece", "company_name": "Church Shop", "notes": ""}
         self.client.post(reverse("orders:checkout"), data)
@@ -348,127 +352,228 @@ class ArchiveTests(ShopTestCase):
         self.client.post(url + "?archive=archived", {"action": "unarchive", "_selected_action": [order.pk]})
         self.assertIn(order.number, self.listed())
 
-class FakeTrack:
-    """Stands in for the 17TRACK API: register numbers, then report whatever stage we set."""
+ACS_SETTINGS = {"ACS_API_KEY": "acs-key", "ACS_COMPANY_ID": "company", "ACS_COMPANY_PASSWORD": "company-pass",
+                "ACS_USER_ID": "user", "ACS_USER_PASSWORD": "user-pass"}
+GENIKI_SETTINGS = {"GENIKI_USERNAME": "user", "GENIKI_PASSWORD": "pass", "GENIKI_APP_KEY": "app-key"}
+
+
+def fake_response(body):
+    response = mock.MagicMock()
+    response.__enter__.return_value = BytesIO(body.encode())
+    return response
+
+
+class FakeACS:
+    """Answers like ACS Web Services (format from the examples in ACS's specification)."""
 
     def __init__(self):
-        self.registered = {}
-        self.stage = {}
+        self.summary = None  # None: ACS has nothing for this voucher yet
+        self.checkpoints = []
+        self.requests = []
+        self.refuse_key = False
 
-    def __call__(self, endpoint, items):
-        if endpoint == "register":
-            accepted, rejected = [], []
-            for item in items:
-                if item["number"] == "UNKNOWN1":
-                    rejected.append({"number": item["number"], "error": {"code": -18019903, "message": "x"}})
-                else:
-                    self.registered[item["number"]] = item.get("carrier")
-                    accepted.append(item)
-            return {"accepted": accepted, "rejected": rejected}
-        return {"accepted": [
-            {"number": item["number"], "track_info": {
-                "latest_status": {"status": self.stage.get(item["number"], ("NotFound", ""))[0]},
-                "latest_event": {"description": self.stage.get(item["number"], ("", ""))[1], "location": "ATHENS",
-                                 "time_utc": "2026-11-02T08:15:00Z"}}}
-            for item in items
-        ], "rejected": []}
+    def __call__(self, request, timeout=None):
+        if self.refuse_key:
+            raise HTTPError(request.full_url, 403, "Forbidden", {}, None)
+        body = json.loads(request.data)
+        self.requests.append((request.get_header("Acsapikey"), body))
+        table = {"ACS_Trackingsummary": [self.summary] if self.summary else [],
+                 "ACS_TrackingDetails": self.checkpoints}[body["ACSAlias"]]
+        return fake_response(json.dumps({
+            "ACSExecution_HasError": False, "ACSExecutionErrorMessage": "",
+            "ACSOutputResponce": {"ACSValueOutput": [{"Error_Message": None}], "ACSTableOutput": {"Table_Data": table}},
+        }))
+
+    def checkpoint(self, action, location, when):
+        self.checkpoints.append({"checkpoint_date_time": when, "checkpoint_action": action,
+                                 "checkpoint_location": location, "checkpoint_notes": " "})
 
 
-@override_settings(TRACKING_API_KEY="test-key")
+def acs_summary(**changes):
+    return {"voucher_no": "7400123456", "pickup_date": "2026-11-02T00:00:00", "delivery_flag": 0, "returned_flag": 0,
+            "non_delivery_reason_code": "", "delivery_info": "", "shipment_status": 2, **changes}
+
+
+class FakeGeniki:
+    """Answers like Geniki's JobServicesV2 SOAP service (names from its WSDL and specification)."""
+
+    def __init__(self):
+        self.checkpoints = []  # (status code, description, shop)
+        self.status, self.delivered_at, self.result = "IN TRANSIT", "", 0
+        self.expired_keys = set()
+        self.logins = 0
+
+    def __call__(self, request, timeout=None):
+        body = request.data.decode()
+        if "<Authenticate " in body:
+            self.logins += 1
+            inner = (f"<AuthenticateResponse xmlns=\"{geniki.NAMESPACE}\"><AuthenticateResult><Result>0</Result>"
+                     f"<Key>key{self.logins}</Key></AuthenticateResult></AuthenticateResponse>")
+        else:
+            key = re.search(r"<authKey>([^<]*)</authKey>", body).group(1)
+            points = "".join(
+                f"<Checkpoint><Status>{text}</Status><StatusCode>{code}</StatusCode>"
+                f"<StatusDate>2026-11-0{i + 2}T09:15:00</StatusDate><Shop>{shop}</Shop></Checkpoint>"
+                for i, (code, text, shop) in enumerate(self.checkpoints))
+            inner = (f"<TrackAndTraceResponse xmlns=\"{geniki.NAMESPACE}\"><TrackAndTraceResult>"
+                     f"<Result>{11 if key in self.expired_keys else self.result}</Result>"
+                     f"<Checkpoints>{points}</Checkpoints><Status>{self.status}</Status>"
+                     f"<DeliveryDate>0001-01-01T00:00:00</DeliveryDate><DeliveredAt>{self.delivered_at}</DeliveredAt>"
+                     "</TrackAndTraceResult></TrackAndTraceResponse>")
+        return fake_response('<?xml version="1.0" encoding="utf-8"?><soap:Envelope '
+                             f'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body>{inner}'
+                             "</soap:Body></soap:Envelope>")
+
+
+@override_settings(**ACS_SETTINGS, **GENIKI_SETTINGS)
 class TrackingTests(ShopTestCase):
     def setUp(self):
         super().setUp()
-        self.fake = FakeTrack()
-        patcher = mock.patch.object(tracking, "_call", self.fake)
-        patcher.start()
-        self.addCleanup(patcher.stop)
+        self.acs, self.geniki = FakeACS(), FakeGeniki()
+        for module, fake in [(acs, self.acs), (geniki, self.geniki)]:
+            patcher = mock.patch.object(module, "urlopen", fake)
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
-    def shipped_order(self, number="7400 1234 567", url="https://www.acscourier.net/el/track?n=74001234567"):
+    def shipped_order(self, courier=Order.Courier.ACS, number="7400 123 456", follow=False):
         order = self.order_for(self.customer)
         services.set_order_status(order, Order.Status.PAID)
-        response = self.admin_post(order, status=Order.Status.SHIPPED, tracking_number=number, tracking_url=url)
-        self.assertEqual(response.status_code, 302)
+        response = self.admin_post(order, status=Order.Status.SHIPPED, courier=courier, tracking_number=number,
+                                   follow=follow)
         order.refresh_from_db()
-        return order
+        return (order, response) if follow else order
 
     def update(self):
         mail.outbox.clear()
         call_command("update_tracking", stdout=StringIO())
 
-    def test_courier_recognised_from_link(self):
-        self.assertEqual(tracking.carrier_for("https://www.acscourier.net/el/track?n=1"), 100070)
-        self.assertEqual(tracking.carrier_for("https://www.elta-courier.gr/search?br=1"), 100179)
-        self.assertEqual(tracking.carrier_for("https://www.courier.gr/track/result?tracknr=1"), 100667)
-        self.assertEqual(tracking.carrier_for("https://boxnow.gr/el/track?id=1"), 101008)
-        self.assertIsNone(tracking.carrier_for("https://parcels.example.com/1"))
-        self.assertIsNone(tracking.carrier_for(""))
-
-    def test_order_follows_the_courier_until_delivered(self):
+    def test_tracking_link_is_filled_in(self):
         order = self.shipped_order()
-        self.assertEqual(self.fake.registered, {"74001234567": 100070})
-        self.assertEqual(order.tracking_registered, "74001234567")
+        self.assertEqual(order.tracking_url, acs.TRACKING_URL.format("7400123456"))
+        self.assertIn(order.tracking_url, mail.outbox[-1].body)  # in the "shipped" email
+        order = self.shipped_order(Order.Courier.GENIKI, "4012345678")
+        self.assertEqual(order.tracking_url, "https://www.taxydromiki.com/track/4012345678")
 
-        self.fake.stage["74001234567"] = ("InTransit", "Αναχώρηση από κέντρο διαλογής")
+    def test_acs_order_follows_the_courier_until_delivered(self):
+        order = self.shipped_order()
+        api_key, request = self.acs.requests[0]
+        self.assertEqual(api_key, "acs-key")
+        self.assertEqual(request["ACSInputParameters"]["Voucher_No"], "7400123456")
+        self.assertEqual(request["ACSInputParameters"]["Company_ID"], "company")
+
+        self.acs.summary = acs_summary()
+        self.acs.checkpoint("Αναχώρηση προς ΜΑΡΟΥΣΙ", "ΚΑΒΑΛΑ", "2026-11-02T13:05:57.263")
         self.update()
         order.refresh_from_db()
         self.assertEqual(order.status, Order.Status.IN_TRANSIT)
-        self.assertEqual(len(mail.outbox), 1)
         self.assertIn("in transit", mail.outbox[0].subject)
-        self.assertIn("Αναχώρηση από κέντρο διαλογής – ATHENS", mail.outbox[0].body)
+        self.assertIn("Αναχώρηση προς ΜΑΡΟΥΣΙ – ΚΑΒΑΛΑ", mail.outbox[0].body)
+        self.assertEqual(timezone.localtime(order.tracking_event_at).strftime("%d/%m %H:%M"), "02/11 13:05")
 
-        self.update()  # nothing new: no second email
-        self.assertEqual(len(mail.outbox), 0)
-
-        self.fake.stage["74001234567"] = ("OutForDelivery", "Σε διανομή")
+        self.acs.checkpoint("Σε διανομή", "ΜΑΡΟΥΣΙ", "2026-11-03T07:56:00.587")
         self.update()
-        order.refresh_from_db()
-        self.assertEqual(order.status, Order.Status.IN_TRANSIT)
-        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(len(mail.outbox), 0)  # still "in transit": no email
         self.client.force_login(self.customer)
         self.assertContains(self.client.get(order.get_absolute_url()), "Out for delivery")
 
-        self.fake.stage["74001234567"] = ("Delivered", "Παραδόθηκε")
+        self.acs.summary = acs_summary(delivery_flag=1, shipment_status=4)
+        self.acs.checkpoint("Παράδοση στον παραλήπτη", "ΜΑΡΟΥΣΙ", "2026-11-03T09:21:00")
         self.update()
         order.refresh_from_db()
         self.assertEqual(order.status, Order.Status.DELIVERED)
         self.assertEqual([m.to for m in mail.outbox], [["maria@example.com"], ["owner@example.com"]])
-        self.assertIn("delivered", mail.outbox[0].subject)
-        self.assertIn("was delivered", mail.outbox[1].subject)
         self.assertIsNotNone(order.archived_at)
-        self.assertEqual([e.status for e in order.events.all()][-3:],
-                         [Order.Status.SHIPPED, Order.Status.IN_TRANSIT, Order.Status.DELIVERED])
 
-    def test_delivery_problem_emails_the_shop_once(self):
-        order = self.shipped_order()
-        self.fake.stage["74001234567"] = ("DeliveryFailure", "Ο παραλήπτης απουσίαζε")
+    def test_acs_stages(self):
+        C = Order.CourierStatus
+        for summary, stage in [(acs_summary(non_delivery_reason_code="AS1"), C.DELIVERY_FAILURE),
+                               (acs_summary(non_delivery_reason_code="AD1"), C.AVAILABLE_FOR_PICKUP),
+                               (acs_summary(non_delivery_reason_code="LS2"), C.IN_TRANSIT),
+                               (acs_summary(shipment_status=6), C.EXCEPTION),
+                               (acs_summary(delivery_flag=1, returned_flag=1, shipment_status=7), C.EXCEPTION),
+                               (acs_summary(pickup_date=None), C.INFO_RECEIVED)]:
+            with self.subTest(summary=summary):
+                self.acs.summary = summary
+                self.assertEqual(acs.track("7400123456").stage, stage)
+
+    def test_geniki_order_follows_the_checkpoints(self):
+        order = self.shipped_order(Order.Courier.GENIKI, "4012345678")
+        self.geniki.checkpoints = [("C_W3", "Παραλαβή αποστολής", "ΑΘΗΝΑ")]
         self.update()
-        self.assertEqual([m.to for m in mail.outbox], [["owner@example.com"]])
-        self.assertIn(order.number, mail.outbox[0].subject)
-        self.assertIn("Delivery attempt failed", mail.outbox[0].body)
+        order.refresh_from_db()
+        self.assertEqual(order.status, Order.Status.IN_TRANSIT)
+        self.assertIn("Παραλαβή αποστολής – ΑΘΗΝΑ", mail.outbox[0].body)
+
+        self.geniki.checkpoints.append(("C_A3", "Σε διανομή", "ΠΕΙΡΑΙΑΣ"))
+        self.update()
+        order.refresh_from_db()
+        self.assertEqual(order.tracking_status, Order.CourierStatus.OUT_FOR_DELIVERY)
+
+        self.geniki.checkpoints.append(("C_W2", "Παραδόθηκε", "ΠΕΙΡΑΙΑΣ"))
+        self.geniki.status, self.geniki.delivered_at = "DELIVERED", "RECIPIENT"
+        self.update()
+        order.refresh_from_db()
+        self.assertEqual(order.status, Order.Status.DELIVERED)
+
+    def test_geniki_failed_delivery_emails_the_shop_once(self):
+        order = self.shipped_order(Order.Courier.GENIKI, "4012345678")
+        self.geniki.checkpoints = [("C_W3", "Παραλαβή", "ΑΘΗΝΑ"), ("C_EA_AS", "Απών παραλήπτης", "ΠΕΙΡΑΙΑΣ")]
+        self.update()
+        self.assertIn(["owner@example.com"], [m.to for m in mail.outbox])
+        problem = next(m for m in mail.outbox if m.to == ["owner@example.com"])
+        self.assertIn(order.number, problem.subject)
+        self.assertIn("Delivery attempt failed", problem.body)
         self.update()
         self.assertEqual(len(mail.outbox), 0)
         self.client.force_login(self.owner)
         self.assertContains(self.client.get(reverse("admin:index")), "Shipments with a delivery problem")
-        response = self.client.get(reverse("admin:orders_order_changelist") + "?tracking=problem")
-        self.assertContains(response, order.number)
+        self.assertContains(self.client.get(reverse("admin:orders_order_changelist") + "?tracking=problem"),
+                            order.number)
 
-    def test_unrecognised_number_is_shown_to_the_owner(self):
-        order = self.order_for(self.customer)
-        services.set_order_status(order, Order.Status.PAID)
-        response = self.admin_post(order, status=Order.Status.SHIPPED, tracking_number="UNKNOWN1", follow=True)
-        self.assertContains(response, "courier could not be recognised")
-        order.refresh_from_db()
+    def test_geniki_cancelled_checkpoints_and_returns(self):
+        C = Order.CourierStatus
+        self.geniki.checkpoints = [("C_W3", "Παραλαβή", "ΑΘΗΝΑ"), ("C_E1", "Επιστροφή", "ΑΘΗΝΑ"),
+                                   ("C_E2", "Ακύρωση επιστροφής", "ΑΘΗΝΑ")]
+        self.assertEqual(geniki.track("4012345678").stage, C.IN_TRANSIT)
+        self.geniki.status, self.geniki.delivered_at = "DELIVERED", "RETURN TO SENDER"
+        self.assertEqual(geniki.track("4012345678").stage, C.EXCEPTION)
+
+    def test_geniki_logs_in_again_when_its_key_expires(self):
+        geniki.track("4012345678")
+        geniki.track("4012345678")
+        self.assertEqual(self.geniki.logins, 1)  # the key is reused
+        self.geniki.expired_keys.add("key1")
+        geniki.track("4012345678")
+        self.assertEqual(self.geniki.logins, 2)
+
+    def test_unknown_voucher_is_shown_to_the_owner(self):
+        self.geniki.result = 9
+        order, response = self.shipped_order(Order.Courier.GENIKI, "4099999999", follow=True)
+        self.assertContains(response, "does not know this voucher number")
         self.assertEqual(order.status, Order.Status.SHIPPED)
         self.assertTrue(Order.objects.with_tracking_problem().filter(pk=order.pk).exists())
 
-    @override_settings(TRACKING_API_KEY="")
-    def test_off_without_api_key(self):
+    def test_wrong_api_key(self):
+        self.acs.refuse_key = True
+        order, response = self.shipped_order(follow=True)
+        self.assertContains(response, "ACS refused the API key")
+
+    def test_other_couriers_are_not_tracked(self):
+        order = self.shipped_order(Order.Courier.OTHER, "RE123456789GR")
+        self.update()
+        self.assertEqual(self.acs.requests, [])
+        self.assertEqual(order.tracking_url, "")
+
+    @override_settings(ACS_API_KEY="", GENIKI_APP_KEY="")
+    def test_off_without_api_details(self):
         order = self.shipped_order()
-        self.assertEqual(self.fake.registered, {})
-        self.assertEqual(order.status, Order.Status.SHIPPED)
+        self.assertEqual(self.acs.requests, [])
         out = StringIO()
         call_command("update_tracking", stdout=out)
         self.assertIn("off", out.getvalue())
+        self.client.force_login(self.owner)
+        self.assertContains(self.client.get(reverse("admin:orders_order_change", args=[order.pk])),
+                            "API details are not set")
 
 
 class AccessTests(ShopTestCase):
@@ -509,6 +614,20 @@ class AccessTests(ShopTestCase):
         self.assertTrue(user.email_verified)
         self.assertEqual(self.client.get(reverse("orders:checkout")).status_code, 200)
         self.assertContains(self.client.get(link, follow=True), "already confirmed")
+
+    def test_confirmation_link_expires_after_24_hours(self):
+        self.client.post(reverse("accounts:register"), signup_data())
+        link = emailed_link(mail.outbox[0])
+        later = datetime.now() + timedelta(hours=24, minutes=1)
+        with mock.patch.object(email_verification_token, "_now", return_value=later):
+            response = self.client.get(link, follow=True)
+        self.assertContains(response, "older than 24 hours")
+        self.assertFalse(User.objects.get(email="eleni@example.com").email_verified)
+
+        almost = datetime.now() + timedelta(hours=23, minutes=59)
+        with mock.patch.object(email_verification_token, "_now", return_value=almost):
+            self.client.get(link)
+        self.assertTrue(User.objects.get(email="eleni@example.com").email_verified)
 
     def test_confirmation_link_logs_in_on_another_device(self):
         self.client.post(reverse("accounts:register"), signup_data())
@@ -753,3 +872,110 @@ class DemoTests(ShopTestCase):
                          sorted([Order.Status.PENDING, Order.Status.AWAITING_PAYMENT, Order.Status.SHIPPED]))
         self.assertEqual(maria.custom_requests.get().status, CustomRequest.Status.QUOTED)
         self.assertEqual(User.objects.filter(email__endswith="@demo.gr").count(), 4)
+
+
+class ProductAdminTests(ShopTestCase):
+    """Price incl. or excl. VAT, sizes with their own prices, one-click discounts (VAT 24%)."""
+
+    def setUp(self):
+        super().setUp()
+        self.small = Size.objects.create(name="14 x 18 cm", order=1)
+        self.large = Size.objects.create(name="30 x 40 cm", order=2)
+        self.client.force_login(self.owner)
+
+    def save_product(self, product=None, **fields):
+        data = {"name": "Άγιος Νικόλαος", "price": "", "price_net": "", "discount_percent": "0",
+                "is_active": "on", "is_available": "on", "images-TOTAL_FORMS": "0", "images-INITIAL_FORMS": "0",
+                "images-MIN_NUM_FORMS": "0", "images-MAX_NUM_FORMS": "1000", **fields}
+        url = (reverse("admin:catalog_product_change", args=[product.pk]) if product
+               else reverse("admin:catalog_product_add"))
+        return self.client.post(url, data)
+
+    def test_price_excl_vat_fills_in_the_price_incl_vat(self):
+        self.assertEqual(self.save_product(price_net="50.00").status_code, 302)
+        product = Product.objects.get(name="Άγιος Νικόλαος")
+        self.assertEqual(product.price, Decimal("62.00"))
+        page = self.client.get(reverse("admin:catalog_product_change", args=[product.pk]))
+        self.assertContains(page, 'name="price_net" value="50.00"')
+
+    def test_price_incl_vat_wins_when_it_is_the_one_changed(self):
+        self.save_product(price="62.00", price_net="50.00")
+        product = Product.objects.get(name="Άγιος Νικόλαος")
+        self.save_product(product, price="74.40", price_net="50.00")  # only the incl. VAT box changed
+        product.refresh_from_db()
+        self.assertEqual(product.price, Decimal("74.40"))
+
+    def test_a_price_is_required(self):
+        self.assertContains(self.save_product(), "Enter the price incl. or excl. VAT.")
+
+    def test_sizes_with_their_own_prices(self):
+        self.save_product(price="62.00", **{f"size_{self.small.pk}": "on", f"size_net_{self.small.pk}": "30.00",
+                                            f"size_{self.large.pk}": "on"})
+        product = Product.objects.get(name="Άγιος Νικόλαος")
+        prices = {option.size: option.price for option in product.sizes.all()}
+        self.assertEqual(prices, {self.small: Decimal("37.20"), self.large: Decimal("62.00")})
+        self.assertEqual(product.price, Decimal("37.20"))  # the lowest size price, for sorting and "from"
+
+        self.save_product(product, price="37.20", **{f"size_{self.large.pk}": "on",
+                                                     f"size_price_{self.large.pk}": "80.00"})
+        self.assertEqual([(o.size, o.price) for o in product.sizes.all()], [(self.large, Decimal("80.00"))])
+
+    def test_business_price_is_not_used_with_sizes(self):
+        response = self.save_product(price="62.00", business_price="40.00", **{f"size_{self.small.pk}": "on"})
+        self.assertContains(response, "Leave this empty for icons with sizes")
+
+    def test_discount_buttons_and_bulk_discount(self):
+        page = self.client.get(reverse("admin:catalog_product_add"))
+        self.assertContains(page, 'data-discount="20"')
+        self.client.post(reverse("admin:catalog_product_changelist"),
+                         {"action": "discount_20", "_selected_action": [self.product.pk]})
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.discount_percent, 20)
+
+
+class SizeShopTests(ShopTestCase):
+    def setUp(self):
+        super().setUp()
+        small = Size.objects.create(name="14 x 18 cm", order=1)
+        large = Size.objects.create(name="30 x 40 cm", order=2)
+        self.small = ProductSize.objects.create(product=self.product, size=small, price=Decimal("37.20"))
+        self.large = ProductSize.objects.create(product=self.product, size=large, price=Decimal("124.00"))
+
+    def add(self, size=None, qty=1):
+        data = {"quantity": qty, **({"size": size.pk} if size else {})}
+        return self.client.post(reverse("orders:cart_add", args=[self.product.pk]), data, follow=True)
+
+    def test_product_page_and_card_show_the_sizes(self):
+        page = self.client.get(self.product.get_absolute_url())
+        self.assertContains(page, 'name="size"')
+        self.assertContains(page, "30 x 40 cm")
+        self.assertContains(page, "124.00")
+        listing = self.client.get(reverse("catalog:products"))
+        self.assertContains(listing, "2 sizes")
+        self.assertContains(listing, "37.20")  # "from" the lowest price
+
+    def test_a_size_must_be_chosen(self):
+        self.assertContains(self.add(), "Please choose a size.")
+        self.assertEqual(self.client.session.get("cart", {}), {})
+
+    def test_order_with_two_sizes(self):
+        self.client.force_login(self.customer)
+        self.add(self.small, 2)
+        self.add(self.large, 1)
+        cart = self.client.get(reverse("orders:cart"))
+        self.assertContains(cart, "14 x 18 cm")
+        order = self.order_for(self.customer, qty=0)
+        items = {item.product_name: (item.quantity, item.unit_price) for item in order.items.all()}
+        self.assertEqual(items, {"Παναγία Γλυκοφιλούσα – 14 x 18 cm": (2, Decimal("37.20")),
+                                 "Παναγία Γλυκοφιλούσα – 30 x 40 cm": (1, Decimal("124.00"))})
+
+    def test_business_pays_each_size_without_vat(self):
+        self.client.force_login(self.business)
+        self.add(self.large)
+        order = self.order_for(self.business, qty=0)
+        self.assertEqual(order.items.get().unit_price, Decimal("100.00"))
+
+    def test_removed_size_leaves_the_cart(self):
+        self.add(self.small)
+        self.small.delete()
+        self.assertNotContains(self.client.get(reverse("orders:cart")), "14 x 18 cm")

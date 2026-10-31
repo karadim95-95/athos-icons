@@ -1,0 +1,11 @@
+/* Product form: discount buttons and the size rows. */
+.discount-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; }
+.discount-buttons button { padding: 5px 10px; border-radius: 14px; border: 1px solid var(--hairline-color); background: var(--body-bg); color: var(--body-fg); cursor: pointer; font-weight: 600; }
+.discount-buttons button:hover { border-color: var(--button-bg); color: var(--button-bg); }
+.discount-preview { display: block; margin-top: 6px; font-weight: 600; color: var(--button-bg); }
+fieldset.sizes .form-row { padding-top: 6px; padding-bottom: 6px; }
+fieldset.sizes .form-multiline { flex-wrap: nowrap; align-items: center; }
+fieldset.sizes .fieldBox { margin-right: 24px; }
+fieldset.sizes .fieldBox:first-child { min-width: 150px; }
+fieldset.sizes .fieldBox label:not(.vCheckboxLabel) { width: auto; min-width: 0; padding-right: 8px; }
+fieldset.sizes input[type="number"] { width: 110px; }

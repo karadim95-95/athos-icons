@@ -5,6 +5,6 @@
 
 {{ link }}
 
-{% translate "The link works for 3 days. Until you confirm, you cannot send order requests. If you did not create this account, just ignore this email and it will be removed." %}
+{% translate "The link works for 24 hours. Until you confirm, you cannot send order requests. If you did not create this account, just ignore this email and it will be removed." %}
 
 {% include "emails/_signature.txt" %}{% endautoescape %}

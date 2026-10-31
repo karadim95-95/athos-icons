@@ -50,6 +50,11 @@ def set_order_status(order, status, note="", notify=True):
     return record_status(order, note, notify)
 
 
+def _item_name(line):
+    size = line.get("size")
+    return f"{line['product'].name} – {size.size}" if size else line["product"].name
+
+
 def create_order(user, lines, address, notes=""):
     """Turn the cart into an order request (status: Request received)."""
     site = SiteSettings.load()
@@ -64,7 +69,7 @@ def create_order(user, lines, address, notes=""):
             **{f: address.get(f, "") for f in ADDRESS_FIELDS},
         )
         OrderItem.objects.bulk_create([
-            OrderItem(order=order, product=line["product"], product_name=line["product"].name,
+            OrderItem(order=order, product=line["product"], product_name=_item_name(line),
                       quantity=line["quantity"], unit_price=line["price"].final)
             for line in lines
         ])

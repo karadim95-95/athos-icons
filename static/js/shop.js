@@ -31,6 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
     sync();
   }
 
+  // Product page: picking a size shows its price
+  document.querySelectorAll('input[name="size"][data-final]').forEach((radio) => {
+    radio.addEventListener("change", () => {
+      const final = document.querySelector("[data-price-final]");
+      const original = document.querySelector("[data-price-original]");
+      if (final) final.textContent = radio.dataset.final;
+      if (original) original.textContent = radio.dataset.original;
+    });
+  });
+
   // Sort dropdown submits itself
   document.querySelectorAll("[data-autosubmit]").forEach((el) => el.addEventListener("change", () => el.form.submit()));
 

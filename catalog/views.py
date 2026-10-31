@@ -2,7 +2,10 @@ from django.core.paginator import Paginator
 from django.db.models import DecimalField, ExpressionWrapper, F
 from django.shortcuts import get_object_or_404, render
 
+from core.models import SiteSettings
+
 from .models import Category, Product, normalize_search
+from .pricing import price_info
 
 SORTS = {
     "new": "-created_at",
@@ -50,4 +53,10 @@ def product_detail(request, slug):
         .prefetch_related("images")[:4]
         if product.category else []
     )
-    return render(request, "catalog/product_detail.html", {"product": product, "related": related})
+    site = SiteSettings.load()
+    sizes = [{"option": option, "price": price_info(product, request.user, site, option)}
+             for option in product.size_options]
+    return render(request, "catalog/product_detail.html", {
+        "product": product, "related": related, "sizes": sizes,
+        "p": sizes[0]["price"] if sizes else price_info(product, request.user, site),
+    })

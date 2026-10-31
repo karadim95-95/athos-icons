@@ -1,17 +1,13 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from orders import tracking
 
 
 class Command(BaseCommand):
-    help = "Ask the couriers (through 17TRACK) about shipped orders and mark them In transit / Delivered."
+    help = "Ask ACS and Geniki Taxydromiki about shipped orders and mark them In transit / Delivered."
 
     def handle(self, *args, **options):
         if not tracking.enabled():
-            self.stdout.write("Automatic tracking is off: set TRACKING_API_KEY to turn it on.")
+            self.stdout.write("Automatic tracking is off: set the ACS and/or Geniki Taxydromiki API details.")
             return
-        try:
-            moved = tracking.sync()
-        except tracking.TrackingError as error:
-            raise CommandError(f"17TRACK: {error}")
-        self.stdout.write(f"{moved} order(s) updated.")
+        self.stdout.write(f"{tracking.sync()} order(s) updated.")

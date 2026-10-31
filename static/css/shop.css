@@ -181,6 +181,15 @@ p { margin: 0 0 1em; }
 .price s { color: var(--ink-soft); font-size: .9rem; }
 .price .vat { font-size: .75rem; color: var(--ink-soft); }
 .price.big strong { font-size: 1.8rem; }
+.price .from { font-size: .8rem; color: var(--ink-soft); }
+.size-picker { border: 0; padding: 0; margin: 14px 0 4px; display: flex; flex-wrap: wrap; gap: 8px; }
+.size-picker legend { font-weight: 600; font-size: .9rem; margin-bottom: 8px; padding: 0; }
+.size-picker label { cursor: pointer; }
+.size-picker input { position: absolute; opacity: 0; pointer-events: none; }
+.size-picker span { display: flex; flex-direction: column; align-items: center; padding: 8px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font-weight: 600; font-size: .9rem; line-height: 1.3; }
+.size-picker small { font-weight: 500; color: var(--ink-soft); }
+.size-picker input:checked + span { border-color: var(--gold-deep); box-shadow: 0 0 0 2px var(--gold) inset; }
+.size-picker input:focus-visible + span { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
 
 /* ---------- Shop listing ---------- */
 .shop-layout { display: grid; grid-template-columns: 230px 1fr; gap: 36px; padding: 24px 0 64px; }

@@ -11,8 +11,13 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from PIL import Image, ImageColor, ImageDraw, ImageFilter
 
-from catalog.models import Category, Product, ProductImage
+from catalog.models import Category, Product, ProductImage, ProductSize, Size, money
 from core.models import Page, SiteSettings
+
+# Common icon sizes to start with; rename or delete them in the admin (Catalogue → Sizes).
+SIZES = ["14 x 18 cm", "20 x 26 cm", "25 x 35 cm", "30 x 40 cm"]
+# Demo products that come in several sizes: (size, share of the product's price).
+DEMO_SIZES = [("14 x 18 cm", Decimal("0.6")), ("20 x 26 cm", Decimal("1")), ("30 x 40 cm", Decimal("1.6"))]
 
 PAGES = [
     ("about", "Σχετικά με εμάς", "About us",
@@ -128,6 +133,8 @@ class Command(BaseCommand):
                                      "order": i, "show_in_footer": slug != "business"})
             if created:
                 self.stdout.write(f"Created page: {slug}")
+        if not Size.objects.exists():
+            Size.objects.bulk_create(Size(name=name, order=i) for i, name in enumerate(SIZES))
 
         if not options["demo"]:
             self.stdout.write(self.style.SUCCESS("Shop is set up. Run with --demo to add sample products."))
@@ -153,5 +160,12 @@ class Command(BaseCommand):
                 is_featured=i % 3 == 0, is_available=i != 9,
             )
             ProductImage.objects.create(product=product, image=draw_placeholder(color, i))
+            if i < 3:
+                for size_name, share in DEMO_SIZES:
+                    size, _created = Size.objects.get_or_create(name=size_name)
+                    ProductSize.objects.create(product=product, size=size, price=money(product.price * share))
+                product.price = min(option.price for option in product.sizes.all())
+                product.dimensions = ""
+                product.save()
             self.stdout.write(f"Created demo product: {name}")
         self.stdout.write(self.style.SUCCESS("Demo data added. Delete it from the admin before going live."))

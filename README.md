@@ -64,47 +64,64 @@ Locally, emails are printed in the terminal instead of being sent.
    cost and free-shipping threshold, homepage photo.
 2. **Pages:** replace the placeholder text of *About us*, *Shipping & payment*, *Terms*, *Privacy* and
    *For businesses*. The terms and privacy texts are placeholders and need real legal content.
-3. **Categories → Products:** delete the demo products and add yours. In a product, use *Add photos* to
+3. **Catalogue → Sizes:** the sizes you offer (four common ones are there to start with; rename, reorder or add).
+4. **Catalogue → Products:** delete the demo products and add yours. In a product, use *Add photos* to
    pick several photos at once, from your computer or straight from your phone. They are resized and rotated
-   automatically. Use the *Duplicate* action to quickly create another size of the same icon.
+   automatically.
 
 ### Prices
+
+Fill in the price **incl. or excl. VAT**: the other box is calculated as you type (and again when you save).
+
+**Sizes:** if an icon comes in several sizes, tick them in the product's *Sizes* section and give each its
+price (incl. or excl. VAT; empty = the main price). Customers then pick a size on the product page, cards show
+"from" the lowest price, and the size is written on the order. Icons in one size only just use *Dimensions*.
+
+**Discounts:** click one of the buttons under *Discount %* (−10% … −50%, or *no discount*); the form shows
+what customers will pay. For many products at once, select them in the product list and choose
+*Discount 10% / 20% / 30% / 50%* or *Remove discount* from the actions.
 
 | Field | Who sees it |
 |---|---|
 | Price incl. VAT | Individuals pay this. |
 | Discount % | Applies to everyone; shows a "−20%" badge and the old price struck through. |
-| Business price excl. VAT (optional) | Approved businesses pay this. If empty, they see the retail price minus VAT. |
+| Business price excl. VAT (optional) | Approved businesses pay this. If empty, they see the retail price minus VAT. Not used with sizes: businesses pay each size's price minus VAT. |
 
 For an EU business outside Greece with a valid VAT number, set the order's VAT rate to 0 before accepting
 (reverse charge).
 
-### Automatic parcel tracking
+### Automatic parcel tracking (ACS, Geniki Taxydromiki)
 
-Optional. When you mark an order *Shipped*, enter the **tracking number** and the courier's **tracking link**.
-Every 2 hours the shop asks the courier for news. It moves the order to *In transit* and then *Delivered*,
-emailing the customer each time. The customer also sees the courier's latest update on their order page.
+When you mark an order *Shipped*, choose the **courier** and enter the **tracking number** (the voucher number);
+the tracking link is filled in for you. For ACS and Geniki Taxydromiki the shop then asks the courier directly
+(when you save, then every 2 hours). It moves the order to *In transit* and *Delivered*, emailing the customer
+each time, and shows the courier's latest update on the order page.
 
-- Works with ACS, ELTA, ELTA Courier, Geniki Taxydromiki, Speedex, Courier Center, BOX NOW, DPD, DHL, UPS,
-  FedEx and many more. The courier is recognised from the tracking link, or guessed from the number.
-- If the courier reports a problem (failed delivery, lost parcel, no updates for a long time), **you** get an
+- If the courier reports a problem (failed delivery attempt, returned, lost or damaged parcel), **you** get an
   email and the order appears under "Shipments with a delivery problem" on the admin home page.
 - To check right away, select orders in the list and use the *Check the couriers now* action.
+- Other couriers: choose *Other* and paste the tracking link; you set *In transit* / *Delivered* by hand.
 
-It uses [17TRACK](https://www.17track.net), which follows all these couriers in one place. To turn it on:
+It uses each courier's own API for business customers (`orders/couriers/`), so you need a business contract
+with the courier. Put the details it gives you in `.env` and restart (`docker compose up -d`):
 
-1. Sign up at https://api.17track.net and copy your security key (API key).
-2. Put it in `.env` as `TRACKING_API_KEY=...` and restart (`docker compose up -d`).
+| Courier | What to ask for | Settings |
+|---|---|---|
+| **ACS** | Your account manager (or customer support): access to **ACS Web Services** (REST API) with rights to `ACS_Trackingsummary` and `ACS_TrackingDetails`. If they lock it to an IP address, give them your server's IP. | `ACS_API_KEY`, `ACS_COMPANY_ID`, `ACS_COMPANY_PASSWORD`, `ACS_USER_ID`, `ACS_USER_PASSWORD` |
+| **Geniki Taxydromiki** | Their sales department: access to the **JobServicesV2 web service** (user name, password, application key). They first give you a test user for `testvoucher.taxydromiki.gr`. | `GENIKI_USERNAME`, `GENIKI_PASSWORD`, `GENIKI_APP_KEY`, `GENIKI_TEST` (1 while using the test user) |
 
-New accounts get 200 tracking numbers free (one-time). After that it's a paid yearly plan; check
-17TRACK's current prices. Each parcel uses one number, however often it's checked. Without a key nothing
-changes: you set *In transit* and *Delivered* by hand.
+**Check the details** with a real voucher number from your account:
+`docker compose exec web python manage.py check_courier acs 7400123456` (or `geniki 4012345678`). It prints the
+parcel's stage, or the courier's error message (e.g. a wrong key).
 
-On your computer, run `python manage.py update_tracking` to check the couriers once.
+Only vouchers sent from your own account can be tracked. Note from Geniki's documentation: they give **live**
+credentials after you confirm that your system also creates, prints, cancels and finalises vouchers through
+their API, so ask them whether tracking-only access is possible, or have the shop create vouchers too.
 
 ### Accounts and bot protection
 
-- **Only customers with a confirmed email can order.** After signing up, the customer gets a link by email.
+- **Only customers with a confirmed email can order.** After signing up, the customer gets a link by email,
+  valid for 24 hours (they can ask for a new one from their account).
   Until they open it they can browse and fill the cart, but they cannot send order requests, custom requests or
   messages. You hear about new business accounts only after they confirm.
 - **Admin accounts cannot order.** When you browse the shop while logged in as admin, a red bar at the top says

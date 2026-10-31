@@ -177,9 +177,17 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 SHOP_NOTIFY_EMAIL = env("SHOP_NOTIFY_EMAIL", "")
 
 # --- Automatic parcel tracking -----------------------------------------------
-# API key from https://api.17track.net. Without it, you set "In transit" and
-# "Delivered" by hand in the admin.
-TRACKING_API_KEY = env("TRACKING_API_KEY", "")
+# API details from your courier contracts (orders/couriers/). Without them, you set
+# "In transit" and "Delivered" by hand in the admin.
+ACS_API_KEY = env("ACS_API_KEY", "")
+ACS_COMPANY_ID = env("ACS_COMPANY_ID", "")
+ACS_COMPANY_PASSWORD = env("ACS_COMPANY_PASSWORD", "")
+ACS_USER_ID = env("ACS_USER_ID", "")
+ACS_USER_PASSWORD = env("ACS_USER_PASSWORD", "")
+GENIKI_USERNAME = env("GENIKI_USERNAME", "")
+GENIKI_PASSWORD = env("GENIKI_PASSWORD", "")
+GENIKI_APP_KEY = env("GENIKI_APP_KEY", "")
+GENIKI_TEST = env_bool("GENIKI_TEST", False)  # use Geniki's test server and test user
 
 # --- Bot protection ----------------------------------------------------------
 # Optional Cloudflare Turnstile check on sign-up, contact and password reset
