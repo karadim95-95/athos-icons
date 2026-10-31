@@ -35,6 +35,9 @@ class Command(BaseCommand):
         site.bank_name = "Τράπεζα Πειραιώς (demo)"
         site.account_holder = "Athos Icons"
         site.iban = "GR16 0110 1250 0000 0001 2300 695"
+        site.facebook_url = "https://www.facebook.com/"
+        site.instagram_url = "https://www.instagram.com/"
+        site.youtube_url = "https://www.youtube.com/"
         site.save()
 
         admin = User.objects.create_superuser("admin@demo.gr", PASSWORD, first_name="Admin")

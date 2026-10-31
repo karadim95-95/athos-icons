@@ -25,18 +25,29 @@
       <h1>{{ product.local_name }}</h1>
       <div class="buy-box">
         {% include "partials/price.html" with big=1 %}
+        {% if groups %}<p class="config-summary" data-summary>{{ summary }}</p>{% endif %}
         {% if p.has_discount %}<p class="small" style="color:var(--wine);margin:6px 0 0">{% blocktranslate with d=product.discount_percent %}You save {{ d }}%{% endblocktranslate %}</p>{% endif %}
         {% if product.is_available %}
           <p class="stock in" style="margin:10px 0 0">● {% translate "Available to order" %}</p>
-          <form method="post" action="{% url 'orders:cart_add' product.pk %}">{% csrf_token %}
+          <form method="post" action="{% url 'orders:cart_add' product.pk %}" data-configurator>{% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path }}">
-            {% if sizes %}
-            <fieldset class="size-picker">
-              <legend>{% translate "Size" %}</legend>
-              {% for s in sizes %}
-              <label><input type="radio" name="size" value="{{ s.option.pk }}"{% if forloop.first %} checked{% endif %} data-final="{{ s.price.final|euro }}" data-original="{{ s.price.original|euro }}"><span>{{ s.option.size }}<small>{{ s.price.final|euro }}</small></span></label>
-              {% endfor %}
-            </fieldset>
+            {% if sizes or choices %}
+            <div class="configurator">
+              {% if choices %}{% include "partials/choice.html" with choice=choices.0 %}{% endif %}
+              {% if sizes %}
+              <fieldset class="choice">
+                <legend>{% translate "Dimensions" %} <span class="unit">({% translate "cm" %})</span></legend>
+                <div class="choice-grid">
+                  {% for s in sizes %}
+                  <label class="choice-tile"><input type="radio" name="size" value="{{ s.option.pk }}" data-label="{{ s.option.size }}"{% if forloop.first %} checked{% endif %}>
+                    <span class="tile">{{ s.option.size|short_size }}{% if not groups %}<small>{{ s.price.final|euro }}</small>{% endif %}</span></label>
+                  {% endfor %}
+                </div>
+              </fieldset>
+              {% endif %}
+              {% for choice in choices|slice:"1:" %}{% include "partials/choice.html" %}{% endfor %}
+            </div>
+            {% if price_table %}{{ price_table|json_script:"price-table" }}{% endif %}
             {% endif %}
             <div class="buy-row">
               <label class="visually-hidden" for="qty">{% translate "Quantity" %}</label>
@@ -51,13 +62,16 @@
         {% endif %}
       </div>
 
-      {% if sizes or product.dimensions or product.materials %}
+      {% with materials=product.materials.all techniques=product.techniques.all %}
+      {% if sizes or product.dimensions or materials or techniques %}
       <table class="specs">
         {% if sizes %}<tr><th>{% translate "Sizes" %}</th><td>{% for s in sizes %}{{ s.option.size }}{% if not forloop.last %} · {% endif %}{% endfor %}</td></tr>
         {% elif product.dimensions %}<tr><th>{% translate "Dimensions" %}</th><td>{{ product.dimensions }}</td></tr>{% endif %}
-        {% if product.materials %}<tr><th>{% translate "Materials / technique" %}</th><td>{{ product.materials }}</td></tr>{% endif %}
+        {% if techniques %}<tr><th>{% translate "Technique" %}</th><td>{% for t in techniques %}{{ t.local_name }}{% if not forloop.last %} · {% endif %}{% endfor %}</td></tr>{% endif %}
+        {% if materials %}<tr><th>{% translate "Materials" %}</th><td>{% for m in materials %}{{ m.local_name }}{% if not forloop.last %} · {% endif %}{% endfor %}</td></tr>{% endif %}
       </table>
       {% endif %}
+      {% endwith %}
       {% if product.local_description %}<div class="prose">{{ product.local_description|linebreaks }}</div>{% endif %}
       <div class="notice info small">{% translate "Would you like a different size or a variation of this icon?" %} <a href="{% url 'orders:custom_request' %}">{% translate "Send us a custom request" %}</a>.</div>
     </div>

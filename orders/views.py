@@ -32,12 +32,20 @@ def cart_add(request, product_id):
     if sizes and size is None:
         messages.error(request, _("Please choose a size."))
         return redirect(product)
+    options = []
+    for variation, group in product.option_groups:
+        option = {str(o.pk): o for o in group}.get(request.POST.get(f"option_{variation.pk}", ""))
+        if option is None:
+            messages.error(request, _("Please choose: %(choice)s.") % {"choice": variation.local_name})
+            return redirect(product)
+        options.append(option)
     try:
         quantity = max(1, int(request.POST.get("quantity", 1)))
     except ValueError:
         quantity = 1
-    Cart(request).add(Cart.key(product, size), quantity)
-    name = f"{product.local_name} – {size.size}" if size else product.local_name
+    Cart(request).add(Cart.key(product, size, options), quantity)
+    details = [*([str(size.size)] if size else []), *[o.local_name for o in options]]
+    name = f"{product.local_name} – {', '.join(details)}" if details else product.local_name
     messages.success(request, _("“%(name)s” was added to your cart.") % {"name": name})
     next_url = request.POST.get("next")
     if not url_has_allowed_host_and_scheme(next_url, {request.get_host()}, request.is_secure()):

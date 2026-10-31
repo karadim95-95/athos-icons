@@ -1,3 +1,4 @@
+import math
 import unicodedata
 from decimal import ROUND_HALF_UP, Decimal
 
@@ -74,7 +75,96 @@ class ProductQuerySet(models.QuerySet):
     def visible(self):
         return (self.filter(is_active=True)
                 .filter(models.Q(category__isnull=True) | models.Q(category__is_active=True))
-                .prefetch_related("sizes__size"))
+                .prefetch_related("sizes__size", "options__variation"))
+
+
+class Option(models.Model):
+    """An item of a list you choose from on each product (materials, techniques), in Greek and English."""
+
+    name = models.CharField(_("name (Greek)"), max_length=80, unique=True)
+    name_en = models.CharField(_("name (English)"), max_length=80, blank=True)
+    order = models.PositiveIntegerField(_("position"), default=0)
+
+    class Meta:
+        abstract = True
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def local_name(self):
+        return localized(self, "name")
+
+
+class Material(Option):
+    class Meta(Option.Meta):
+        verbose_name = _("material")
+        verbose_name_plural = _("materials")
+
+
+class Technique(Option):
+    class Meta(Option.Meta):
+        verbose_name = _("technique")
+        verbose_name_plural = _("techniques")
+
+
+class Variation(models.Model):
+    """Something customers choose on the product page, e.g. Type (flat or carved) or Shape."""
+
+    name = models.CharField(_("name (Greek)"), max_length=60, unique=True)
+    name_en = models.CharField(_("name (English)"), max_length=60, blank=True)
+    order = models.PositiveIntegerField(_("position"), default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+        verbose_name = _("customer choice")
+        verbose_name_plural = _("customer choices")
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def local_name(self):
+        return localized(self, "name")
+
+
+class VariationOption(models.Model):
+    """One of the options of a choice, e.g. "Carved", which can change the price by a percentage."""
+
+    variation = models.ForeignKey(Variation, verbose_name=_("customer choice"), related_name="options",
+                                  on_delete=models.CASCADE)
+    name = models.CharField(_("name (Greek)"), max_length=60)
+    name_en = models.CharField(_("name (English)"), max_length=60, blank=True)
+    price_change = models.DecimalField(
+        _("price change %"), max_digits=5, decimal_places=1, default=Decimal("0"),
+        validators=[MinValueValidator(-90), MaxValueValidator(500)],
+        help_text=_("e.g. 30 for 30% more than the size's price; 0 for the basic version."),
+    )
+    order = models.PositiveIntegerField(_("position"), default=0)
+
+    class Meta:
+        ordering = ["variation__order", "variation__id", "order", "id"]
+        constraints = [models.UniqueConstraint(fields=["variation", "name"], name="unique_option_name")]
+        verbose_name = _("option")
+        verbose_name_plural = _("options")
+
+    def __str__(self):
+        return f"{self.variation}: {self.name}"
+
+    @property
+    def local_name(self):
+        return localized(self, "name")
+
+    @property
+    def factor(self):
+        return 1 + Decimal(self.price_change) / 100
+
+    @property
+    def price_change_label(self):
+        """"+30%", "−10%", or "" for no change."""
+        change = Decimal(self.price_change).normalize()
+        return f"{change:+f}%".replace("-", "−") if change else ""
 
 
 class Size(models.Model):
@@ -104,7 +194,11 @@ class Product(models.Model):
     dimensions = models.CharField(_("dimensions"), max_length=100, blank=True,
                                   help_text=_("e.g. 20 x 26 cm. For icons that come in one size only; "
                                               "otherwise tick the sizes below."))
-    materials = models.CharField(_("materials / technique"), max_length=200, blank=True)
+    materials = models.ManyToManyField(Material, verbose_name=_("materials"), related_name="products", blank=True)
+    techniques = models.ManyToManyField(Technique, verbose_name=_("technique"), related_name="products",
+                                        blank=True)
+    options = models.ManyToManyField(VariationOption, verbose_name=_("customer choices"), related_name="products",
+                                     blank=True)
 
     price = models.DecimalField(
         _("price incl. VAT (€)"), max_digits=10, decimal_places=2, validators=[MinValueValidator(0)],
@@ -145,9 +239,11 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = unique_slug(self, self.name_en or self.name)
+        options = [o for o in [*self.materials.all(), *self.techniques.all()]] if self.pk else []
         self.search_text = normalize_search(" ".join([
-            self.name, self.name_en, self.description, self.description_en, self.materials,
+            self.name, self.name_en, self.description, self.description_en,
             self.category.name if self.category else "", self.category.name_en if self.category else "",
+            *[name for o in options for name in (o.name, o.name_en)],
         ]))
         super().save(*args, **kwargs)
 
@@ -171,24 +267,34 @@ class Product(models.Model):
     def size_options(self):
         return list(self.sizes.all())  # uses prefetch_related when present
 
+    @property
+    def option_groups(self):
+        """The choices customers make on this product: [(variation, [its options offered here])]."""
+        groups = {}
+        for option in self.options.all():  # uses prefetch_related when present
+            groups.setdefault(option.variation, []).append(option)
+        return sorted(groups.items(), key=lambda group: (group[0].order, group[0].pk))
+
     # --- Pricing -----------------------------------------------------------
     # Individuals: price includes VAT. Approved businesses: price excludes VAT.
-    # `size` is one of the product's ProductSize rows, for icons that come in several sizes.
+    # `size` is one of the product's ProductSize rows; `options` the customer's choices (e.g. carved, arched),
+    # each changing the price by its percentage.
     def _apply_discount(self, amount):
         if self.discount_percent:
             amount = amount * (100 - self.discount_percent) / 100
         return money(amount)
 
-    def base_price_for(self, business, vat_multiplier, size=None):
-        gross = size.price if size else self.price
+    def base_price_for(self, business, vat_multiplier, size=None, options=()):
+        factor = math.prod((option.factor for option in options), start=Decimal(1))
+        gross = (size.price if size else self.price) * factor
         if business:
             if size is None and self.business_price is not None:
-                return money(self.business_price)
+                return money(self.business_price * factor)
             return money(gross / vat_multiplier)
         return money(gross)
 
-    def price_for(self, business, vat_multiplier, size=None):
-        return self._apply_discount(self.base_price_for(business, vat_multiplier, size))
+    def price_for(self, business, vat_multiplier, size=None, options=()):
+        return self._apply_discount(self.base_price_for(business, vat_multiplier, size, options))
 
 
 class ProductSize(models.Model):

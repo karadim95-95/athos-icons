@@ -41,8 +41,12 @@ class SiteSettings(models.Model):
     phone = models.CharField(_("phone"), max_length=40, blank=True)
     address = models.CharField(_("address"), max_length=200, blank=True)
     business_hours = models.CharField(_("business hours"), max_length=100, blank=True)
-    facebook_url = models.URLField(blank=True)
-    instagram_url = models.URLField(blank=True)
+    facebook_url = models.URLField("Facebook", blank=True,
+                                   help_text=_("The full address of your page, e.g. https://www.facebook.com/athosicons"))
+    instagram_url = models.URLField("Instagram", blank=True)
+    tiktok_url = models.URLField("TikTok", blank=True)
+    youtube_url = models.URLField("YouTube", blank=True)
+    pinterest_url = models.URLField("Pinterest", blank=True)
 
     vat_rate = models.DecimalField(
         _("VAT rate %"), max_digits=4, decimal_places=2, default=Decimal("24.00"),
@@ -68,9 +72,18 @@ class SiteSettings(models.Model):
         _("days to pay"), default=5, help_text=_("Deadline mentioned in the payment email.")
     )
 
+    # Social media profiles, in the order their icons appear.
+    SOCIAL = [("facebook", "Facebook"), ("instagram", "Instagram"), ("tiktok", "TikTok"),
+              ("youtube", "YouTube"), ("pinterest", "Pinterest")]
+
     class Meta:
         verbose_name = _("shop settings")
         verbose_name_plural = _("shop settings")
+
+    @property
+    def social_links(self):
+        return [{"key": key, "name": name, "url": getattr(self, f"{key}_url")}
+                for key, name in self.SOCIAL if getattr(self, f"{key}_url")]
 
     def __str__(self):
         return str(_("Shop settings"))

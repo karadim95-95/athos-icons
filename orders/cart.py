@@ -1,14 +1,15 @@
 """
 A shopping cart kept in the visitor's session (no database rows needed).
 
-Each line is keyed "product id", or "product id:size id" for icons that come in several sizes.
+Each line is keyed "product id", plus ":size id" for icons that come in several sizes and
+":size id:option ids" when the customer chose options (carved, arched…).
 """
 
 import re
 from decimal import Decimal
 
 from catalog.models import Product, money
-from catalog.pricing import price_info
+from catalog.pricing import configuration_key, price_info
 
 MAX_QTY = 999
 
@@ -26,11 +27,13 @@ class Cart:
         self.session.modified = True
 
     @staticmethod
-    def key(product, size=None):
+    def key(product, size=None, options=()):
+        if options:
+            return f"{product.pk}:{configuration_key(size, options)}"
         return f"{product.pk}:{size.pk}" if size else str(product.pk)
 
     def set(self, key, quantity):
-        if not re.fullmatch(r"\d+(:\d+)?", str(key)):
+        if not re.fullmatch(r"\d+(:\d*(:\d+(\.\d+)*)?)?", str(key)):
             return
         quantity = max(0, min(int(quantity), MAX_QTY))
         if quantity:
@@ -58,7 +61,8 @@ class Cart:
         }
         lines, still_valid = [], {}
         for key, qty in self.data.items():
-            product_id, _, size_id = key.partition(":")
+            product_id, _, rest = key.partition(":")
+            size_id, _, option_ids = rest.partition(":")
             product = products.get(product_id)
             if product is None:
                 continue
@@ -66,12 +70,19 @@ class Cart:
             size = sizes.get(size_id)
             if (size_id and size is None) or (not size_id and sizes):
                 continue  # that size is no longer offered, or a size must be chosen
+            offered = {str(option.pk): option for option in product.options.all()}
+            options = [offered.get(i) for i in option_ids.split(".")] if option_ids else []
+            if None in options or sorted(o.variation_id for o in options) != sorted(
+                    variation.pk for variation, _group in product.option_groups):
+                continue  # an option is no longer offered, or a choice is missing
             still_valid[key] = qty
-            price = price_info(product, self.request.user, site, size)
+            price = price_info(product, self.request.user, site, size, options)
             lines.append({
                 "key": key,
                 "product": product,
                 "size": size,
+                "options": options,
+                "details": ", ".join([*([str(size.size)] if size else []), *[o.local_name for o in options]]),
                 "quantity": qty,
                 "price": price,
                 "line_total": money(price.final * qty),

@@ -1,0 +1,3 @@
+{% load i18n %}{% if shop.social_links %}<ul class="social{% if style %} social-{{ style }}{% endif %}">
+  {% for link in shop.social_links %}<li><a href="{{ link.url }}" target="_blank" rel="noopener" aria-label="{{ link.name }}" title="{{ link.name }}">{% include "partials/social_icon.html" with key=link.key %}{% if style == "big" %}<span>{{ link.name }}</span>{% endif %}</a></li>{% endfor %}
+</ul>{% endif %}

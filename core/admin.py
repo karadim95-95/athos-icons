@@ -10,8 +10,10 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     fieldsets = [
         (_("Shop"), {"fields": ["shop_name", ("tagline", "tagline_en"), ("announcement", "announcement_en"),
                                 "hero_image"]}),
-        (_("Contact"), {"fields": ["contact_email", "phone", "address", "business_hours",
-                                   "facebook_url", "instagram_url"]}),
+        (_("Contact"), {"fields": ["contact_email", "phone", "address", "business_hours"]}),
+        (_("Social media"), {"fields": ["facebook_url", "instagram_url", "tiktok_url", "youtube_url", "pinterest_url"],
+                             "description": _("Fill in the profiles you have: their icons appear at the top and "
+                                              "bottom of every page, on the homepage and on the contact page.")}),
         (_("Prices & shipping"), {"fields": ["vat_rate", "shipping_cost", "free_shipping_over"]}),
         (_("Bank transfer details (sent in the payment email)"), {
             "fields": ["bank_name", "account_holder", "iban", "bic", "extra_bank_accounts", "payment_days"]}),

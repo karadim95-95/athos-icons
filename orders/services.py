@@ -51,8 +51,8 @@ def set_order_status(order, status, note="", notify=True):
 
 
 def _item_name(line):
-    size = line.get("size")
-    return f"{line['product'].name} – {size.size}" if size else line["product"].name
+    details = [*([str(line["size"].size)] if line.get("size") else []), *[o.name for o in line.get("options", ())]]
+    return f"{line['product'].name} – {', '.join(details)}" if details else line["product"].name
 
 
 def create_order(user, lines, address, notes=""):

@@ -20,6 +20,7 @@
       {% if shop.contact_email %}<p><strong>Email:</strong> <a href="mailto:{{ shop.contact_email }}">{{ shop.contact_email }}</a></p>{% endif %}
       {% if shop.business_hours %}<p><strong>{% translate "Hours" %}:</strong> {{ shop.business_hours }}</p>{% endif %}
       {% if shop.address %}<p><strong>{% translate "Address" %}:</strong> {{ shop.address }}</p>{% endif %}
+      {% if shop.social_links %}<p style="margin-bottom:8px"><strong>{% translate "Follow us" %}:</strong></p>{% include "partials/social.html" with style="round" %}{% endif %}
       <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
       <p class="muted">{% translate "Looking for a specific icon that is not in the shop?" %}</p>
       <a class="btn btn-ghost" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a>

@@ -61,10 +61,15 @@ Locally, emails are printed in the terminal instead of being sent.
 ## First things to do in the admin
 
 1. **Shop settings:** shop name, contact email, phone, **bank details (IBAN)**, VAT rate (24%), default shipping
-   cost and free-shipping threshold, homepage photo.
+   cost and free-shipping threshold, homepage photo, and your **social media** profiles (Facebook, Instagram,
+   TikTok, YouTube, Pinterest). Each profile you fill in gets an icon at the top and bottom of every page, a button
+   in the "Follow us" section of the homepage, and an icon on the contact page.
 2. **Pages:** replace the placeholder text of *About us*, *Shipping & payment*, *Terms*, *Privacy* and
    *For businesses*. The terms and privacy texts are placeholders and need real legal content.
-3. **Catalogue → Sizes:** the sizes you offer (four common ones are there to start with; rename, reorder or add).
+3. **Catalogue → Sizes, Materials, Techniques:** the lists you pick from on each product, in Greek and English.
+   Common ones are there to start with; rename, reorder, add or delete them. On a product you just click the
+   materials and techniques that apply (the green + adds a new one on the spot); the product page shows them in
+   the visitor's language, and the shop search finds products by them.
 4. **Catalogue → Products:** delete the demo products and add yours. In a product, use *Add photos* to
    pick several photos at once, from your computer or straight from your phone. They are resized and rotated
    automatically.
@@ -76,6 +81,13 @@ Fill in the price **incl. or excl. VAT**: the other box is calculated as you typ
 **Sizes:** if an icon comes in several sizes, tick them in the product's *Sizes* section and give each its
 price (incl. or excl. VAT; empty = the main price). Customers then pick a size on the product page, cards show
 "from" the lowest price, and the size is written on the order. Icons in one size only just use *Dimensions*.
+
+**Customer choices (type, shape…):** under *Catalogue → Customer choices* you keep what customers can pick on the
+product page, e.g. *Type: Flat / Carved* and *Shape: Rectangular / Arched / Oval*, each option with a **price change %**
+(e.g. Carved +30%). On a product, click the options it offers in *Customer choices*. Customers then pick size, type
+and shape with buttons and see the price of exactly that combination (size price × the options' percentages, then
+any discount); the cart and the order show the full combination, e.g. "20 x 26 cm, Carved, Arched". The first
+option of each choice is pre-selected, so put the basic version first.
 
 **Discounts:** click one of the buttons under *Discount %* (−10% … −50%, or *no discount*); the form shows
 what customers will pay. For many products at once, select them in the product list and choose

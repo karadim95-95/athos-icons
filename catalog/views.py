@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from core.models import SiteSettings
 
 from .models import Category, Product, normalize_search
-from .pricing import price_info
+from .pricing import price_info, price_table
 
 SORTS = {
     "new": "-created_at",
@@ -54,9 +54,21 @@ def product_detail(request, slug):
         if product.category else []
     )
     site = SiteSettings.load()
+    groups = product.option_groups
     sizes = [{"option": option, "price": price_info(product, request.user, site, option)}
              for option in product.size_options]
+    preselected = [group[0] for _variation, group in groups]  # the first option of each choice
+    first_size = sizes[0]["option"] if sizes else None
+    # Every option of each choice: the ones this icon is not made in are shown greyed out.
+    choices = [{"variation": variation, "selected": group[0].pk,
+                "options": [(option, option in group) for option in variation.options.all()]}
+               for variation, group in groups]
+    # Shown in this order: the first choice (surface), the dimensions, then the other choices.
+    summary = [o.local_name for o in preselected[:1]] + ([str(first_size.size)] if first_size else []) + \
+        [o.local_name for o in preselected[1:]]
     return render(request, "catalog/product_detail.html", {
-        "product": product, "related": related, "sizes": sizes,
-        "p": sizes[0]["price"] if sizes else price_info(product, request.user, site),
+        "product": product, "related": related, "sizes": sizes, "groups": groups, "choices": choices,
+        "summary": " · ".join(summary),
+        "p": price_info(product, request.user, site, first_size, preselected),
+        "price_table": price_table(product, request.user, site) if groups or sizes else None,
     })

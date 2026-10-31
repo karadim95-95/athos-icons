@@ -3,6 +3,13 @@
 .discount-buttons button { padding: 5px 10px; border-radius: 14px; border: 1px solid var(--hairline-color); background: var(--body-bg); color: var(--body-fg); cursor: pointer; font-weight: 600; }
 .discount-buttons button:hover { border-color: var(--button-bg); color: var(--button-bg); }
 .discount-preview { display: block; margin-top: 6px; font-weight: 600; color: var(--button-bg); }
+/* Materials, techniques and customer choices: chips you click on and off. */
+#id_materials, #id_techniques, #id_options > div > div { display: flex; flex-wrap: wrap; gap: 6px; max-width: 760px; }
+#id_materials > div, #id_techniques > div, #id_options > div > div > div { margin: 0; }
+#id_options > div { margin: 0 0 12px; }
+#id_options > div > label { display: block; font-weight: 700; margin: 0 0 6px; padding: 0; }
+#id_materials label, #id_techniques label, #id_options label:has(input) { display: inline-flex; align-items: center; gap: 6px; width: auto; padding: 5px 12px; border: 1px solid var(--hairline-color); border-radius: 16px; background: var(--body-bg); color: var(--body-fg); font-weight: 600; cursor: pointer; }
+#id_materials label:has(input:checked), #id_techniques label:has(input:checked), #id_options label:has(input:checked) { border-color: var(--button-bg); background: var(--selected-row); color: var(--button-bg); }
 fieldset.sizes .form-row { padding-top: 6px; padding-bottom: 6px; }
 fieldset.sizes .form-multiline { flex-wrap: nowrap; align-items: center; }
 fieldset.sizes .fieldBox { margin-right: 24px; }

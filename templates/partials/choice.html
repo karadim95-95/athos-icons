@@ -1,0 +1,9 @@
+<fieldset class="choice">
+  <legend>{{ choice.variation.local_name }}</legend>
+  <div class="choice-grid">
+    {% for option, offered in choice.options %}
+    <label class="choice-tile"><input type="radio" name="option_{{ choice.variation.pk }}" value="{{ option.pk }}" data-label="{{ option.local_name }}"{% if option.pk == choice.selected %} checked{% endif %}{% if not offered %} disabled{% endif %}>
+      <span class="tile">{{ option.local_name }}</span></label>
+    {% endfor %}
+  </div>
+</fieldset>

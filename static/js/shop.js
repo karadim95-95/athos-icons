@@ -31,15 +31,29 @@ document.addEventListener("DOMContentLoaded", () => {
     sync();
   }
 
-  // Product page: picking a size shows its price
-  document.querySelectorAll('input[name="size"][data-final]').forEach((radio) => {
-    radio.addEventListener("change", () => {
+  // Product page: the price of the size and options the customer picks (all prices come from the shop).
+  const configurator = document.querySelector("[data-configurator]");
+  const priceTable = document.getElementById("price-table");
+  if (configurator && priceTable) {
+    const prices = JSON.parse(priceTable.textContent);
+    const keyOf = (size, options) => `${size}:${Object.values(options).sort().join(".")}`;
+    const update = () => {
+      const size = configurator.querySelector('input[name="size"]:checked')?.value || "";
+      const options = {};
+      configurator.querySelectorAll('input[name^="option_"]:checked').forEach((i) => { options[i.name] = i.value; });
+      const now = prices[keyOf(size, options)];
+      if (!now) return;
       const final = document.querySelector("[data-price-final]");
       const original = document.querySelector("[data-price-original]");
-      if (final) final.textContent = radio.dataset.final;
-      if (original) original.textContent = radio.dataset.original;
-    });
-  });
+      if (final) final.textContent = now.final;
+      if (original) original.textContent = now.original;
+
+      const summary = document.querySelector("[data-summary]");
+      if (summary) summary.textContent = [...configurator.querySelectorAll("input:checked")].map((i) => i.dataset.label).join(" · ");
+    };
+    configurator.addEventListener("change", update);
+    update();
+  }
 
   // Sort dropdown submits itself
   document.querySelectorAll("[data-autosubmit]").forEach((el) => el.addEventListener("change", () => el.form.submit()));

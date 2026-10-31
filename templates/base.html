@@ -8,7 +8,7 @@
   <meta property="og:site_name" content="{{ shop.shop_name }}">
   <meta property="og:title" content="{% block og_title %}{{ shop.shop_name }}{% endblock %}">
   {% block og_extra %}{% endblock %}
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%23262c32'/%3E%3Cpath d='M20 6v28M16 10h8M12 16h16M15 27l10-3' stroke='%23e2c47f' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%235a111b'/%3E%3Cpath d='M20 6v28M16 10h8M12 16h16M15 27l10-3' stroke='%23e8c873' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="preload" href="{% static 'fonts/eb-garamond-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{% static 'css/shop.css' %}">
   <script src="{% static 'js/shop.js' %}" defer></script>
@@ -29,12 +29,15 @@
 <div class="topbar">
   <div class="wrap">
     <span class="announce">{{ shop.local_announcement|default:shop.local_tagline }}</span>
+    <div class="topbar-end">
+    {% include "partials/social.html" with style="small" %}
     <form class="lang-switch" action="{% url 'set_language' %}" method="post">{% csrf_token %}
       <input type="hidden" name="next" value="{{ request.get_full_path }}">
       <button name="language" value="el" {% if LANG == "el" %}aria-current="true"{% endif %}>ΕΛ</button>
       <span aria-hidden="true">·</span>
       <button name="language" value="en" {% if LANG == "en" %}aria-current="true"{% endif %}>EN</button>
     </form>
+    </div>
   </div>
 </div>
 
@@ -97,6 +100,7 @@
     <div>
       <a class="logo" href="{% url 'core:home' %}">{% include "partials/logo_mark.html" %}<span class="logo-text">{{ shop.shop_name }}</span></a>
       <p>{{ shop.local_tagline }}</p>
+      {% if shop.social_links %}<h4 class="follow">{% translate "Follow us" %}</h4>{% include "partials/social.html" %}{% endif %}
     </div>
     <div>
       <h4>{% translate "Shop" %}</h4>
@@ -121,8 +125,6 @@
         {% if shop.contact_email %}<li><a href="mailto:{{ shop.contact_email }}">{{ shop.contact_email }}</a></li>{% endif %}
         {% if shop.business_hours %}<li>{{ shop.business_hours }}</li>{% endif %}
         {% if shop.address %}<li>{{ shop.address }}</li>{% endif %}
-        {% if shop.facebook_url %}<li><a href="{{ shop.facebook_url }}" rel="noopener">Facebook</a></li>{% endif %}
-        {% if shop.instagram_url %}<li><a href="{{ shop.instagram_url }}" rel="noopener">Instagram</a></li>{% endif %}
         <li><a href="{% url 'core:contact' %}">{% translate "Contact form" %}</a></li>
       </ul>
     </div>

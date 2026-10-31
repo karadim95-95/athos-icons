@@ -96,4 +96,14 @@
     </div>
   </div>
 </section>
+
+{% if shop.social_links %}
+<section class="section follow-us" style="padding-top:0">
+  <div class="wrap center">
+    <div class="section-head centered"><span class="ornament">✠</span><h2>{% translate "Follow us" %}</h2></div>
+    <p class="muted">{% translate "New icons, works in progress and the stories behind them, first on our social media." %}</p>
+    {% include "partials/social.html" with style="big" %}
+  </div>
+</section>
+{% endif %}
 {% endblock %}

@@ -11,11 +11,25 @@ from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 from PIL import Image, ImageColor, ImageDraw, ImageFilter
 
-from catalog.models import Category, Product, ProductImage, ProductSize, Size, money
+from catalog.models import (Category, Material, Product, ProductImage, ProductSize, Size, Technique, Variation,
+                            VariationOption, money)
 from core.models import Page, SiteSettings
 
 # Common icon sizes to start with; rename or delete them in the admin (Catalogue → Sizes).
 SIZES = ["14 x 18 cm", "20 x 26 cm", "25 x 35 cm", "30 x 40 cm"]
+# Materials and techniques to start with (Greek, English); edit them in the admin (Catalogue).
+MATERIALS = [("Ξύλο", "Wood"), ("Φύλλο χρυσού 22 καρατίων", "22-carat gold leaf"), ("Φύλλο ασημιού", "Silver leaf"),
+             ("Καμβάς", "Canvas"), ("Ασήμι 925", "Sterling silver 925"), ("Επάργυρο", "Silver-plated"),
+             ("Επίχρυσο", "Gold-plated")]
+TECHNIQUES = [("Βυζαντινή", "Byzantine"), ("Κρητική σχολή", "Cretan school"), ("Ρωσική", "Russian"),
+              ("Αυγοτέμπερα (χειροποίητη)", "Egg tempera (hand-painted)"), ("Ακρυλικά", "Acrylics"),
+              ("Ξυλόγλυπτη", "Carved wood"), ("Εκτύπωση σε ξύλο", "Print on wood"), ("Ψηφιδωτό", "Mosaic")]
+# Choices customers make on the product page: (Greek, English, [(option, option in English, price change %)]).
+# The percentages are examples; set your own in the admin (Catalogue → Customer choices).
+VARIATIONS = [
+    ("Επιφάνεια", "Surface", [("Επίπεδη", "Flat", 0), ("Σκαφτή", "Carved (recessed)", 30)]),
+    ("Σχήμα", "Shape", [("Ορθογώνια", "Rectangular", 0), ("Θολωτή", "Arched", 10), ("Οβάλ", "Oval", 15)]),
+]
 # Demo products that come in several sizes: (size, share of the product's price).
 DEMO_SIZES = [("14 x 18 cm", Decimal("0.6")), ("20 x 26 cm", Decimal("1")), ("30 x 40 cm", Decimal("1.6"))]
 
@@ -135,6 +149,15 @@ class Command(BaseCommand):
                 self.stdout.write(f"Created page: {slug}")
         if not Size.objects.exists():
             Size.objects.bulk_create(Size(name=name, order=i) for i, name in enumerate(SIZES))
+        for model, items in [(Material, MATERIALS), (Technique, TECHNIQUES)]:
+            if not model.objects.exists():
+                model.objects.bulk_create(model(name=n, name_en=e, order=i) for i, (n, e) in enumerate(items))
+        if not Variation.objects.exists():
+            for i, (name, name_en, choices) in enumerate(VARIATIONS):
+                variation = Variation.objects.create(name=name, name_en=name_en, order=i)
+                VariationOption.objects.bulk_create(
+                    VariationOption(variation=variation, name=n, name_en=e, price_change=change, order=j)
+                    for j, (n, e, change) in enumerate(choices))
 
         if not options["demo"]:
             self.stdout.write(self.style.SUCCESS("Shop is set up. Run with --demo to add sample products."))
@@ -149,23 +172,35 @@ class Command(BaseCommand):
             categories.append((cat, color))
 
         for i, (name, name_en, ci, price, discount, dims) in enumerate(PRODUCTS):
-            if Product.objects.filter(name=name).exists():
+            existing = Product.objects.filter(name=name).first()
+            if existing:
+                self.configure_demo(existing)  # demo products made before sizes and choices existed
                 continue
             cat, color = categories[ci]
             product = Product.objects.create(
                 name=name, name_en=name_en, category=cat, price=Decimal(price), discount_percent=discount,
-                dimensions=dims, materials="Ξύλο, φύλλο χρυσού / Wood, gold leaf",
+                dimensions=dims,
                 description=f"Δείγμα προϊόντος: {name}. Αντικαταστήστε με τη δική σας περιγραφή.",
                 description_en=f"Demo product: {name_en}. Replace with your own description.",
                 is_featured=i % 3 == 0, is_available=i != 9,
             )
             ProductImage.objects.create(product=product, image=draw_placeholder(color, i))
-            if i < 3:
-                for size_name, share in DEMO_SIZES:
-                    size, _created = Size.objects.get_or_create(name=size_name)
-                    ProductSize.objects.create(product=product, size=size, price=money(product.price * share))
-                product.price = min(option.price for option in product.sizes.all())
-                product.dimensions = ""
-                product.save()
+            product.materials.set(Material.objects.filter(name__in=["Ξύλο", "Φύλλο χρυσού 22 καρατίων"]))
+            product.techniques.set(Technique.objects.filter(
+                name__in=["Βυζαντινή" if i % 2 else "Κρητική σχολή", "Αυγοτέμπερα (χειροποίητη)"]))
+            product.save(update_fields=["search_text"])
+            self.configure_demo(product)
             self.stdout.write(f"Created demo product: {name}")
         self.stdout.write(self.style.SUCCESS("Demo data added. Delete it from the admin before going live."))
+
+    def configure_demo(self, product):
+        """Give a demo product three sizes and every customer choice, unless it already has some."""
+        if product.sizes.exists() or product.options.exists():
+            return
+        for size_name, share in DEMO_SIZES:
+            size, _created = Size.objects.get_or_create(name=size_name)
+            ProductSize.objects.create(product=product, size=size, price=money(product.price * share))
+        product.options.set(VariationOption.objects.all())
+        product.price = min(option.price for option in product.sizes.all())
+        product.dimensions = ""
+        product.save()

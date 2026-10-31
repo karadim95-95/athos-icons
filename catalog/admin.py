@@ -11,7 +11,8 @@ from core.forms import MultipleImageField
 from core.models import SiteSettings
 from core.templatetags.shop import euro
 
-from .models import Category, Product, ProductImage, ProductSize, Size, money
+from .models import (Category, Material, Product, ProductImage, ProductSize, Size, Technique, Variation,
+                     VariationOption, money)
 
 DISCOUNT_BUTTONS = [10, 15, 20, 25, 30, 40, 50]
 
@@ -54,6 +55,30 @@ class ProductImageInline(admin.TabularInline):
         return preview(obj.thumb_url if obj.pk else None, 90)
 
 
+@admin.register(Material, Technique)
+class OptionAdmin(admin.ModelAdmin):
+    list_display = ["name", "name_en", "order"]
+    list_editable = ["name_en", "order"]
+    search_fields = ["name", "name_en"]
+
+
+class VariationOptionInline(admin.TabularInline):
+    model = VariationOption
+    extra = 1
+    fields = ["name", "name_en", "price_change", "order"]
+
+
+@admin.register(Variation)
+class VariationAdmin(admin.ModelAdmin):
+    list_display = ["name", "name_en", "option_list", "order"]
+    list_editable = ["order"]
+    inlines = [VariationOptionInline]
+
+    @admin.display(description=_("options"))
+    def option_list(self, obj):
+        return ", ".join(f"{o.name} ({o.price_change_label})" if o.price_change else o.name for o in obj.options.all())
+
+
 @admin.register(Size)
 class SizeAdmin(admin.ModelAdmin):
     list_display = ["name", "order"]
@@ -80,11 +105,28 @@ class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = "__all__"
+        widgets = {"materials": forms.CheckboxSelectMultiple, "techniques": forms.CheckboxSelectMultiple,
+                   "options": forms.CheckboxSelectMultiple}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.vat = SiteSettings.load().vat_multiplier
         self.fields["price"].required = False
+        for name, model in [("materials", Material), ("techniques", Technique)]:
+            self.fields[name].help_text = format_html(
+                '{} <a href="{}">{}</a>', _("Click the ones that apply."),
+                reverse(f"admin:catalog_{model._meta.model_name}_changelist"), _("Add or rename"))
+        # Options grouped by choice, each showing how it changes the price.
+        groups = {}
+        for option in VariationOption.objects.select_related("variation"):
+            label = f"{option.name} ({option.price_change_label})" if option.price_change else option.name
+            groups.setdefault(option.variation.name, []).append((option.pk, label))
+        self.fields["options"].choices = list(groups.items())
+        self.fields["options"].help_text = format_html(
+            '{} <a href="{}">{}</a>',
+            _("Click what customers can choose on this icon; the first option of each choice is pre-selected. "
+              "The percentage is added to the size's price."),
+            reverse("admin:catalog_variation_changelist"), _("Add or change the choices and percentages"))
         if self.instance.pk:
             self.fields["price_net"].initial = money(self.instance.price / self.vat)
         self.fields["discount_percent"].help_text = format_html(
@@ -140,17 +182,18 @@ class ProductAdmin(admin.ModelAdmin):
                     "business_price", "is_active", "is_available", "is_featured"]
     list_display_links = ["picture", "name"]
     list_editable = ["price", "discount_percent", "is_active", "is_available", "is_featured"]
-    list_filter = ["category", "is_active", "is_available", "is_featured"]
+    list_filter = ["category", "materials", "techniques", "is_active", "is_available", "is_featured"]
     search_fields = ["name", "name_en", "description"]
     list_per_page = 50
     actions = ["duplicate", *[f"discount_{d}" for d in (10, 20, 30, 50)], "remove_discount",
                "mark_unavailable", "mark_available"]
     fieldsets = [
-        (None, {"fields": ["name", "name_en", "category", "description", "description_en",
-                           ("dimensions", "materials")]}),
+        (None, {"fields": ["name", "name_en", "category", "description", "description_en", "dimensions",
+                           "materials", "techniques"]}),
         (_("Price"), {"fields": [("price", "price_net"), "discount_percent", "business_price"],
                       "description": _("Fill in the price incl. or excl. VAT: the other is calculated. Individuals "
                                        "pay the price incl. VAT; approved businesses see prices excl. VAT.")}),
+        (_("Customer choices"), {"fields": ["options"]}),
         (_("Photos"), {"fields": ["new_images"]}),
         (_("Visibility"), {"fields": [("is_active", "is_available", "is_featured"), "slug"]}),
     ]
@@ -212,6 +255,7 @@ class ProductAdmin(admin.ModelAdmin):
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
         product = form.instance
+        product.save(update_fields=["search_text"])  # now that the materials and techniques are saved
         for size, price in form.chosen_sizes.items():
             ProductSize.objects.update_or_create(product=product, size=size, defaults={"price": price})
         product.sizes.exclude(size__in=list(form.chosen_sizes)).delete()
@@ -222,11 +266,18 @@ class ProductAdmin(admin.ModelAdmin):
     @admin.action(description=_("Duplicate"))
     def duplicate(self, request, queryset):
         for product in queryset:
+            materials, techniques = list(product.materials.all()), list(product.techniques.all())
+            options = list(product.options.all())
+            sizes = list(product.sizes.all())
             product.pk = None
             product.slug = ""
             product.name = f"{product.name} ({_('copy')})"
             product.is_active = False
             product.save()
+            product.materials.set(materials)
+            product.techniques.set(techniques)
+            product.options.set(options)
+            ProductSize.objects.bulk_create(ProductSize(product=product, size=s.size, price=s.price) for s in sizes)
         self.message_user(request, _("Copies created as hidden products. Edit them, add photos and make them visible."),
                           messages.SUCCESS)
 

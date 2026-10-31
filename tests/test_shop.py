@@ -23,7 +23,9 @@ from PIL import Image
 from accounts import vat
 from accounts.models import User
 from accounts.tokens import email_verification_token
-from catalog.models import Category, Product, ProductImage, ProductSize, Size
+from catalog.models import (Category, Material, Product, ProductImage, ProductSize, Size, Technique, Variation,
+                            VariationOption)
+from catalog.pricing import price_info
 from core import antispam
 from core.models import SiteSettings
 from orders import services, tracking
@@ -1054,3 +1056,160 @@ class ReceiptTests(ShopTestCase):
         self.assertEqual(response.status_code, 200)  # the form comes back with an error
         order.refresh_from_db()
         self.assertFalse(order.invoice)
+
+
+class MaterialTechniqueTests(ShopTestCase):
+    """Materials and techniques are picked from lists you keep in the admin."""
+
+    def setUp(self):
+        super().setUp()
+        self.wood = Material.objects.create(name="Ξύλο", name_en="Wood")
+        self.gold = Material.objects.create(name="Φύλλο χρυσού", name_en="Gold leaf")
+        self.byzantine = Technique.objects.create(name="Βυζαντινή", name_en="Byzantine")
+        self.client.force_login(self.owner)
+
+    def save_product(self, **fields):
+        data = {"name": "Άγιος Νικόλαος", "price": "40.00", "discount_percent": "0", "is_active": "on",
+                "is_available": "on", "images-TOTAL_FORMS": "0", "images-INITIAL_FORMS": "0",
+                "images-MIN_NUM_FORMS": "0", "images-MAX_NUM_FORMS": "1000", **fields}
+        return self.client.post(reverse("admin:catalog_product_add"), data)
+
+    def test_click_materials_and_techniques(self):
+        page = self.client.get(reverse("admin:catalog_product_add"))
+        self.assertContains(page, 'type="checkbox" name="materials"')
+        self.assertContains(page, 'type="checkbox" name="techniques"')
+        self.save_product(materials=[self.wood.pk, self.gold.pk], techniques=[self.byzantine.pk])
+        product = Product.objects.get(name="Άγιος Νικόλαος")
+        self.assertEqual(set(product.materials.all()), {self.wood, self.gold})
+        self.assertEqual(list(product.techniques.all()), [self.byzantine])
+
+        self.client.logout()
+        page = self.client.get(product.get_absolute_url())  # English page
+        self.assertContains(page, "Byzantine")
+        self.assertContains(page, "Wood · Gold leaf")
+        found = self.client.get(reverse("catalog:products") + "?q=βυζαντινη")  # no accent, lower case
+        self.assertContains(found, "Άγιος Νικόλαος")
+
+    def test_duplicate_keeps_materials_techniques_and_sizes(self):
+        self.product.materials.set([self.wood])
+        self.product.techniques.set([self.byzantine])
+        size = Size.objects.create(name="20 x 26 cm")
+        ProductSize.objects.create(product=self.product, size=size, price=Decimal("62.00"))
+        self.client.post(reverse("admin:catalog_product_changelist"),
+                         {"action": "duplicate", "_selected_action": [self.product.pk]})
+        copy = Product.objects.exclude(pk=self.product.pk).get(name__startswith=self.product.name)
+        self.assertEqual(list(copy.materials.all()), [self.wood])
+        self.assertEqual(list(copy.techniques.all()), [self.byzantine])
+        self.assertEqual([(o.size, o.price) for o in copy.sizes.all()], [(size, Decimal("62.00"))])
+
+    def test_starter_lists(self):
+        Material.objects.all().delete()
+        Technique.objects.all().delete()
+        call_command("setup_shop", stdout=StringIO())
+        self.assertTrue(Technique.objects.filter(name="Βυζαντινή", name_en="Byzantine").exists())
+        self.assertTrue(Material.objects.filter(name="Ξύλο").exists())
+
+
+class SocialMediaTests(ShopTestCase):
+    def test_icons_appear_for_the_profiles_you_fill_in(self):
+        self.assertNotContains(self.client.get(reverse("core:home")), 'class="social')
+        site = SiteSettings.load()
+        site.instagram_url = "https://www.instagram.com/athosicons"
+        site.tiktok_url = "https://www.tiktok.com/@athosicons"
+        site.save()
+        home = self.client.get(reverse("core:home"))
+        self.assertContains(home, 'href="https://www.instagram.com/athosicons"', count=3)  # top bar, footer, homepage
+        self.assertContains(home, 'aria-label="TikTok"', count=3)
+        self.assertNotContains(home, 'aria-label="Facebook"')
+        self.assertContains(home, "Follow us")
+        self.assertContains(self.client.get(reverse("core:contact")), 'href="https://www.tiktok.com/@athosicons"',
+                            count=3)
+
+
+class ConfiguratorTests(ShopTestCase):
+    """Customers pick size, type (flat / carved) and shape; each option changes the price by its percentage."""
+
+    def setUp(self):
+        super().setUp()
+        self.small = ProductSize.objects.create(product=self.product, size=Size.objects.create(name="14 x 18 cm"),
+                                                price=Decimal("37.20"))
+        self.large = ProductSize.objects.create(product=self.product, size=Size.objects.create(name="30 x 40 cm"),
+                                                price=Decimal("124.00"))
+        kind = Variation.objects.create(name="Τύπος", name_en="Type", order=0)
+        shape = Variation.objects.create(name="Σχήμα", name_en="Shape", order=1)
+        self.flat = VariationOption.objects.create(variation=kind, name="Επίπεδη", name_en="Flat", order=0)
+        self.carved = VariationOption.objects.create(variation=kind, name="Σκαφτή", name_en="Carved",
+                                                     price_change=30, order=1)
+        self.rectangular = VariationOption.objects.create(variation=shape, name="Ορθογώνια", name_en="Rectangular")
+        self.arched = VariationOption.objects.create(variation=shape, name="Θολωτή", name_en="Arched",
+                                                     price_change=10, order=1)
+        self.product.options.set([self.flat, self.carved, self.rectangular, self.arched])
+        self.kind, self.shape = kind, shape
+
+    def add(self, size, *options, qty=1):
+        data = {"quantity": qty, "size": size.pk, **{f"option_{o.variation_id}": o.pk for o in options}}
+        return self.client.post(reverse("orders:cart_add", args=[self.product.pk]), data, follow=True)
+
+    def test_price_of_a_configuration(self):
+        price = price_info(self.product, self.customer, size=self.large, options=[self.carved, self.arched])
+        self.assertEqual(price.final, Decimal("177.32"))  # 124 × 1.30 × 1.10
+        business = price_info(self.product, self.business, size=self.large, options=[self.carved, self.arched])
+        self.assertEqual(business.final, Decimal("143.00"))  # the same without VAT
+        self.product.discount_percent = 20
+        self.assertEqual(price_info(self.product, self.customer, size=self.large,
+                                    options=[self.carved, self.arched]).final, Decimal("141.86"))
+
+    def test_product_page_offers_the_choices(self):
+        page = self.client.get(self.product.get_absolute_url())
+        self.assertContains(page, f'name="option_{self.kind.pk}"')
+        self.assertContains(page, f'name="option_{self.shape.pk}"')
+        self.assertContains(page, "Carved")
+        self.assertContains(page, "37.20")  # pre-selected: smallest size, flat, rectangular
+        table = json.loads(re.search(r'<script id="price-table" type="application/json">(.*?)</script>',
+                                     page.content.decode()).group(1))
+        key = f"{self.large.pk}:{'.'.join(sorted([str(self.carved.pk), str(self.arched.pk)]))}"
+        self.assertEqual(table[key]["final"], "177.32 €")
+        self.assertEqual(len(table), 2 * 2 * 2)  # sizes × types × shapes
+        listing = self.client.get(reverse("catalog:products"))
+        self.assertContains(listing, "from")
+        self.assertContains(listing, "37.20")
+
+    def test_options_this_icon_is_not_made_in_are_greyed_out(self):
+        oval = VariationOption.objects.create(variation=self.shape, name="Οβάλ", name_en="Oval", order=2)
+        page = self.client.get(self.product.get_absolute_url())
+        self.assertContains(page, f'value="{oval.pk}" data-label="Oval" disabled')
+        self.assertContains(page, f'value="{self.flat.pk}" data-label="Flat" checked')
+        self.assertContains(page, 'Dimensions <span class="unit">(cm)</span>')
+        self.assertContains(page, ">14 × 18<")  # the unit is in the heading
+
+    def test_every_choice_is_needed(self):
+        response = self.client.post(reverse("orders:cart_add", args=[self.product.pk]),
+                                    {"quantity": 1, "size": self.large.pk, f"option_{self.kind.pk}": self.carved.pk},
+                                    follow=True)
+        self.assertContains(response, "Please choose: Shape.")
+        self.assertEqual(self.client.session.get("cart", {}), {})
+
+    def test_order_with_two_configurations(self):
+        self.client.force_login(self.customer)
+        self.add(self.large, self.carved, self.arched)
+        self.add(self.small, self.flat, self.rectangular, qty=2)
+        self.assertContains(self.client.get(reverse("orders:cart")), "30 x 40 cm, Carved, Arched")
+        order = self.order_for(self.customer, qty=0)
+        items = {item.product_name: (item.quantity, item.unit_price) for item in order.items.all()}
+        self.assertEqual(items, {
+            "Παναγία Γλυκοφιλούσα – 30 x 40 cm, Σκαφτή, Θολωτή": (1, Decimal("177.32")),
+            "Παναγία Γλυκοφιλούσα – 14 x 18 cm, Επίπεδη, Ορθογώνια": (2, Decimal("37.20")),
+        })
+
+    def test_options_not_offered_are_refused(self):
+        oval = VariationOption.objects.create(variation=self.shape, name="Οβάλ", price_change=15)
+        self.assertContains(self.add(self.large, self.carved, oval), "Please choose: Shape.")
+        self.add(self.large, self.carved, self.arched)
+        self.product.options.remove(self.arched)  # you stop offering it
+        self.assertNotContains(self.client.get(reverse("orders:cart")), "Arched")
+
+    def test_admin_ticks_the_choices(self):
+        self.client.force_login(self.owner)
+        page = self.client.get(reverse("admin:catalog_product_change", args=[self.product.pk]))
+        self.assertContains(page, "Σκαφτή (+30%)")
+        self.assertContains(page, "Customer choices")

@@ -331,12 +331,29 @@ msgstr ""
 "τες στη λίστα παρακάτω."
 
 #: catalog/admin.py
+msgid ""
+"Click what customers can choose on this icon; the first option of each "
+"choice is pre-selected. The percentage is added to the size's price."
+msgstr ""
+"Κάντε κλικ σε ό,τι μπορεί να επιλέξει ο πελάτης για αυτή την εικόνα· η πρώτη"
+" επιλογή κάθε ομάδας είναι προεπιλεγμένη. Το ποσοστό προστίθεται στην τιμή "
+"του μεγέθους."
+
+#: catalog/admin.py
+msgid "Add or change the choices and percentages"
+msgstr "Προσθήκη ή αλλαγή επιλογών και ποσοστών"
+
+#: catalog/admin.py
 msgid "Customers pay"
 msgstr "Ο πελάτης πληρώνει"
 
 #: catalog/admin.py
 msgid "Price"
 msgstr "Τιμή"
+
+#: catalog/admin.py
+msgid "Customer choices"
+msgstr "Επιλογές πελάτη"
 
 #: catalog/admin.py
 msgid "Photos"
@@ -377,6 +394,14 @@ msgstr "Σήμανση ως εξαντλημένο"
 #: catalog/admin.py
 msgid "Mark as available"
 msgstr "Σήμανση ως διαθέσιμο"
+
+#: catalog/admin.py
+msgid "Click the ones that apply."
+msgstr "Κάντε κλικ σε όσα ισχύουν."
+
+#: catalog/admin.py
+msgid "Add or rename"
+msgstr "Προσθήκη ή μετονομασία"
 
 #: catalog/admin.py
 msgid "no discount"
@@ -504,6 +529,42 @@ msgid "categories"
 msgstr "κατηγορίες"
 
 #: catalog/models.py
+msgid "material"
+msgstr "υλικό"
+
+#: catalog/models.py
+msgid "materials"
+msgstr "υλικά"
+
+#: catalog/models.py
+msgid "technique"
+msgstr "τεχνοτροπία"
+
+#: catalog/models.py
+msgid "techniques"
+msgstr "τεχνοτροπίες"
+
+#: catalog/models.py
+msgid "customer choice"
+msgstr "επιλογή πελάτη"
+
+#: catalog/models.py
+msgid "customer choices"
+msgstr "επιλογές πελάτη"
+
+#: catalog/models.py
+msgid "price change %"
+msgstr "αλλαγή τιμής %"
+
+#: catalog/models.py
+msgid "option"
+msgstr "επιλογή"
+
+#: catalog/models.py
+msgid "options"
+msgstr "επιλογές"
+
+#: catalog/models.py
 msgid "size"
 msgstr "μέγεθος"
 
@@ -514,10 +575,6 @@ msgstr "μεγέθη"
 #: catalog/models.py
 msgid "dimensions"
 msgstr "διαστάσεις"
-
-#: catalog/models.py
-msgid "materials / technique"
-msgstr "υλικά / τεχνική"
 
 #: catalog/models.py
 msgid "price incl. VAT (€)"
@@ -558,6 +615,11 @@ msgstr "προϊόντα"
 #: catalog/models.py
 msgid "images"
 msgstr "φωτογραφίες"
+
+#: catalog/models.py
+msgid "e.g. 30 for 30% more than the size's price; 0 for the basic version."
+msgstr ""
+"π.χ. 30 για 30% πάνω από την τιμή του μεγέθους· 0 για τη βασική εκδοχή."
 
 #: catalog/models.py
 msgid "e.g. 20 x 26 cm"
@@ -621,12 +683,24 @@ msgid "Contact"
 msgstr "Επικοινωνία"
 
 #: core/admin.py
+msgid "Social media"
+msgstr "Social media"
+
+#: core/admin.py
 msgid "Prices & shipping"
 msgstr "Τιμές & μεταφορικά"
 
 #: core/admin.py
 msgid "Bank transfer details (sent in the payment email)"
 msgstr "Στοιχεία τραπεζικής κατάθεσης (αποστέλλονται στο email πληρωμής)"
+
+#: core/admin.py
+msgid ""
+"Fill in the profiles you have: their icons appear at the top and bottom of "
+"every page, on the homepage and on the contact page."
+msgstr ""
+"Συμπληρώστε τους λογαριασμούς που έχετε: τα εικονίδιά τους εμφανίζονται πάνω"
+" και κάτω σε κάθε σελίδα, στην αρχική και στη σελίδα επικοινωνίας."
 
 #: core/apps.py
 msgid "Website"
@@ -765,6 +839,12 @@ msgid ""
 msgstr ""
 "Εμφανίζεται στους πελάτες. Εδώ στέλνονται και οι ειδοποιήσεις για νέες "
 "παραγγελίες και αιτήματα."
+
+#: core/models.py
+msgid ""
+"The full address of your page, e.g. https://www.facebook.com/athosicons"
+msgstr ""
+"Η πλήρης διεύθυνση της σελίδας σας, π.χ. https://www.facebook.com/athosicons"
 
 #: core/models.py
 msgid ""
@@ -1763,6 +1843,11 @@ msgid ""
 "mind."
 msgstr "Απορρίψατε την προσφορά. Αν αλλάξετε γνώμη, στείλτε μας ένα μήνυμα."
 
+#: orders/views.py
+#, python-format
+msgid "Please choose: %(choice)s."
+msgstr "Επιλέξτε: %(choice)s."
+
 #: templates/404.html
 msgid "Page not found"
 msgstr "Η σελίδα δεν βρέθηκε"
@@ -2099,6 +2184,10 @@ msgstr ""
 "λιανικής με ΦΠΑ."
 
 #: templates/base.html
+msgid "Follow us"
+msgstr "Ακολουθήστε μας"
+
+#: templates/base.html
 msgid "All icons"
 msgstr "Όλες οι εικόνες"
 
@@ -2144,8 +2233,12 @@ msgid "Available to order"
 msgstr "Διαθέσιμο για παραγγελία"
 
 #: templates/catalog/product_detail.html
-msgid "Size"
-msgstr "Μέγεθος"
+msgid "Dimensions"
+msgstr "Διαστάσεις"
+
+#: templates/catalog/product_detail.html
+msgid "cm"
+msgstr "εκ."
 
 #: templates/catalog/product_detail.html
 msgid "Quantity"
@@ -2172,12 +2265,12 @@ msgid "Ask us to make one for you"
 msgstr "Ζητήστε να σας το φτιάξουμε"
 
 #: templates/catalog/product_detail.html
-msgid "Dimensions"
-msgstr "Διαστάσεις"
+msgid "Technique"
+msgstr "Τεχνοτροπία"
 
 #: templates/catalog/product_detail.html
-msgid "Materials / technique"
-msgstr "Υλικά / τεχνική"
+msgid "Materials"
+msgstr "Υλικά"
 
 #: templates/catalog/product_detail.html
 msgid "Would you like a different size or a variation of this icon?"
@@ -2401,6 +2494,14 @@ msgstr "Άνοιγμα επαγγελματικού λογαριασμού"
 #: templates/core/home.html
 msgid "Learn more"
 msgstr "Μάθετε περισσότερα"
+
+#: templates/core/home.html
+msgid ""
+"New icons, works in progress and the stories behind them, first on our "
+"social media."
+msgstr ""
+"Νέες εικόνες, έργα σε εξέλιξη και οι ιστορίες τους, πρώτα στα social media "
+"μας."
 
 #: templates/emails/_signature.txt
 msgid "Warm regards,"

@@ -1,3 +1,5 @@
+import re
+
 from django import template
 from django.urls import reverse
 from django.utils import formats
@@ -13,6 +15,13 @@ def euro(value):
     if value is None or value == "":
         return ""
     return f"{formats.number_format(value, 2, use_l10n=True, force_grouping=True)} €"
+
+
+@register.filter
+def short_size(text):
+    """ "20 x 26 cm" → "20 × 26": the unit is already in the heading."""
+    text = re.sub(r"\s*(cm|εκ\.?)$", "", str(text), flags=re.IGNORECASE)
+    return re.sub(r"(?<=\d)\s*[xX]\s*(?=\d)", " × ", text)
 
 
 @register.simple_tag(takes_context=True)

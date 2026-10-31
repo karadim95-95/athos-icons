@@ -11,7 +11,7 @@
         <div class="line-media">{% with img=product.main_image %}{% if img %}<img src="{{ img.thumb_url }}" alt="">{% else %}{% include "partials/placeholder.html" %}{% endif %}{% endwith %}</div>
         <div>
           <h3><a href="{{ product.get_absolute_url }}">{{ product.local_name }}</a></h3>
-          {% if line.size %}<div class="small">{% translate "Size" %}: {{ line.size.size }}</div>{% endif %}
+          {% if line.details %}<div class="small">{{ line.details }}</div>{% endif %}
           <div class="small muted" style="margin-bottom:8px">{{ line.price.final|euro }} {% if line.price.business %}{% translate "excl. VAT" %}{% endif %}{% if line.price.has_discount %} · <s>{{ line.price.original|euro }}</s>{% endif %}</div>
           <div class="line-qty">
             <label class="visually-hidden" for="qty_{{ forloop.counter }}">{% translate "Quantity" %}</label>
