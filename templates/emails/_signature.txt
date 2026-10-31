@@ -1,0 +1,5 @@
+{% load i18n %}{% autoescape off %}{% translate "Warm regards," %}
+{{ shop.shop_name }}{% if shop.phone %}
+{{ shop.phone }}{% endif %}{% if shop.contact_email %}
+{{ shop.contact_email }}{% endif %}
+{{ site_url }}{% endautoescape %}

@@ -1,0 +1,36 @@
+{% load i18n shop %}{% autoescape off %}{% if order.status == "pending" %}{% blocktranslate with no=order.number %}Order request {{ no }} received{% endblocktranslate %}{% elif order.status == "awaiting_payment" %}{% blocktranslate with no=order.number %}Order {{ no }} confirmed – payment details{% endblocktranslate %}{% elif order.status == "paid" %}{% blocktranslate with no=order.number %}Payment received for order {{ no }}{% endblocktranslate %}{% elif order.status == "shipped" %}{% blocktranslate with no=order.number %}Order {{ no }} has shipped{% endblocktranslate %}{% elif order.status == "in_transit" %}{% blocktranslate with no=order.number %}Order {{ no }} is in transit{% endblocktranslate %}{% elif order.status == "delivered" %}{% blocktranslate with no=order.number %}Order {{ no }} delivered{% endblocktranslate %}{% elif order.status == "rejected" %}{% blocktranslate with no=order.number %}About your order request {{ no }}{% endblocktranslate %}{% else %}{% blocktranslate with no=order.number %}Order {{ no }} cancelled{% endblocktranslate %}{% endif %}
+{% blocktranslate with name=customer.first_name|default:customer.email %}Hello {{ name }},{% endblocktranslate %}
+
+{% if order.status == "pending" %}{% translate "Thank you! We received your order request and will check it shortly. You will receive another email with the final amount and our bank details. Please do not pay yet." %}{% elif order.status == "awaiting_payment" %}{% blocktranslate with days=shop.payment_days %}Good news: your order is confirmed. Please deposit the total amount within {{ days }} days to the bank account below, writing your order number as the payment reference. As soon as we receive the payment we will prepare your order.{% endblocktranslate %}{% elif order.status == "paid" %}{% translate "We received your payment, thank you! We are now preparing your order and will let you know when it ships." %}{% elif order.status == "shipped" %}{% translate "Your order is on its way!" %}{% if order.tracking_number %}
+{% translate "Tracking number" %}: {{ order.tracking_number }}{% endif %}{% if order.tracking_url %}
+{% translate "Track parcel" %}: {{ order.tracking_url }}{% endif %}{% elif order.status == "in_transit" %}{% translate "Your parcel is with the courier and on its way to you." %}{% if order.tracking_event %}
+{% translate "Latest update from the courier" %}: {{ order.get_tracking_status_display }} – {{ order.tracking_event }}{% endif %}{% if order.tracking_number %}
+{% translate "Tracking number" %}: {{ order.tracking_number }}{% endif %}{% if order.tracking_url %}
+{% translate "Track parcel" %}: {{ order.tracking_url }}{% endif %}{% elif order.status == "delivered" %}{% translate "Your order has been delivered. We hope it brings you joy and blessings. If anything is not right, just reply to this email." %}{% elif order.status == "rejected" %}{% translate "Unfortunately we cannot accept this order request. We are sorry for any inconvenience." %}{% else %}{% translate "Your order has been cancelled. If this was a mistake, just reply to this email." %}{% endif %}
+{% if note %}
+{% translate "Note from us" %}:
+{{ note }}
+{% endif %}{% if order.status == "awaiting_payment" %}
+————————————————
+{% translate "PAYMENT DETAILS" %}
+{% translate "Amount" %}: {{ order.total|euro }}
+{% translate "Reference" %}: {{ order.number }}
+{% if shop.bank_name %}{% translate "Bank" %}: {{ shop.bank_name }}
+{% endif %}{% if shop.account_holder %}{% translate "Beneficiary" %}: {{ shop.account_holder }}
+{% endif %}{% if shop.iban %}IBAN: {{ shop.iban }}
+{% endif %}{% if shop.bic %}BIC: {{ shop.bic }}
+{% endif %}{% if shop.extra_bank_accounts %}
+{{ shop.extra_bank_accounts }}
+{% endif %}————————————————
+{% endif %}
+{% translate "Order" %} {{ order.number }}
+{% for item in order.items.all %}- {{ item.quantity }} × {{ item.product_name }}: {{ item.line_total|euro }}
+{% endfor %}{% translate "Shipping" %}: {{ order.shipping_cost|euro }}
+{% if order.prices_include_vat %}{% translate "Total" %}: {{ order.total|euro }} ({% blocktranslate with r=order.vat_rate|floatformat:"-2" %}incl. {{ r }}% VAT{% endblocktranslate %}){% else %}{% translate "Net amount" %}: {{ order.net_total|euro }}
+{% translate "VAT" %} {{ order.vat_rate|floatformat:"-2" }}%: {{ order.vat_amount|euro }}
+{% translate "Total" %}: {{ order.total|euro }}{% endif %}
+
+{% translate "Follow your order and send us a message" %}:
+{{ site_url }}{{ order.get_absolute_url }}
+
+{% include "emails/_signature.txt" %}{% endautoescape %}

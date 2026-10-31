@@ -1,0 +1,21 @@
+{% extends "accounts/layout.html" %}{% load i18n shop %}
+{% block title %}{% translate "My account" %}{% endblock %}
+{% block account %}
+<h1>{% blocktranslate with name=user.first_name|default:user.email %}Hello, {{ name }}{% endblocktranslate %}</h1>
+{% if not user.email_verified %}<div class="notice">{% translate "Please confirm your email address to start ordering." %} <a href="{% url 'accounts:verify_email' %}">{% translate "Why and how?" %}</a></div>{% endif %}
+{% if user.business_pending %}<div class="notice">{% translate "Your business account is being reviewed. Once approved you will see prices without VAT. We will email you." %}</div>{% endif %}
+{% if unread %}<div class="notice info">{% blocktranslate count n=unread %}You have {{ n }} new message from us.{% plural %}You have {{ n }} new messages from us.{% endblocktranslate %}</div>{% endif %}
+<div class="stats">
+  <div class="stat"><b>{{ user.orders.count }}</b><span>{% translate "orders" %}</span></div>
+  <div class="stat"><b>{{ user.custom_requests.count }}</b><span>{% translate "custom requests" %}</span></div>
+  <div class="stat"><b>{% if user.is_business %}B2B{% else %}✠{% endif %}</b><span>{% if user.is_business %}{% translate "business prices active" %}{% else %}{% translate "personal account" %}{% endif %}</span></div>
+</div>
+<div class="block">
+  <div class="section-head"><h2 style="font-size:1.5rem;margin:0">{% translate "Recent orders" %}</h2><a href="{% url 'orders:order_list' %}">{% translate "All orders" %} →</a></div>
+  {% include "orders/_order_table.html" %}
+</div>
+<div class="block">
+  <div class="section-head"><h2 style="font-size:1.5rem;margin:0">{% translate "Custom requests" %}</h2><a href="{% url 'orders:custom_request' %}">{% translate "New request" %} →</a></div>
+  {% include "orders/_request_table.html" with requests=custom_requests %}
+</div>
+{% endblock %}

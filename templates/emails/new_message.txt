@@ -1,0 +1,11 @@
+{% load i18n %}{% autoescape off %}{% blocktranslate with no=thread.number %}New message about {{ no }}{% endblocktranslate %}
+{% blocktranslate with name=customer.first_name|default:customer.email %}Hello {{ name }},{% endblocktranslate %}
+
+{% blocktranslate with no=thread.number %}We sent you a message about {{ no }}:{% endblocktranslate %}
+
+{{ message.body }}
+
+{% translate "Reply from your account" %}:
+{{ site_url }}{{ thread.get_absolute_url }}
+
+{% include "emails/_signature.txt" %}{% endautoescape %}

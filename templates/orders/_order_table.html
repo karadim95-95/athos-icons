@@ -1,0 +1,10 @@
+{% load i18n shop %}{% if orders %}
+<table class="table">
+  <thead><tr><th>{% translate "Order" %}</th><th>{% translate "Date" %}</th><th>{% translate "Status" %}</th><th class="num">{% translate "Total" %}</th></tr></thead>
+  <tbody>
+  {% for o in orders %}
+    <tr><td><a href="{{ o.get_absolute_url }}">{{ o.number }}</a></td><td>{{ o.created_at|date:"d/m/Y" }}</td><td><span class="pill {{ o.status }}">{{ o.get_status_display }}</span></td><td class="num">{{ o.total|euro }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="empty"><p class="muted">{% translate "No orders yet." %}</p><a class="btn btn-ghost" href="{% url 'catalog:products' %}">{% translate "Browse the icons" %}</a></div>{% endif %}

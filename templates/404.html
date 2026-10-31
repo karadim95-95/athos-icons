@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}404{% endblock %}
+{% block content %}
+<div class="wrap medium center">
+  <span class="ornament">✠</span>
+  <h1>{% translate "Page not found" %}</h1>
+  <p class="muted">{% translate "The page you are looking for does not exist or has moved." %}</p>
+  <p><a class="btn" href="{% url 'catalog:products' %}">{% translate "Browse the icons" %}</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% load i18n shop %}
+{% block title %}{% translate "Order request" %}{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="page-head"><h1>{% translate "Send order request" %}</h1>
+    <p>{% translate "Check your details. After you send the request we review it and email you the final amount with our bank details." %}</p></div>
+  <div class="two-col">
+    <form method="post" class="panel" novalidate>{% csrf_token %}
+      {% include "partials/form_errors.html" %}
+      <h3>{% translate "Delivery details" %}</h3>
+      <div class="form-grid">
+        {% for field in form %}{% if field.name in "notes save_to_profile" %}{% include "partials/field.html" with full=1 %}{% else %}{% include "partials/field.html" %}{% endif %}{% endfor %}
+      </div>
+      <p class="small muted">{% blocktranslate with email=user.email %}We will email you at <strong>{{ email }}</strong>.{% endblocktranslate %}</p>
+      <button class="btn btn-gold btn-block">{% translate "Send order request" %}</button>
+    </form>
+    <aside class="panel summary">
+      <h3>{% translate "Your order" %}</h3>
+      {% for line in lines %}
+        <div class="summary-row small"><span>{{ line.quantity }} × {{ line.product.local_name }}</span><span>{{ line.line_total|euro }}</span></div>
+      {% endfor %}
+      <div class="summary-row"><span>{% translate "Shipping (estimate)" %}</span><span>{% if estimated_shipping %}{{ estimated_shipping|euro }}{% else %}{% translate "free" %}{% endif %}</span></div>
+      <div class="summary-row total"><span>{% translate "Estimated total" %}</span><span>{{ estimated_total|euro }}</span></div>
+      <p class="small muted">{% if user.is_business %}{% blocktranslate with rate=shop.vat_rate|floatformat:"-2" %}Amounts exclude VAT; {{ rate }}% VAT is added on the final invoice (0% for EU businesses with a valid VAT number).{% endblocktranslate %}{% else %}{% translate "Prices include VAT. We confirm the final shipping cost before you pay." %}{% endif %}</p>
+    </aside>
+  </div>
+</div>
+{% endblock %}

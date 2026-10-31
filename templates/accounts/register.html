@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Create an account" %}{% endblock %}
+{% block content %}
+<div class="wrap medium">
+  <h1>{% translate "Create an account" %}</h1>
+  <p class="muted">{% translate "With an account you can send order requests, follow their status and talk to us about custom icons." %}</p>
+  <form method="post" class="panel" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <div class="field">
+      <label>{% translate "I am ordering as" %}</label>
+      <div class="radio-cards">
+        {% for choice in form.account_type %}
+        <label>{{ choice.tag }}<span><strong>{{ choice.choice_label }}</strong><small>{% if choice.data.value == "business" %}{% translate "Shops, churches, monasteries – wholesale prices excl. VAT after approval" %}{% else %}{% translate "Personal purchases – prices incl. VAT" %}{% endif %}</small></span></label>
+        {% endfor %}
+      </div>
+      {{ form.account_type.errors }}
+    </div>
+    <div class="form-grid">
+      {% include "partials/field.html" with field=form.first_name %}
+      {% include "partials/field.html" with field=form.last_name %}
+      {% include "partials/field.html" with field=form.email %}
+      {% include "partials/field.html" with field=form.phone %}
+    </div>
+    <div data-business-fields>
+      <h3>{% translate "Company details" %}</h3>
+      <div class="form-grid">
+        {% include "partials/field.html" with field=form.company_name %}
+        {% include "partials/field.html" with field=form.vat_number %}
+        {% include "partials/field.html" with field=form.tax_office %}
+        {% include "partials/field.html" with field=form.business_activity %}
+      </div>
+    </div>
+    <div class="form-grid">
+      {% include "partials/field.html" with field=form.password1 %}
+      {% include "partials/field.html" with field=form.password2 %}
+    </div>
+    {% include "partials/field.html" with field=form.accept_terms %}
+    <p class="small muted" style="margin-top:-8px"><a href="{% url 'core:page' 'terms' %}" target="_blank">{% translate "Terms of use" %}</a> · <a href="{% url 'core:page' 'privacy' %}" target="_blank">{% translate "Privacy policy" %}</a></p>
+    {% include "partials/human_check.html" %}
+    <button class="btn btn-gold">{% translate "Create account" %}</button>
+  </form>
+</div>
+{% endblock %}

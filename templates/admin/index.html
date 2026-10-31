@@ -1,0 +1,19 @@
+{% extends "admin/index.html" %}{% load i18n shop %}
+{% block content %}
+<div class="quick">
+  <a href="{% url 'admin:catalog_product_add' %}">+ {% translate "New product" %}</a>
+  <a class="alt" href="{% url 'admin:orders_order_changelist' %}">{% translate "Orders" %}</a>
+  <a class="alt" href="{% url 'admin:orders_order_changelist' %}?archive=archived">{% translate "Order archive" %}</a>
+  <a class="alt" href="{% url 'admin:orders_customrequest_changelist' %}">{% translate "Custom requests" %}</a>
+  <a class="alt" href="{% url 'admin:core_sitesettings_changelist' %}">{% translate "Shop settings" %}</a>
+  <a class="alt" href="/" target="_blank">{% translate "View shop" %} ↗</a>
+</div>
+<h2 style="margin-bottom:10px">{% translate "Needs your attention" %}</h2>
+<div class="attention">
+  {% admin_attention as rows %}
+  {% for label, count, link in rows %}
+    <a href="{{ link }}" class="{% if count %}hot{% endif %}"><b>{{ count }}</b><span>{{ label }}</span></a>
+  {% endfor %}
+</div>
+{{ block.super }}
+{% endblock %}

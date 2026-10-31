@@ -1,0 +1,13 @@
+{% load i18n shop %}<div class="payment-box">
+  <h3>{% translate "Please complete your payment" %}</h3>
+  <p>{% blocktranslate with days=shop.payment_days %}Your order is confirmed. Please deposit the amount below within {{ days }} days and write the order number as the payment reference.{% endblocktranslate %}</p>
+  <dl>
+    <dt>{% translate "Amount" %}</dt><dd>{{ order.total|euro }}</dd>
+    <dt>{% translate "Reference" %}</dt><dd>{{ order.number }}</dd>
+    {% if shop.bank_name %}<dt>{% translate "Bank" %}</dt><dd>{{ shop.bank_name }}</dd>{% endif %}
+    {% if shop.account_holder %}<dt>{% translate "Beneficiary" %}</dt><dd>{{ shop.account_holder }}</dd>{% endif %}
+    {% if shop.iban %}<dt>IBAN</dt><dd>{{ shop.iban }}</dd>{% endif %}
+    {% if shop.bic %}<dt>BIC</dt><dd>{{ shop.bic }}</dd>{% endif %}
+  </dl>
+  {% if shop.extra_bank_accounts %}<p class="small" style="margin-top:12px">{{ shop.extra_bank_accounts|linebreaksbr }}</p>{% endif %}
+</div>

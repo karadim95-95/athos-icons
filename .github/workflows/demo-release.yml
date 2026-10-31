@@ -1,0 +1,81 @@
+# Builds the downloadable demo for Windows, Mac and Linux, tries each one on that system,
+# and publishes them as a GitHub release. Start it by pushing a version tag, e.g. v0.2.0.
+name: Demo release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build the demo zips
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python demo/build.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: demo-zips
+          path: dist/*.zip
+          compression-level: 0
+          if-no-files-found: error
+
+  try:
+    name: Try it on ${{ matrix.os }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            demo: athos-icons-demo-windows
+          - os: macos-latest
+            demo: athos-icons-demo-macos-apple-silicon
+          - os: ubuntu-latest
+            demo: athos-icons-demo-linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: demo-zips
+      - name: Unzip and run the demo's self-check
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Expand-Archive "${{ matrix.demo }}.zip" -DestinationPath .
+          & ".\${{ matrix.demo }}\python\python.exe" ".\${{ matrix.demo }}\app\demo\launch.py" --check
+      - name: Unzip and run the demo's self-check
+        if: runner.os != 'Windows'
+        run: |
+          unzip -q "${{ matrix.demo }}.zip"
+          "./${{ matrix.demo }}/python/bin/python3" "./${{ matrix.demo }}/app/demo/launch.py" --check
+
+  release:
+    name: Publish the release
+    needs: try
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: demo-zips
+          path: dist
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: >-
+          gh release create "$TAG" dist/*.zip --prerelease
+          --title "Demo $TAG" --notes-file demo/RELEASE_NOTES.md

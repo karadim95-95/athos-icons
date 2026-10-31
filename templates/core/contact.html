@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Contact" %}{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="page-head"><h1>{% translate "Contact us" %}</h1><p>{% translate "We are happy to help you choose an icon or answer any question." %}</p></div>
+  <div class="two-col">
+    <form method="post" class="panel" novalidate>{% csrf_token %}
+      {% include "partials/form_errors.html" %}
+      <div class="form-grid">
+        {% include "partials/field.html" with field=form.name %}
+        {% include "partials/field.html" with field=form.email %}
+        {% include "partials/field.html" with field=form.message full=1 %}
+      </div>
+      {% include "partials/human_check.html" %}
+      <button class="btn">{% translate "Send" %}</button>
+    </form>
+    <div class="panel">
+      <h3>{{ shop.shop_name }}</h3>
+      {% if shop.phone %}<p><strong>{% translate "Phone" %}:</strong> <a href="tel:{{ shop.phone|cut:' ' }}">{{ shop.phone }}</a></p>{% endif %}
+      {% if shop.contact_email %}<p><strong>Email:</strong> <a href="mailto:{{ shop.contact_email }}">{{ shop.contact_email }}</a></p>{% endif %}
+      {% if shop.business_hours %}<p><strong>{% translate "Hours" %}:</strong> {{ shop.business_hours }}</p>{% endif %}
+      {% if shop.address %}<p><strong>{% translate "Address" %}:</strong> {{ shop.address }}</p>{% endif %}
+      <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+      <p class="muted">{% translate "Looking for a specific icon that is not in the shop?" %}</p>
+      <a class="btn btn-ghost" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

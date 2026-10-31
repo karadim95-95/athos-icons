@@ -1,0 +1,2882 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: athos-icons\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/admin.py
+msgid "Customer"
+msgstr "Πελάτης"
+
+#: accounts/admin.py
+msgid "Address"
+msgstr "Διεύθυνση"
+
+#: accounts/admin.py
+msgid "Permissions"
+msgstr "Δικαιώματα"
+
+#: accounts/admin.py
+msgid "Dates"
+msgstr "Ημερομηνίες"
+
+#: accounts/admin.py
+msgid "name"
+msgstr "όνομα"
+
+#: accounts/admin.py
+msgid "orders"
+msgstr "παραγγελίες"
+
+#: accounts/admin.py
+msgid "Approve selected business accounts (and email them)"
+msgstr "Έγκριση επιλεγμένων επαγγελματικών λογαριασμών (με email)"
+
+#: accounts/admin.py
+msgid "Confirm email (e.g. customers you know or who called you)"
+msgstr "Επιβεβαίωση email (π.χ. πελάτες που γνωρίζετε ή που σας τηλεφώνησαν)"
+
+#: accounts/admin.py
+msgid "The customer was emailed that business prices are now active."
+msgstr ""
+"Ο πελάτης ενημερώθηκε με email ότι οι τιμές επιχειρήσεων είναι ενεργές."
+
+#: accounts/admin.py
+#, python-format
+msgid "%(n)s business account(s) approved."
+msgstr "Εγκρίθηκαν %(n)s επαγγελματικοί λογαριασμοί."
+
+#: accounts/admin.py
+#, python-format
+msgid "%(n)s account(s) can now order."
+msgstr "%(n)s λογαριασμός(-οί) μπορούν πλέον να παραγγείλουν."
+
+#: accounts/apps.py
+msgid "Customers"
+msgstr "Πελάτες"
+
+#: accounts/decorators.py
+msgid ""
+"You are logged in with the shop's admin account, which cannot place orders. "
+"Log out and use a customer account to try the shop."
+msgstr ""
+"Είστε συνδεδεμένοι με τον λογαριασμό διαχείρισης του καταστήματος, που δεν "
+"μπορεί να κάνει παραγγελίες. Αποσυνδεθείτε και χρησιμοποιήστε έναν "
+"λογαριασμό πελάτη για να δοκιμάσετε το κατάστημα."
+
+#: accounts/forms.py
+msgid "I accept the terms of use and the privacy policy"
+msgstr "Αποδέχομαι τους όρους χρήσης και την πολιτική απορρήτου"
+
+#: accounts/forms.py
+msgid "Too many failed attempts. Please wait 15 minutes and try again."
+msgstr ""
+"Πάρα πολλές αποτυχημένες προσπάθειες. Περιμένετε 15 λεπτά και δοκιμάστε "
+"ξανά."
+
+#: accounts/forms.py
+msgid "Required for Greek businesses."
+msgstr "Υποχρεωτικό για ελληνικές επιχειρήσεις."
+
+#: accounts/forms.py
+msgid "An account with this email already exists. Try logging in."
+msgstr "Υπάρχει ήδη λογαριασμός με αυτό το email. Δοκιμάστε να συνδεθείτε."
+
+#: accounts/forms.py
+msgid "To change your ΑΦΜ, please contact us."
+msgstr "Για αλλαγή ΑΦΜ, επικοινωνήστε μαζί μας."
+
+#: accounts/forms.py
+msgid "Required for business accounts."
+msgstr "Απαιτείται για επαγγελματικούς λογαριασμούς."
+
+#: accounts/models.py
+msgid "email"
+msgstr "email"
+
+#: accounts/models.py
+msgid "email language"
+msgstr "γλώσσα email"
+
+#: accounts/models.py
+msgid "email confirmed"
+msgstr "email επιβεβαιωμένο"
+
+#: accounts/models.py
+msgid "account type"
+msgstr "τύπος λογαριασμού"
+
+#: accounts/models.py
+msgid "company name"
+msgstr "επωνυμία"
+
+#: accounts/models.py
+msgid "VAT number"
+msgstr "ΑΦΜ"
+
+#: accounts/models.py
+msgid "tax office"
+msgstr "ΔΟΥ"
+
+#: accounts/models.py
+msgid "registry details"
+msgstr "στοιχεία μητρώου"
+
+#: accounts/models.py
+msgid "registry checked"
+msgstr "έλεγχος μητρώου"
+
+#: accounts/models.py
+msgid "business activity"
+msgstr "δραστηριότητα"
+
+#: accounts/models.py
+msgid "business approved"
+msgstr "εγκεκριμένη επιχείρηση"
+
+#: accounts/models.py
+msgid "street address"
+msgstr "οδός και αριθμός"
+
+#: accounts/models.py
+msgid "city"
+msgstr "πόλη"
+
+#: accounts/models.py
+msgid "postal code"
+msgstr "ΤΚ"
+
+#: accounts/models.py
+msgid "country"
+msgstr "χώρα"
+
+#: accounts/models.py
+msgid "customer"
+msgstr "πελάτης"
+
+#: accounts/models.py
+msgid "customers"
+msgstr "πελάτες"
+
+#: accounts/models.py
+msgid "Individual"
+msgstr "Ιδιώτης"
+
+#: accounts/models.py
+msgid "Business"
+msgstr "Επιχείρηση"
+
+#: accounts/models.py
+msgid ""
+"The customer clicked the link we emailed them. Only confirmed customers can "
+"order."
+msgstr ""
+"Ο πελάτης άνοιξε τον σύνδεσμο που του στείλαμε. Μόνο επιβεβαιωμένοι πελάτες "
+"μπορούν να παραγγείλουν."
+
+#: accounts/models.py
+msgid ""
+"9 digits. Businesses from other EU countries: VAT number with the country "
+"code, e.g. CY12345678X."
+msgstr ""
+"9 ψηφία. Επιχειρήσεις από άλλες χώρες της ΕΕ: ΑΦΜ ΦΠΑ με τον κωδικό χώρας, "
+"π.χ. CY12345678X."
+
+#: accounts/models.py
+msgid "e.g. Α' Αθηνών. Not needed for businesses outside Greece."
+msgstr "π.χ. Α' Αθηνών. Δεν χρειάζεται για επιχειρήσεις εκτός Ελλάδας."
+
+#: accounts/models.py
+msgid "What AADE (or the EU VIES service) says about this number."
+msgstr "Τι αναφέρει η ΑΑΔΕ (ή η υπηρεσία VIES της ΕΕ) για αυτόν τον αριθμό."
+
+#: accounts/models.py
+msgid ""
+"Tick after checking the company. Only approved businesses see prices without"
+" VAT."
+msgstr ""
+"Επιλέξτε το αφού ελέγξετε την επιχείρηση. Μόνο οι εγκεκριμένες επιχειρήσεις "
+"βλέπουν τιμές χωρίς ΦΠΑ."
+
+#: accounts/vat.py
+msgid "This ΑΦΜ is not valid. Please check the 9 digits."
+msgstr "Ο ΑΦΜ δεν είναι έγκυρος. Ελέγξτε τα 9 ψηφία."
+
+#: accounts/vat.py
+msgid "This ΑΦΜ does not belong to a business in the AADE registry."
+msgstr "Ο ΑΦΜ δεν αντιστοιχεί σε επιχείρηση στο μητρώο της ΑΑΔΕ."
+
+#: accounts/vat.py
+msgid "This ΑΦΜ is no longer active in the AADE registry."
+msgstr "Ο ΑΦΜ δεν είναι πλέον ενεργός στο μητρώο της ΑΑΔΕ."
+
+#: accounts/vat.py
+msgid "This VAT number is not valid according to the EU VIES service."
+msgstr "Ο ΑΦΜ ΦΠΑ δεν είναι έγκυρος σύμφωνα με την υπηρεσία VIES της ΕΕ."
+
+#: accounts/vat.py
+msgid "Tax office"
+msgstr "ΔΟΥ"
+
+#: accounts/vat.py
+msgid ""
+"Enter a Greek ΑΦΜ (9 digits), or an EU VAT number starting with the country "
+"code, e.g. CY12345678X."
+msgstr ""
+"Συμπληρώστε ελληνικό ΑΦΜ (9 ψηφία) ή ΑΦΜ ΦΠΑ χώρας της ΕΕ που ξεκινά με τον "
+"κωδικό χώρας, π.χ. CY12345678X."
+
+#: accounts/vat.py
+#, python-format
+msgid "VIES could not be checked: %(error)s"
+msgstr "Δεν ήταν δυνατός ο έλεγχος στο VIES: %(error)s"
+
+#: accounts/vat.py
+#, python-format
+msgid "AADE registry could not be checked: %(error)s"
+msgstr "Δεν ήταν δυνατός ο έλεγχος στο μητρώο της ΑΑΔΕ: %(error)s"
+
+#: accounts/views.py
+msgid "Your email is already confirmed."
+msgstr "Το email σας είναι ήδη επιβεβαιωμένο."
+
+#: accounts/views.py
+msgid "This link is not valid any more. Log in to get a new one."
+msgstr "Ο σύνδεσμος δεν ισχύει πια. Συνδεθείτε για να λάβετε νέο."
+
+#: accounts/views.py
+msgid ""
+"Thank you, your email is confirmed. We will check your business details and "
+"activate business prices (excl. VAT) shortly."
+msgstr ""
+"Ευχαριστούμε, το email σας επιβεβαιώθηκε. Θα ελέγξουμε τα στοιχεία της "
+"επιχείρησής σας και θα ενεργοποιήσουμε σύντομα τις τιμές επιχειρήσεων (χωρίς"
+" ΦΠΑ)."
+
+#: accounts/views.py
+msgid "Thank you, your email is confirmed. You can now send order requests."
+msgstr ""
+"Ευχαριστούμε, το email σας επιβεβαιώθηκε. Μπορείτε πλέον να στέλνετε "
+"αιτήματα παραγγελίας."
+
+#: accounts/views.py
+msgid "Your details were saved."
+msgstr "Τα στοιχεία σας αποθηκεύτηκαν."
+
+#: accounts/views.py
+msgid "Your password was changed."
+msgstr "Ο κωδικός σας άλλαξε."
+
+#: accounts/views.py
+msgid "Your new password is set. You can log in now."
+msgstr "Ο νέος κωδικός ορίστηκε. Μπορείτε να συνδεθείτε."
+
+#: accounts/views.py
+msgid "Too many sign-ups from your connection. Please try again later."
+msgstr "Πάρα πολλές εγγραφές από τη σύνδεσή σας. Δοκιμάστε ξανά αργότερα."
+
+#: accounts/views.py
+msgid "Welcome! One last step: confirm your email address."
+msgstr ""
+"Καλώς ήρθατε! Ένα τελευταίο βήμα: επιβεβαιώστε τη διεύθυνση email σας."
+
+#: accounts/views.py
+msgid ""
+"We already sent you several links. Please check your spam folder too, or try"
+" again in an hour."
+msgstr ""
+"Σας έχουμε ήδη στείλει αρκετούς συνδέσμους. Ελέγξτε και τον φάκελο "
+"ανεπιθύμητης αλληλογραφίας ή δοκιμάστε ξανά σε μία ώρα."
+
+#: accounts/views.py
+#, python-format
+msgid "New business account to approve: %(company)s"
+msgstr "Νέος επαγγελματικός λογαριασμός προς έγκριση: %(company)s"
+
+#: accounts/views.py
+msgid "Too many attempts from your connection. Please try again later."
+msgstr "Πάρα πολλές προσπάθειες από τη σύνδεσή σας. Δοκιμάστε ξανά αργότερα."
+
+#: accounts/views.py
+msgid "We sent you a new link."
+msgstr "Σας στείλαμε νέο σύνδεσμο."
+
+#: accounts/views.py
+msgid "The email could not be sent. Please try again later."
+msgstr "Δεν ήταν δυνατή η αποστολή του email. Δοκιμάστε ξανά αργότερα."
+
+#: catalog/admin.py
+msgid "preview"
+msgstr "προεπισκόπηση"
+
+#: catalog/admin.py
+msgid "Add photos"
+msgstr "Προσθήκη φωτογραφιών"
+
+#: catalog/admin.py
+msgid ""
+"Select one or more photos from your computer or phone. They are resized "
+"automatically. Reorder or delete them in the list below."
+msgstr ""
+"Επιλέξτε μία ή περισσότερες φωτογραφίες από τον υπολογιστή ή το κινητό σας. "
+"Το μέγεθός τους προσαρμόζεται αυτόματα. Αλλάξτε τη σειρά τους ή διαγράψτε "
+"τες στη λίστα παρακάτω."
+
+#: catalog/admin.py
+msgid "Price"
+msgstr "Τιμή"
+
+#: catalog/admin.py
+msgid "Photos"
+msgstr "Φωτογραφίες"
+
+#: catalog/admin.py
+msgid "Visibility"
+msgstr "Εμφάνιση"
+
+#: catalog/admin.py
+msgid "photo"
+msgstr "φωτογραφία"
+
+#: catalog/admin.py
+msgid "final price"
+msgstr "τελική τιμή"
+
+#: catalog/admin.py
+msgid ""
+"Copies created as hidden products. Edit them, add photos and make them "
+"visible."
+msgstr ""
+"Δημιουργήθηκαν αντίγραφα ως κρυφά προϊόντα. Επεξεργαστείτε τα, προσθέστε "
+"φωτογραφίες και κάντε τα ορατά."
+
+#: catalog/admin.py
+msgid "Duplicate (e.g. to create another size)"
+msgstr "Αντιγραφή (π.χ. για άλλο μέγεθος)"
+
+#: catalog/admin.py
+msgid "Remove discount"
+msgstr "Κατάργηση έκπτωσης"
+
+#: catalog/admin.py
+msgid "Mark as sold out"
+msgstr "Σήμανση ως εξαντλημένο"
+
+#: catalog/admin.py
+msgid "Mark as available"
+msgstr "Σήμανση ως διαθέσιμο"
+
+#: catalog/admin.py
+msgid ""
+"Individuals pay the price incl. VAT. Approved businesses see prices excl. "
+"VAT (the business price, or the retail price minus VAT)."
+msgstr ""
+"Οι ιδιώτες πληρώνουν την τιμή με ΦΠΑ. Οι εγκεκριμένες επιχειρήσεις βλέπουν "
+"τιμές χωρίς ΦΠΑ (την τιμή επιχειρήσεων ή την τιμή λιανικής χωρίς ΦΠΑ)."
+
+#: catalog/admin.py
+#, python-format
+msgid "%d product updated."
+msgid_plural "%d products updated."
+msgstr[0] "Ενημερώθηκε %d προϊόν."
+msgstr[1] "Ενημερώθηκαν %d προϊόντα."
+
+#: catalog/admin.py
+msgid "copy"
+msgstr "αντίγραφο"
+
+#: catalog/apps.py
+msgid "Catalog"
+msgstr "Κατάλογος"
+
+#: catalog/models.py
+msgid "name (Greek)"
+msgstr "όνομα (ελληνικά)"
+
+#: catalog/models.py
+msgid "name (English)"
+msgstr "όνομα (αγγλικά)"
+
+#: catalog/models.py
+msgid "address"
+msgstr "σύνδεσμος (URL)"
+
+#: catalog/models.py
+msgid "description (Greek)"
+msgstr "περιγραφή (ελληνικά)"
+
+#: catalog/models.py
+msgid "description (English)"
+msgstr "περιγραφή (αγγλικά)"
+
+#: catalog/models.py
+msgid "image"
+msgstr "φωτογραφία"
+
+#: catalog/models.py
+msgid "position"
+msgstr "σειρά εμφάνισης"
+
+#: catalog/models.py
+msgid "visible"
+msgstr "ορατή"
+
+#: catalog/models.py
+msgid "category"
+msgstr "κατηγορία"
+
+#: catalog/models.py
+msgid "categories"
+msgstr "κατηγορίες"
+
+#: catalog/models.py
+msgid "dimensions"
+msgstr "διαστάσεις"
+
+#: catalog/models.py
+msgid "materials / technique"
+msgstr "υλικά / τεχνική"
+
+#: catalog/models.py
+msgid "price incl. VAT (€)"
+msgstr "τιμή με ΦΠΑ (€)"
+
+#: catalog/models.py
+msgid "discount %"
+msgstr "έκπτωση %"
+
+#: catalog/models.py
+msgid "business price excl. VAT (€)"
+msgstr "τιμή επιχειρήσεων χωρίς ΦΠΑ (€)"
+
+#: catalog/models.py
+msgid "visible in shop"
+msgstr "ορατό στο κατάστημα"
+
+#: catalog/models.py
+msgid "available to order"
+msgstr "διαθέσιμο για παραγγελία"
+
+#: catalog/models.py
+msgid "show on homepage"
+msgstr "προβολή στην αρχική"
+
+#: catalog/models.py
+msgid "created"
+msgstr "δημιουργήθηκε"
+
+#: catalog/models.py
+msgid "product"
+msgstr "προϊόν"
+
+#: catalog/models.py
+msgid "products"
+msgstr "προϊόντα"
+
+#: catalog/models.py
+msgid "images"
+msgstr "φωτογραφίες"
+
+#: catalog/models.py
+msgid "e.g. 20 x 26 cm"
+msgstr "π.χ. 20 x 26 εκ."
+
+#: catalog/models.py
+msgid "Retail price that individuals pay, VAT included."
+msgstr "Τιμή λιανικής που πληρώνουν οι ιδιώτες, με ΦΠΑ."
+
+#: catalog/models.py
+msgid "0 = no discount. Applies to individuals and businesses."
+msgstr "0 = χωρίς έκπτωση. Ισχύει για ιδιώτες και επιχειρήσεις."
+
+#: catalog/models.py
+msgid ""
+"Optional wholesale price. If empty, businesses see the retail price without "
+"VAT."
+msgstr ""
+"Προαιρετική τιμή χονδρικής. Αν μείνει κενό, οι επιχειρήσεις βλέπουν την τιμή"
+" λιανικής χωρίς ΦΠΑ."
+
+#: catalog/models.py
+msgid ""
+"Untick when sold out. The product stays visible but cannot be added to the "
+"cart."
+msgstr ""
+"Αποεπιλέξτε όταν εξαντληθεί. Το προϊόν παραμένει ορατό αλλά δεν μπαίνει στο "
+"καλάθι."
+
+#: catalog/models.py
+msgid "The lowest number is the main photo."
+msgstr "Ο μικρότερος αριθμός είναι η κύρια φωτογραφία."
+
+#: config/settings.py
+msgid "Greek"
+msgstr "Ελληνικά"
+
+#: config/settings.py
+msgid "English"
+msgstr "Αγγλικά"
+
+#: core/admin.py
+msgid "Shop"
+msgstr "Κατάστημα"
+
+#: core/admin.py
+msgid "Contact"
+msgstr "Επικοινωνία"
+
+#: core/admin.py
+msgid "Prices & shipping"
+msgstr "Τιμές & μεταφορικά"
+
+#: core/admin.py
+msgid "Bank transfer details (sent in the payment email)"
+msgstr "Στοιχεία τραπεζικής κατάθεσης (αποστέλλονται στο email πληρωμής)"
+
+#: core/apps.py
+msgid "Website"
+msgstr "Ιστότοπος"
+
+#: core/forms.py
+msgid "Your name"
+msgstr "Το όνομά σας"
+
+#: core/forms.py
+msgid "Email"
+msgstr "Email"
+
+#: core/forms.py
+msgid "Message"
+msgstr "Μήνυμα"
+
+#: core/forms.py
+msgid "We could not confirm that you are a person. Please try again."
+msgstr "Δεν μπορέσαμε να επιβεβαιώσουμε ότι είστε άνθρωπος. Δοκιμάστε ξανά."
+
+#: core/forms.py
+#, python-format
+msgid "You can upload up to %(n)s images."
+msgstr "Μπορείτε να ανεβάσετε έως %(n)s φωτογραφίες."
+
+#: core/images.py
+#, python-format
+msgid "Each image must be smaller than %(mb)s MB."
+msgstr "Κάθε φωτογραφία πρέπει να είναι μικρότερη από %(mb)s MB."
+
+#: core/models.py
+msgid "shop name"
+msgstr "όνομα καταστήματος"
+
+#: core/models.py
+msgid "tagline (Greek)"
+msgstr "σύνθημα (ελληνικά)"
+
+#: core/models.py
+msgid "tagline (English)"
+msgstr "σύνθημα (αγγλικά)"
+
+#: core/models.py
+msgid "top bar message (Greek)"
+msgstr "μήνυμα επάνω μπάρας (ελληνικά)"
+
+#: core/models.py
+msgid "top bar message (English)"
+msgstr "μήνυμα επάνω μπάρας (αγγλικά)"
+
+#: core/models.py
+msgid "homepage image"
+msgstr "φωτογραφία αρχικής σελίδας"
+
+#: core/models.py
+msgid "contact email"
+msgstr "email επικοινωνίας"
+
+#: core/models.py
+msgid "phone"
+msgstr "τηλέφωνο"
+
+#: core/models.py
+msgid "business hours"
+msgstr "ωράριο"
+
+#: core/models.py
+msgid "VAT rate %"
+msgstr "συντελεστής ΦΠΑ %"
+
+#: core/models.py
+msgid "default shipping cost (€)"
+msgstr "προεπιλεγμένα μεταφορικά (€)"
+
+#: core/models.py
+msgid "free shipping over (€)"
+msgstr "δωρεάν μεταφορικά άνω των (€)"
+
+#: core/models.py
+msgid "bank"
+msgstr "τράπεζα"
+
+#: core/models.py
+msgid "account holder"
+msgstr "δικαιούχος λογαριασμού"
+
+#: core/models.py
+msgid "other bank accounts"
+msgstr "άλλοι τραπεζικοί λογαριασμοί"
+
+#: core/models.py
+msgid "days to pay"
+msgstr "ημέρες για πληρωμή"
+
+#: core/models.py
+msgid "shop settings"
+msgstr "ρυθμίσεις καταστήματος"
+
+#: core/models.py
+msgid "title (Greek)"
+msgstr "τίτλος (ελληνικά)"
+
+#: core/models.py
+msgid "title (English)"
+msgstr "τίτλος (αγγλικά)"
+
+#: core/models.py
+msgid "text (Greek)"
+msgstr "κείμενο (ελληνικά)"
+
+#: core/models.py
+msgid "text (English)"
+msgstr "κείμενο (αγγλικά)"
+
+#: core/models.py
+msgid "show in footer"
+msgstr "εμφάνιση στο υποσέλιδο"
+
+#: core/models.py
+msgid "page"
+msgstr "σελίδα"
+
+#: core/models.py
+msgid "pages"
+msgstr "σελίδες"
+
+#: core/models.py
+msgid "Short message in the thin bar at the very top, e.g. a shipping offer."
+msgstr ""
+"Σύντομο μήνυμα στη λεπτή μπάρα στην κορυφή, π.χ. προσφορά μεταφορικών."
+
+#: core/models.py
+msgid ""
+"Shown to customers, and where new order/request notifications are sent."
+msgstr ""
+"Εμφανίζεται στους πελάτες. Εδώ στέλνονται και οι ειδοποιήσεις για νέες "
+"παραγγελίες και αιτήματα."
+
+#: core/models.py
+msgid ""
+"Pre-filled on every new order. You can change it per order before accepting."
+msgstr ""
+"Συμπληρώνεται αυτόματα σε κάθε νέα παραγγελία. Μπορείτε να το αλλάξετε ανά "
+"παραγγελία πριν την αποδοχή."
+
+#: core/models.py
+msgid "Leave empty for no free-shipping offer."
+msgstr "Αφήστε κενό αν δεν υπάρχουν δωρεάν μεταφορικά."
+
+#: core/models.py
+msgid "Optional: more banks, one per line."
+msgstr "Προαιρετικά: περισσότερες τράπεζες, μία ανά γραμμή."
+
+#: core/models.py
+msgid "Deadline mentioned in the payment email."
+msgstr "Προθεσμία που αναφέρεται στο email πληρωμής."
+
+#: core/models.py
+msgid "Shop settings"
+msgstr "Ρυθμίσεις καταστήματος"
+
+#: core/models.py
+msgid "Used in the link, e.g. 'about'."
+msgstr "Χρησιμοποιείται στον σύνδεσμο, π.χ. 'about'."
+
+#: core/models.py
+msgid "Plain text. Leave an empty line between paragraphs."
+msgstr "Απλό κείμενο. Αφήστε μια κενή γραμμή ανάμεσα στις παραγράφους."
+
+#: core/templatetags/shop.py
+msgid "New order requests to review"
+msgstr "Νέα αιτήματα παραγγελίας για έλεγχο"
+
+#: core/templatetags/shop.py
+msgid "Orders awaiting payment"
+msgstr "Παραγγελίες σε αναμονή πληρωμής"
+
+#: core/templatetags/shop.py
+msgid "Paid orders to ship"
+msgstr "Πληρωμένες παραγγελίες για αποστολή"
+
+#: core/templatetags/shop.py
+msgid "New custom requests"
+msgstr "Νέα αιτήματα κατά παραγγελία"
+
+#: core/templatetags/shop.py
+msgid "Orders with unanswered messages"
+msgstr "Παραγγελίες με αναπάντητα μηνύματα"
+
+#: core/templatetags/shop.py
+msgid "Custom requests with unanswered messages"
+msgstr "Αιτήματα με αναπάντητα μηνύματα"
+
+#: core/templatetags/shop.py
+msgid "Business accounts to approve"
+msgstr "Επαγγελματικοί λογαριασμοί προς έγκριση"
+
+#: core/templatetags/shop.py
+msgid "Shipments with a delivery problem"
+msgstr "Αποστολές με πρόβλημα παράδοσης"
+
+#: core/views.py
+msgid "Too many messages from your connection. Please try again later."
+msgstr "Πάρα πολλά μηνύματα από τη σύνδεσή σας. Δοκιμάστε ξανά αργότερα."
+
+#: core/views.py
+msgid "Thank you! We received your message and will reply soon."
+msgstr "Ευχαριστούμε! Λάβαμε το μήνυμά σας και θα απαντήσουμε σύντομα."
+
+#: core/views.py
+#, python-format
+msgid "Contact form: %(name)s"
+msgstr "Φόρμα επικοινωνίας: %(name)s"
+
+#: orders/admin.py
+msgid "archive"
+msgstr "αρχείο"
+
+#: orders/admin.py
+msgid "delivery"
+msgstr "παράδοση"
+
+#: orders/admin.py
+msgid "reference photos from the customer"
+msgstr "φωτογραφίες αναφοράς από τον πελάτη"
+
+#: orders/admin.py
+msgid "No messages yet."
+msgstr "Δεν υπάρχουν μηνύματα ακόμη."
+
+#: orders/admin.py
+msgid "Active"
+msgstr "Ενεργές"
+
+#: orders/admin.py
+msgid "Send a message to the customer"
+msgstr "Αποστολή μηνύματος στον πελάτη"
+
+#: orders/admin.py
+msgid ""
+"Emailed to the customer and shown in their account. They can reply from "
+"there."
+msgstr ""
+"Στέλνεται με email στον πελάτη και εμφανίζεται στον λογαριασμό του, από όπου"
+" μπορεί να απαντήσει."
+
+#: orders/admin.py
+msgid "conversation"
+msgstr "συνομιλία"
+
+#: orders/admin.py
+msgid "business"
+msgstr "επιχείρηση"
+
+#: orders/admin.py
+msgid "individual"
+msgstr "ιδιώτης"
+
+#: orders/admin.py
+msgid "customer account"
+msgstr "λογαριασμός πελάτη"
+
+#: orders/admin.py
+msgid "total"
+msgstr "σύνολο"
+
+#: orders/admin.py
+msgid "Email the customer about a status change"
+msgstr "Ενημέρωση του πελάτη με email για αλλαγή κατάστασης"
+
+#: orders/admin.py
+msgid "Note for the status email"
+msgstr "Σημείωση για το email κατάστασης"
+
+#: orders/admin.py
+msgid ""
+"Optional, e.g. why you declined, or 'we added the shipping cost'. Shown in "
+"the email and in the customer's order history."
+msgstr ""
+"Προαιρετικό, π.χ. γιατί απορρίψατε ή «προσθέσαμε τα μεταφορικά». Εμφανίζεται"
+" στο email και στο ιστορικό της παραγγελίας."
+
+#: orders/admin.py
+msgid ""
+"Automatic tracking is on: with the number (and the courier's link), the "
+"order moves to In transit and Delivered by itself and the customer is "
+"emailed each time."
+msgstr ""
+"Η αυτόματη παρακολούθηση είναι ενεργή: με τον αριθμό (και τον σύνδεσμο της "
+"εταιρείας courier), η παραγγελία περνά μόνη της σε «Σε μεταφορά» και "
+"«Παραδόθηκε» και ο πελάτης ενημερώνεται με email κάθε φορά."
+
+#: orders/admin.py
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: orders/admin.py
+msgid "Shipping address"
+msgstr "Διεύθυνση αποστολής"
+
+#: orders/admin.py
+msgid "Amounts"
+msgstr "Ποσά"
+
+#: orders/admin.py
+msgid "Conversation"
+msgstr "Συνομιλία"
+
+#: orders/admin.py
+msgid "Private"
+msgstr "Ιδιωτικά"
+
+#: orders/admin.py
+msgid "type"
+msgstr "τύπος"
+
+#: orders/admin.py
+msgid "incl. VAT"
+msgstr "με ΦΠΑ"
+
+#: orders/admin.py
+msgid "excl. VAT"
+msgstr "χωρίς ΦΠΑ"
+
+#: orders/admin.py
+msgid "Items"
+msgstr "Είδη"
+
+#: orders/admin.py
+msgid "Shipping"
+msgstr "Μεταφορικά"
+
+#: orders/admin.py
+msgid "Net amount"
+msgstr "Καθαρό ποσό"
+
+#: orders/admin.py
+msgid "VAT"
+msgstr "ΦΠΑ"
+
+#: orders/admin.py
+msgid "Total to pay"
+msgstr "Σύνολο πληρωμής"
+
+#: orders/admin.py
+msgid "totals"
+msgstr "σύνολα"
+
+#: orders/admin.py
+msgid ""
+"Off. Add a 17TRACK API key (TRACKING_API_KEY) to update shipped orders "
+"automatically."
+msgstr ""
+"Ανενεργή. Προσθέστε ένα κλειδί API του 17TRACK (TRACKING_API_KEY) για "
+"αυτόματη ενημέρωση των απεσταλμένων παραγγελιών."
+
+#: orders/admin.py
+msgid "Starts when you save the order as Shipped with a tracking number."
+msgstr ""
+"Ξεκινά όταν αποθηκεύσετε την παραγγελία ως «Απεστάλη» με αριθμό αποστολής."
+
+#: orders/admin.py
+msgid "Waiting for the first update from the courier."
+msgstr "Αναμονή για την πρώτη ενημέρωση από την εταιρεία courier."
+
+#: orders/admin.py
+msgid "Last checked:"
+msgstr "Τελευταίος έλεγχος:"
+
+#: orders/admin.py
+msgid "automatic tracking"
+msgstr "αυτόματη παρακολούθηση"
+
+#: orders/admin.py
+msgid "Accept → email payment details"
+msgstr "Αποδοχή → email με στοιχεία πληρωμής"
+
+#: orders/admin.py
+msgid "Payment received"
+msgstr "Η πληρωμή ελήφθη"
+
+#: orders/admin.py
+msgid "Shipped (only orders with tracking info)"
+msgstr "Απεστάλη (μόνο παραγγελίες με αριθμό αποστολής)"
+
+#: orders/admin.py
+msgid "Delivered orders were moved to the archive."
+msgstr "Οι παραδομένες παραγγελίες μεταφέρθηκαν στο αρχείο."
+
+#: orders/admin.py
+msgid "Move to the archive"
+msgstr "Μεταφορά στο αρχείο"
+
+#: orders/admin.py
+msgid "Bring back from the archive"
+msgstr "Επαναφορά από το αρχείο"
+
+#: orders/admin.py
+msgid "Check the couriers now"
+msgstr "Έλεγχος των courier τώρα"
+
+#: orders/admin.py
+msgid "Send this offer to the customer now"
+msgstr "Αποστολή της προσφοράς στον πελάτη τώρα"
+
+#: orders/admin.py
+msgid ""
+"Emails the price to the customer. They can accept it from their account, "
+"which creates an order and sends them the payment details."
+msgstr ""
+"Στέλνει την τιμή στον πελάτη με email. Μπορεί να την αποδεχθεί από τον "
+"λογαριασμό του· τότε δημιουργείται παραγγελία και λαμβάνει τα στοιχεία "
+"πληρωμής."
+
+#: orders/admin.py
+msgid "Request"
+msgstr "Αίτημα"
+
+#: orders/admin.py
+msgid "Your offer"
+msgstr "Η προσφορά σας"
+
+#: orders/admin.py
+msgid "You"
+msgstr "Εσείς"
+
+#: orders/admin.py
+msgid "Unanswered messages"
+msgstr "Αναπάντητα μηνύματα"
+
+#: orders/admin.py
+msgid "Archived"
+msgstr "Αρχειοθετημένες"
+
+#: orders/admin.py
+msgid "All orders"
+msgstr "Όλες οι παραγγελίες"
+
+#: orders/admin.py
+msgid "Delivery problems"
+msgstr "Προβλήματα παράδοσης"
+
+#: orders/admin.py
+msgid "Your message was sent to the customer."
+msgstr "Το μήνυμά σας στάλθηκε στον πελάτη."
+
+#: orders/admin.py
+msgid "Add a tracking number or link so the customer can follow the parcel."
+msgstr ""
+"Προσθέστε αριθμό αποστολής ή σύνδεσμο ώστε ο πελάτης να παρακολουθεί το "
+"δέμα."
+
+#: orders/admin.py
+msgid ""
+"Change item prices or shipping below before accepting. Totals update when "
+"you save."
+msgstr ""
+"Αλλάξτε τιμές ειδών ή μεταφορικά παρακάτω πριν την αποδοχή. Τα σύνολα "
+"ενημερώνονται με την αποθήκευση."
+
+#: orders/admin.py
+msgid ""
+"Automatic tracking is on: the order will move to In transit and Delivered by"
+" itself."
+msgstr ""
+"Η αυτόματη παρακολούθηση ενεργοποιήθηκε: η παραγγελία θα περάσει μόνη της σε"
+" «Σε μεταφορά» και «Παραδόθηκε»."
+
+#: orders/admin.py
+msgid ""
+"The order was moved to the archive. You can find it with the search box or "
+"the Archive filter."
+msgstr ""
+"Η παραγγελία μεταφέρθηκε στο αρχείο. Μπορείτε να τη βρείτε με την αναζήτηση "
+"ή με το φίλτρο «Αρχείο»."
+
+#: orders/admin.py
+#, python-format
+msgid "%(n)s order(s) updated and customers emailed."
+msgstr "Ενημερώθηκαν %(n)s παραγγελίες και στάλθηκαν email στους πελάτες."
+
+#: orders/admin.py
+#, python-format
+msgid "%(n)s order(s) moved to the archive."
+msgstr "%(n)s παραγγελία(-ες) μεταφέρθηκαν στο αρχείο."
+
+#: orders/admin.py
+#, python-format
+msgid "%(n)s order(s) brought back to the active list."
+msgstr "%(n)s παραγγελία(-ες) επανήλθαν στις ενεργές."
+
+#: orders/admin.py
+msgid "Automatic tracking is off: add a 17TRACK API key (TRACKING_API_KEY)."
+msgstr ""
+"Η αυτόματη παρακολούθηση είναι ανενεργή: προσθέστε ένα κλειδί API του "
+"17TRACK (TRACKING_API_KEY)."
+
+#: orders/admin.py
+#, python-format
+msgid ""
+"Couriers checked. %(n)s order(s) moved on and their customers were emailed."
+msgstr ""
+"Ο έλεγχος ολοκληρώθηκε. %(n)s παραγγελία(-ες) προχώρησαν και οι πελάτες "
+"ενημερώθηκαν με email."
+
+#: orders/admin.py
+msgid "Enter the offer price first."
+msgstr "Συμπληρώστε πρώτα την τιμή προσφοράς."
+
+#: orders/admin.py
+msgid ""
+"For individuals the price includes VAT; for businesses it excludes VAT."
+msgstr ""
+"Για ιδιώτες η τιμή περιλαμβάνει ΦΠΑ· για επιχειρήσεις είναι χωρίς ΦΠΑ."
+
+#: orders/admin.py
+#, python-format
+msgid "Automatic tracking could not start: %(error)s"
+msgstr "Η αυτόματη παρακολούθηση δεν ξεκίνησε: %(error)s"
+
+#: orders/admin.py
+msgid ""
+"Status saved, but the email could not be sent. Check the email settings."
+msgstr ""
+"Η κατάσταση αποθηκεύτηκε, αλλά το email δεν στάλθηκε. Ελέγξτε τις ρυθμίσεις "
+"email."
+
+#: orders/admin.py
+#, python-format
+msgid "%(n)s order(s) skipped because their status did not fit."
+msgstr "%(n)s παραγγελίες παραλείφθηκαν επειδή η κατάστασή τους δεν ταίριαζε."
+
+#: orders/admin.py
+msgid "The offer was emailed to the customer."
+msgstr "Η προσφορά στάλθηκε στον πελάτη με email."
+
+#: orders/admin.py
+msgid "Offer saved, but the email could not be sent."
+msgstr "Η προσφορά αποθηκεύτηκε, αλλά το email δεν στάλθηκε."
+
+#: orders/admin.py
+#, python-format
+msgid ""
+"Automatic tracking could not start (%(error)s). It will try again at the "
+"next check."
+msgstr ""
+"Η αυτόματη παρακολούθηση δεν ξεκίνησε (%(error)s). Θα ξαναδοκιμάσει στον "
+"επόμενο έλεγχο."
+
+#: orders/admin.py
+#, python-format
+msgid "Could not check the couriers: %(error)s"
+msgstr "Δεν ήταν δυνατός ο έλεγχος των courier: %(error)s"
+
+#: orders/admin.py
+#, python-format
+msgid "The customer was emailed: %(status)s"
+msgstr "Ο πελάτης ενημερώθηκε με email: %(status)s"
+
+#: orders/apps.py
+msgid "Orders & requests"
+msgstr "Παραγγελίες & αιτήματα"
+
+#: orders/forms.py
+msgid "Full name"
+msgstr "Ονοματεπώνυμο"
+
+#: orders/forms.py
+msgid "Phone"
+msgstr "Τηλέφωνο"
+
+#: orders/forms.py
+msgid "Company name"
+msgstr "Επωνυμία"
+
+#: orders/forms.py
+msgid "Street address"
+msgstr "Οδός και αριθμός"
+
+#: orders/forms.py
+msgid "City"
+msgstr "Πόλη"
+
+#: orders/forms.py
+msgid "Postal code"
+msgstr "Ταχυδρομικός κώδικας"
+
+#: orders/forms.py
+msgid "Country"
+msgstr "Χώρα"
+
+#: orders/forms.py
+msgid "Save this address to my account"
+msgstr "Αποθήκευση της διεύθυνσης στον λογαριασμό μου"
+
+#: orders/forms.py
+msgid "From your account details. To change them, contact us."
+msgstr ""
+"Από τα στοιχεία του λογαριασμού σας. Για αλλαγή, επικοινωνήστε μαζί μας."
+
+#: orders/forms.py
+msgid "Notes for us"
+msgstr "Σημειώσεις για εμάς"
+
+#: orders/forms.py
+msgid "Reference photos"
+msgstr "Φωτογραφίες αναφοράς"
+
+#: orders/forms.py
+msgid "A photo of the icon you have in mind helps a lot. Up to 8 images."
+msgstr ""
+"Μια φωτογραφία της εικόνας που έχετε στο μυαλό σας βοηθά πολύ. Έως 8 "
+"φωτογραφίες."
+
+#: orders/forms.py
+msgid "Your message"
+msgstr "Το μήνυμά σας"
+
+#: orders/forms.py
+msgid "e.g. engraving text, preferred delivery time…"
+msgstr "π.χ. κείμενο χάραξης, προτιμώμενη ώρα παράδοσης…"
+
+#: orders/forms.py
+msgid ""
+"Describe the icon: saint or scene, style, background (gold, blue…), wood, "
+"any inscription, who it is for…"
+msgstr ""
+"Περιγράψτε την εικόνα: άγιος ή παράσταση, τεχνοτροπία, φόντο (χρυσό, μπλε…),"
+" ξύλο, επιγραφή, για ποιον προορίζεται…"
+
+#: orders/forms.py
+msgid "e.g. 30 x 40 cm"
+msgstr "π.χ. 30 x 40 εκ."
+
+#: orders/forms.py
+msgid "e.g. up to €300"
+msgstr "π.χ. έως 300 €"
+
+#: orders/forms.py
+msgid "Write a message to the shop…"
+msgstr "Γράψτε ένα μήνυμα προς το κατάστημα…"
+
+#: orders/models.py
+msgid "order no."
+msgstr "αρ. παραγγελίας"
+
+#: orders/models.py
+msgid "status"
+msgstr "κατάσταση"
+
+#: orders/models.py
+msgid "business order"
+msgstr "παραγγελία επιχείρησης"
+
+#: orders/models.py
+msgid "prices include VAT"
+msgstr "οι τιμές περιλαμβάνουν ΦΠΑ"
+
+#: orders/models.py
+msgid "full name"
+msgstr "ονοματεπώνυμο"
+
+#: orders/models.py
+msgid "customer notes"
+msgstr "σημειώσεις πελάτη"
+
+#: orders/models.py
+msgid "shipping cost (€)"
+msgstr "μεταφορικά (€)"
+
+#: orders/models.py
+msgid "tracking number"
+msgstr "αριθμός αποστολής"
+
+#: orders/models.py
+msgid "tracking link"
+msgstr "σύνδεσμος παρακολούθησης"
+
+#: orders/models.py
+msgid "courier status"
+msgstr "κατάσταση courier"
+
+#: orders/models.py
+msgid "latest courier update"
+msgstr "τελευταία ενημέρωση courier"
+
+#: orders/models.py
+msgid "private notes"
+msgstr "ιδιωτικές σημειώσεις"
+
+#: orders/models.py
+msgid "archived"
+msgstr "αρχειοθετήθηκε"
+
+#: orders/models.py
+msgid "updated"
+msgstr "ενημερώθηκε"
+
+#: orders/models.py
+msgid "order"
+msgstr "παραγγελία"
+
+#: orders/models.py
+msgid "description"
+msgstr "περιγραφή"
+
+#: orders/models.py
+msgid "quantity"
+msgstr "ποσότητα"
+
+#: orders/models.py
+msgid "unit price (€)"
+msgstr "τιμή μονάδας (€)"
+
+#: orders/models.py
+msgid "item"
+msgstr "είδος"
+
+#: orders/models.py
+msgid "items"
+msgstr "είδη"
+
+#: orders/models.py
+msgid "note to customer"
+msgstr "σημείωση προς τον πελάτη"
+
+#: orders/models.py
+msgid "email sent"
+msgstr "στάλθηκε email"
+
+#: orders/models.py
+msgid "date"
+msgstr "ημερομηνία"
+
+#: orders/models.py
+msgid "status change"
+msgstr "αλλαγή κατάστασης"
+
+#: orders/models.py
+msgid "status history"
+msgstr "ιστορικό κατάστασης"
+
+#: orders/models.py
+msgid "request no."
+msgstr "αρ. αιτήματος"
+
+#: orders/models.py
+msgid "which icon"
+msgstr "ποια εικόνα"
+
+#: orders/models.py
+msgid "details"
+msgstr "λεπτομέρειες"
+
+#: orders/models.py
+msgid "preferred size"
+msgstr "επιθυμητό μέγεθος"
+
+#: orders/models.py
+msgid "budget"
+msgstr "προϋπολογισμός"
+
+#: orders/models.py
+msgid "needed by"
+msgstr "χρειάζεται έως"
+
+#: orders/models.py
+msgid "business request"
+msgstr "αίτημα επιχείρησης"
+
+#: orders/models.py
+msgid "offer price (€)"
+msgstr "τιμή προσφοράς (€)"
+
+#: orders/models.py
+msgid "offer shipping (€)"
+msgstr "μεταφορικά προσφοράς (€)"
+
+#: orders/models.py
+msgid "offer details"
+msgstr "λεπτομέρειες προσφοράς"
+
+#: orders/models.py
+msgid "custom request"
+msgstr "αίτημα κατά παραγγελία"
+
+#: orders/models.py
+msgid "custom requests"
+msgstr "αιτήματα κατά παραγγελία"
+
+#: orders/models.py
+msgid "reference image"
+msgstr "φωτογραφία αναφοράς"
+
+#: orders/models.py
+msgid "reference images"
+msgstr "φωτογραφίες αναφοράς"
+
+#: orders/models.py
+msgid "from the shop"
+msgstr "από το κατάστημα"
+
+#: orders/models.py
+msgid "message"
+msgstr "μήνυμα"
+
+#: orders/models.py
+msgid "read"
+msgstr "αναγνώστηκε"
+
+#: orders/models.py
+msgid "messages"
+msgstr "μηνύματα"
+
+#: orders/models.py
+msgid "Request received"
+msgstr "Το αίτημα ελήφθη"
+
+#: orders/models.py
+msgid "Accepted – awaiting payment"
+msgstr "Εγκρίθηκε – αναμονή πληρωμής"
+
+#: orders/models.py
+msgid "Paid – being prepared"
+msgstr "Πληρώθηκε – σε προετοιμασία"
+
+#: orders/models.py
+msgid "Shipped"
+msgstr "Απεστάλη"
+
+#: orders/models.py
+msgid "In transit"
+msgstr "Σε μεταφορά"
+
+#: orders/models.py
+msgid "Delivered"
+msgstr "Παραδόθηκε"
+
+#: orders/models.py
+msgid "Declined"
+msgstr "Απορρίφθηκε"
+
+#: orders/models.py
+msgid "Cancelled"
+msgstr "Ακυρώθηκε"
+
+#: orders/models.py
+msgid "No information from the courier yet"
+msgstr "Δεν υπάρχει ακόμη ενημέρωση από την εταιρεία courier"
+
+#: orders/models.py
+msgid "Courier has the details, parcel not picked up yet"
+msgstr ""
+"Η εταιρεία courier έχει τα στοιχεία, το δέμα δεν έχει παραληφθεί ακόμη"
+
+#: orders/models.py
+msgid "Out for delivery"
+msgstr "Σε διανομή"
+
+#: orders/models.py
+msgid "Ready for pickup"
+msgstr "Έτοιμο για παραλαβή"
+
+#: orders/models.py
+msgid "Delivery attempt failed"
+msgstr "Αποτυχημένη προσπάθεια παράδοσης"
+
+#: orders/models.py
+msgid "Problem with the shipment"
+msgstr "Πρόβλημα με την αποστολή"
+
+#: orders/models.py
+msgid "No courier updates for a long time"
+msgstr "Καμία ενημέρωση από την εταιρεία courier για μεγάλο διάστημα"
+
+#: orders/models.py
+msgid ""
+"Ticked for individuals. Unticked for businesses: VAT is added on top of the "
+"item prices."
+msgstr ""
+"Επιλεγμένο για ιδιώτες. Μη επιλεγμένο για επιχειρήσεις: ο ΦΠΑ προστίθεται "
+"στις τιμές."
+
+#: orders/models.py
+msgid "Set to 0 for EU businesses with a valid VAT number (reverse charge)."
+msgstr ""
+"Βάλτε 0 για επιχειρήσεις της ΕΕ με έγκυρο ΑΦΜ (ενδοκοινοτική – αντίστροφη "
+"χρέωση)."
+
+#: orders/models.py
+msgid ""
+"Same basis as the item prices (incl. VAT for individuals, excl. VAT for "
+"businesses)."
+msgstr ""
+"Ίδια βάση με τις τιμές των ειδών (με ΦΠΑ για ιδιώτες, χωρίς ΦΠΑ για "
+"επιχειρήσεις)."
+
+#: orders/models.py
+msgid "Only you can see these."
+msgstr "Τις βλέπετε μόνο εσείς."
+
+#: orders/models.py
+msgid "Received"
+msgstr "Ελήφθη"
+
+#: orders/models.py
+msgid "In discussion"
+msgstr "Σε συζήτηση"
+
+#: orders/models.py
+msgid "Offer sent"
+msgstr "Στάλθηκε προσφορά"
+
+#: orders/models.py
+msgid "Offer accepted"
+msgstr "Η προσφορά έγινε δεκτή"
+
+#: orders/models.py
+msgid "Closed"
+msgstr "Έκλεισε"
+
+#: orders/models.py
+msgid "e.g. Saint Nicholas, Panagia Glykofilousa, a family patron saint…"
+msgstr ""
+"π.χ. Άγιος Νικόλαος, Παναγία Γλυκοφιλούσα, ο προστάτης άγιος της "
+"οικογένειας…"
+
+#: orders/models.py
+msgid ""
+"Total for all pieces. Incl. VAT for individuals, excl. VAT for businesses."
+msgstr ""
+"Σύνολο για όλα τα τεμάχια. Με ΦΠΑ για ιδιώτες, χωρίς ΦΠΑ για επιχειρήσεις."
+
+#: orders/models.py
+msgid "Shown with the offer: materials, delivery time, etc."
+msgstr "Εμφανίζεται μαζί με την προσφορά: υλικά, χρόνος παράδοσης κ.λπ."
+
+#: orders/services.py
+#, python-format
+msgid "New order request %(no)s"
+msgstr "Νέο αίτημα παραγγελίας %(no)s"
+
+#: orders/services.py
+#, python-format
+msgid "Order %(no)s was cancelled by the customer"
+msgstr "Η παραγγελία %(no)s ακυρώθηκε από τον πελάτη"
+
+#: orders/services.py
+#, python-format
+msgid "New custom request %(no)s"
+msgstr "Νέο αίτημα κατά παραγγελία %(no)s"
+
+#: orders/services.py
+#, python-format
+msgid "Offer accepted: %(req)s → order %(no)s"
+msgstr "Η προσφορά έγινε δεκτή: %(req)s → παραγγελία %(no)s"
+
+#: orders/services.py
+#, python-format
+msgid "Offer declined: %(req)s"
+msgstr "Η προσφορά απορρίφθηκε: %(req)s"
+
+#: orders/services.py
+#, python-format
+msgid "New message from %(name)s about %(no)s"
+msgstr "Νέο μήνυμα από %(name)s για %(no)s"
+
+#: orders/services.py
+#, python-format
+msgid "Total: €%(total)s"
+msgstr "Σύνολο: %(total)s €"
+
+#: orders/services.py
+#, python-format
+msgid "%(subject)s (%(qty)s pieces)"
+msgstr "%(subject)s (%(qty)s τεμάχια)"
+
+#: orders/tracking.py
+#, python-format
+msgid "Order %(no)s was delivered"
+msgstr "Η παραγγελία %(no)s παραδόθηκε"
+
+#: orders/tracking.py
+msgid "The order was moved to the archive."
+msgstr "Η παραγγελία μεταφέρθηκε στο αρχείο."
+
+#: orders/tracking.py
+#, python-format
+msgid "Delivery problem with order %(no)s"
+msgstr "Πρόβλημα παράδοσης στην παραγγελία %(no)s"
+
+#: orders/tracking.py
+msgid ""
+"The courier could not be recognised from the tracking number. Add the "
+"courier's tracking link as well."
+msgstr ""
+"Η εταιρεία courier δεν αναγνωρίστηκε από τον αριθμό αποστολής. Προσθέστε και"
+" τον σύνδεσμο παρακολούθησης της εταιρείας."
+
+#: orders/tracking.py
+msgid "Tracking number"
+msgstr "Αριθμός αποστολής"
+
+#: orders/views.py
+#, python-format
+msgid "“%(name)s” was added to your cart."
+msgstr "Το «%(name)s» προστέθηκε στο καλάθι σας."
+
+#: orders/views.py
+msgid ""
+"You have reached the limit for now. Please contact us if you need more."
+msgstr ""
+"Φτάσατε το όριο για την ώρα. Επικοινωνήστε μαζί μας αν χρειάζεστε "
+"περισσότερα."
+
+#: orders/views.py
+msgid "Your cart is empty."
+msgstr "Το καλάθι σας είναι άδειο."
+
+#: orders/views.py
+msgid "Message sent. We will reply as soon as possible."
+msgstr "Το μήνυμα στάλθηκε. Θα απαντήσουμε το συντομότερο."
+
+#: orders/views.py
+msgid "Your order request was cancelled."
+msgstr "Το αίτημα παραγγελίας σας ακυρώθηκε."
+
+#: orders/views.py
+msgid "Thank you! We received your request and will contact you soon."
+msgstr ""
+"Ευχαριστούμε! Λάβαμε το αίτημά σας και θα επικοινωνήσουμε μαζί σας σύντομα."
+
+#: orders/views.py
+msgid "Thank you! We sent you an email with the payment details."
+msgstr "Ευχαριστούμε! Σας στείλαμε email με τα στοιχεία πληρωμής."
+
+#: orders/views.py
+msgid ""
+"You declined the offer. You can still send us a message if you change your "
+"mind."
+msgstr "Απορρίψατε την προσφορά. Αν αλλάξετε γνώμη, στείλτε μας ένα μήνυμα."
+
+#: templates/404.html
+msgid "Page not found"
+msgstr "Η σελίδα δεν βρέθηκε"
+
+#: templates/404.html
+msgid "The page you are looking for does not exist or has moved."
+msgstr "Η σελίδα που αναζητάτε δεν υπάρχει ή έχει μετακινηθεί."
+
+#: templates/404.html
+msgid "Browse the icons"
+msgstr "Δείτε τις εικόνες"
+
+#: templates/accounts/dashboard.html
+#, python-format
+msgid "You have %(n)s new message from us."
+msgid_plural "You have %(n)s new messages from us."
+msgstr[0] "Έχετε %(n)s νέο μήνυμα από εμάς."
+msgstr[1] "Έχετε %(n)s νέα μηνύματα από εμάς."
+
+#: templates/accounts/dashboard.html
+#, python-format
+msgid "Hello, %(name)s"
+msgstr "Γεια σας, %(name)s"
+
+#: templates/accounts/dashboard.html
+msgid "Please confirm your email address to start ordering."
+msgstr "Επιβεβαιώστε τη διεύθυνση email σας για να μπορείτε να παραγγείλετε."
+
+#: templates/accounts/dashboard.html
+msgid "Why and how?"
+msgstr "Γιατί και πώς;"
+
+#: templates/accounts/dashboard.html
+msgid ""
+"Your business account is being reviewed. Once approved you will see prices "
+"without VAT. We will email you."
+msgstr ""
+"Ο επαγγελματικός σας λογαριασμός ελέγχεται. Μετά την έγκριση θα βλέπετε "
+"τιμές χωρίς ΦΠΑ. Θα σας ενημερώσουμε με email."
+
+#: templates/accounts/dashboard.html
+msgid "business prices active"
+msgstr "ενεργές τιμές επιχειρήσεων"
+
+#: templates/accounts/dashboard.html
+msgid "personal account"
+msgstr "προσωπικός λογαριασμός"
+
+#: templates/accounts/dashboard.html
+msgid "Recent orders"
+msgstr "Πρόσφατες παραγγελίες"
+
+#: templates/accounts/dashboard.html
+msgid "New request"
+msgstr "Νέο αίτημα"
+
+#: templates/accounts/layout.html
+msgid "Overview"
+msgstr "Επισκόπηση"
+
+#: templates/accounts/layout.html
+msgid "My orders"
+msgstr "Οι παραγγελίες μου"
+
+#: templates/accounts/login.html
+msgid "Log in"
+msgstr "Σύνδεση"
+
+#: templates/accounts/login.html
+msgid "Forgot your password?"
+msgstr "Ξεχάσατε τον κωδικό σας;"
+
+#: templates/accounts/login.html
+msgid "New here?"
+msgstr "Πρώτη φορά εδώ;"
+
+#: templates/accounts/password_change.html
+msgid "Password"
+msgstr "Κωδικός"
+
+#: templates/accounts/password_change.html
+msgid "Change password"
+msgstr "Αλλαγή κωδικού"
+
+#: templates/accounts/password_reset.html
+msgid "Enter your email and we will send you a link to choose a new password."
+msgstr "Γράψτε το email σας και θα σας στείλουμε σύνδεσμο για νέο κωδικό."
+
+#: templates/accounts/password_reset.html
+msgid "Send link"
+msgstr "Αποστολή συνδέσμου"
+
+#: templates/accounts/password_reset_confirm.html
+msgid "New password"
+msgstr "Νέος κωδικός"
+
+#: templates/accounts/password_reset_confirm.html
+msgid "Choose a new password"
+msgstr "Ορίστε νέο κωδικό"
+
+#: templates/accounts/password_reset_confirm.html
+msgid "Save password"
+msgstr "Αποθήκευση κωδικού"
+
+#: templates/accounts/password_reset_confirm.html
+msgid "This link has expired or was already used. Please request a new one."
+msgstr "Ο σύνδεσμος έληξε ή έχει ήδη χρησιμοποιηθεί. Ζητήστε νέο."
+
+#: templates/accounts/password_reset_confirm.html
+msgid "Request a new link"
+msgstr "Νέος σύνδεσμος"
+
+#: templates/accounts/password_reset_done.html
+msgid "Reset password"
+msgstr "Επαναφορά κωδικού"
+
+#: templates/accounts/password_reset_done.html
+msgid "Check your email"
+msgstr "Ελέγξτε το email σας"
+
+#: templates/accounts/password_reset_done.html
+msgid ""
+"If an account exists for that email, we sent a link to reset your password. "
+"Check your spam folder too."
+msgstr ""
+"Αν υπάρχει λογαριασμός με αυτό το email, σας στείλαμε σύνδεσμο επαναφοράς "
+"κωδικού. Ελέγξτε και τα ανεπιθύμητα."
+
+#: templates/accounts/password_reset_done.html
+msgid "Back to login"
+msgstr "Πίσω στη σύνδεση"
+
+#: templates/accounts/profile.html
+msgid "My details"
+msgstr "Τα στοιχεία μου"
+
+#: templates/accounts/profile.html
+msgid "awaiting approval"
+msgstr "αναμονή έγκρισης"
+
+#: templates/accounts/profile.html
+msgid "Save"
+msgstr "Αποθήκευση"
+
+#: templates/accounts/profile.html
+msgid "To change your email or close your account, please send us a message."
+msgstr "Για αλλαγή email ή διαγραφή του λογαριασμού σας, στείλτε μας μήνυμα."
+
+#: templates/accounts/register.html
+msgid "Create an account"
+msgstr "Δημιουργία λογαριασμού"
+
+#: templates/accounts/register.html
+msgid ""
+"With an account you can send order requests, follow their status and talk to"
+" us about custom icons."
+msgstr ""
+"Με λογαριασμό μπορείτε να στέλνετε αιτήματα παραγγελίας, να παρακολουθείτε "
+"την πορεία τους και να μιλάτε μαζί μας για εικόνες κατά παραγγελία."
+
+#: templates/accounts/register.html
+msgid "I am ordering as"
+msgstr "Παραγγέλνω ως"
+
+#: templates/accounts/register.html
+msgid ""
+"Shops, churches, monasteries – wholesale prices excl. VAT after approval"
+msgstr "Καταστήματα, ναοί, μονές – τιμές χονδρικής χωρίς ΦΠΑ μετά από έγκριση"
+
+#: templates/accounts/register.html
+msgid "Personal purchases – prices incl. VAT"
+msgstr "Προσωπικές αγορές – τιμές με ΦΠΑ"
+
+#: templates/accounts/register.html
+msgid "Company details"
+msgstr "Στοιχεία επιχείρησης"
+
+#: templates/accounts/register.html
+msgid "Terms of use"
+msgstr "Όροι χρήσης"
+
+#: templates/accounts/register.html
+msgid "Privacy policy"
+msgstr "Πολιτική απορρήτου"
+
+#: templates/accounts/register.html
+msgid "Create account"
+msgstr "Δημιουργία λογαριασμού"
+
+#: templates/accounts/verify_email.html
+msgid "Confirm your email"
+msgstr "Επιβεβαίωση email"
+
+#: templates/accounts/verify_email.html
+#, python-format
+msgid ""
+"We sent a link to <strong>%(email)s</strong>. Open it to confirm your email "
+"address. Then you can send order requests and custom icon requests."
+msgstr ""
+"Στείλαμε έναν σύνδεσμο στο <strong>%(email)s</strong>. Ανοίξτε τον για να "
+"επιβεβαιώσετε τη διεύθυνση email σας. Μετά μπορείτε να στέλνετε αιτήματα "
+"παραγγελίας και αιτήματα για εικόνες κατά παραγγελία."
+
+#: templates/accounts/verify_email.html
+msgid ""
+"This keeps fake accounts out of the shop and makes sure we can reach you "
+"about your order. Can't find the email? Check your spam folder, or send it "
+"again."
+msgstr ""
+"Έτσι κρατάμε τους ψεύτικους λογαριασμούς έξω από το κατάστημα και είμαστε "
+"σίγουροι ότι μπορούμε να επικοινωνήσουμε μαζί σας για την παραγγελία σας. "
+"Δεν βρίσκετε το email; Ελέγξτε τον φάκελο ανεπιθύμητης αλληλογραφίας ή "
+"στείλτε το ξανά."
+
+#: templates/accounts/verify_email.html
+msgid "Send the link again"
+msgstr "Αποστολή του συνδέσμου ξανά"
+
+#: templates/accounts/verify_email.html
+msgid ""
+"Wrong address? Write to us through the contact page and we will fix it."
+msgstr ""
+"Λάθος διεύθυνση; Γράψτε μας από τη σελίδα επικοινωνίας και θα τη "
+"διορθώσουμε."
+
+#: templates/admin/index.html
+msgid "New product"
+msgstr "Νέο προϊόν"
+
+#: templates/admin/index.html
+msgid "Orders"
+msgstr "Παραγγελίες"
+
+#: templates/admin/index.html
+msgid "Order archive"
+msgstr "Αρχείο παραγγελιών"
+
+#: templates/admin/index.html
+msgid "Custom requests"
+msgstr "Αιτήματα κατά παραγγελία"
+
+#: templates/admin/index.html
+msgid "View shop"
+msgstr "Προβολή καταστήματος"
+
+#: templates/admin/index.html
+msgid "Needs your attention"
+msgstr "Χρειάζονται την προσοχή σας"
+
+#: templates/base.html
+msgid "Demo version: nothing is really sent or paid."
+msgstr "Έκδοση demo: τίποτα δεν αποστέλλεται ούτε πληρώνεται πραγματικά."
+
+#: templates/base.html
+msgid "Demo mailbox"
+msgstr "Demo mailbox (email)"
+
+#: templates/base.html
+msgid "Accounts (password demo1234):"
+msgstr "Λογαριασμοί (κωδικός demo1234):"
+
+#: templates/base.html
+#, python-format
+msgid ""
+"You are logged in as the shop admin (%(email)s). Admin accounts cannot place"
+" orders."
+msgstr ""
+"Είστε συνδεδεμένοι ως διαχειριστής του καταστήματος (%(email)s). Οι "
+"λογαριασμοί διαχείρισης δεν μπορούν να κάνουν παραγγελίες."
+
+#: templates/base.html
+msgid "Admin"
+msgstr "Διαχείριση"
+
+#: templates/base.html
+msgid "Log out"
+msgstr "Αποσύνδεση"
+
+#: templates/base.html
+msgid "Menu"
+msgstr "Μενού"
+
+#: templates/base.html
+msgid "Byzantine icons"
+msgstr "Βυζαντινές εικόνες"
+
+#: templates/base.html
+msgid "Icons"
+msgstr "Εικόνες"
+
+#: templates/base.html
+msgid "Custom icon"
+msgstr "Κατά παραγγελία"
+
+#: templates/base.html
+msgid "For businesses"
+msgstr "Για επιχειρήσεις"
+
+#: templates/base.html
+msgid "About us"
+msgstr "Σχετικά με εμάς"
+
+#: templates/base.html
+msgid "Search"
+msgstr "Αναζήτηση"
+
+#: templates/base.html
+msgid "My account"
+msgstr "Ο λογαριασμός μου"
+
+#: templates/base.html
+msgid "Cart"
+msgstr "Καλάθι"
+
+#: templates/base.html
+msgid "Search icons, e.g. Panagia, Saint Nicholas…"
+msgstr "Αναζήτηση εικόνων, π.χ. Παναγία, Άγιος Νικόλαος…"
+
+#: templates/base.html
+#, python-format
+msgid ""
+"Business account: %(company)s · all prices are shown <strong>excluding "
+"VAT</strong>"
+msgstr ""
+"Επαγγελματικός λογαριασμός: %(company)s · όλες οι τιμές εμφανίζονται "
+"<strong>χωρίς ΦΠΑ</strong>"
+
+#: templates/base.html
+msgid ""
+"Your business account is waiting for approval. Until then you see retail "
+"prices incl. VAT."
+msgstr ""
+"Ο επαγγελματικός σας λογαριασμός αναμένει έγκριση. Μέχρι τότε βλέπετε τιμές "
+"λιανικής με ΦΠΑ."
+
+#: templates/base.html
+msgid "All icons"
+msgstr "Όλες οι εικόνες"
+
+#: templates/base.html
+msgid "Offers"
+msgstr "Εκπτώσεις"
+
+#: templates/base.html
+msgid "Custom icon request"
+msgstr "Αίτημα εικόνας κατά παραγγελία"
+
+#: templates/base.html
+msgid "Business account"
+msgstr "Επαγγελματικός λογαριασμός"
+
+#: templates/base.html
+msgid "Information"
+msgstr "Πληροφορίες"
+
+#: templates/base.html
+msgid "Order status"
+msgstr "Κατάσταση παραγγελίας"
+
+#: templates/base.html
+msgid "Contact form"
+msgstr "Φόρμα επικοινωνίας"
+
+#: templates/base.html
+msgid "Payment by bank transfer after we confirm your order."
+msgstr "Πληρωμή με τραπεζική κατάθεση αφού επιβεβαιώσουμε την παραγγελία σας."
+
+#: templates/catalog/product_detail.html
+msgid "Photo"
+msgstr "Φωτογραφία"
+
+#: templates/catalog/product_detail.html
+#, python-format
+msgid "You save %(d)s%%"
+msgstr "Κερδίζετε %(d)s%%"
+
+#: templates/catalog/product_detail.html
+msgid "Available to order"
+msgstr "Διαθέσιμο για παραγγελία"
+
+#: templates/catalog/product_detail.html
+msgid "Quantity"
+msgstr "Ποσότητα"
+
+#: templates/catalog/product_detail.html
+msgid "Add to cart"
+msgstr "Προσθήκη στο καλάθι"
+
+#: templates/catalog/product_detail.html
+msgid ""
+"No payment now: we confirm your order first and then email you the bank "
+"details."
+msgstr ""
+"Καμία πληρωμή τώρα: πρώτα επιβεβαιώνουμε την παραγγελία και μετά σας "
+"στέλνουμε τα τραπεζικά στοιχεία."
+
+#: templates/catalog/product_detail.html
+msgid "Currently sold out"
+msgstr "Προσωρινά εξαντλημένο"
+
+#: templates/catalog/product_detail.html
+msgid "Ask us to make one for you"
+msgstr "Ζητήστε να σας το φτιάξουμε"
+
+#: templates/catalog/product_detail.html
+msgid "Dimensions"
+msgstr "Διαστάσεις"
+
+#: templates/catalog/product_detail.html
+msgid "Materials / technique"
+msgstr "Υλικά / τεχνική"
+
+#: templates/catalog/product_detail.html
+msgid "Would you like a different size or a variation of this icon?"
+msgstr "Θέλετε άλλο μέγεθος ή μια παραλλαγή αυτής της εικόνας;"
+
+#: templates/catalog/product_detail.html
+msgid "Send us a custom request"
+msgstr "Στείλτε μας αίτημα"
+
+#: templates/catalog/product_detail.html
+msgid "You may also like"
+msgstr "Μπορεί να σας αρέσουν επίσης"
+
+#: templates/catalog/product_list.html
+#, python-format
+msgid "%(n)s icon"
+msgid_plural "%(n)s icons"
+msgstr[0] "%(n)s εικόνα"
+msgstr[1] "%(n)s εικόνες"
+
+#: templates/catalog/product_list.html
+msgid "Home"
+msgstr "Αρχική"
+
+#: templates/catalog/product_list.html
+#, python-format
+msgid "Results for “%(query)s”"
+msgstr "Αποτελέσματα για «%(query)s»"
+
+#: templates/catalog/product_list.html
+msgid "Collections"
+msgstr "Συλλογές"
+
+#: templates/catalog/product_list.html
+msgid "Sort by"
+msgstr "Ταξινόμηση"
+
+#: templates/catalog/product_list.html
+msgid "Newest"
+msgstr "Νεότερα"
+
+#: templates/catalog/product_list.html
+msgid "Price: low to high"
+msgstr "Τιμή: αύξουσα"
+
+#: templates/catalog/product_list.html
+msgid "Price: high to low"
+msgstr "Τιμή: φθίνουσα"
+
+#: templates/catalog/product_list.html
+msgid "Name"
+msgstr "Όνομα"
+
+#: templates/catalog/product_list.html
+msgid "Sort"
+msgstr "Ταξινόμηση"
+
+#: templates/catalog/product_list.html
+msgid "Pages"
+msgstr "Σελίδες"
+
+#: templates/catalog/product_list.html
+msgid "No icons found"
+msgstr "Δεν βρέθηκαν εικόνες"
+
+#: templates/catalog/product_list.html
+msgid "We can make the icon you are looking for. Send us a custom request."
+msgstr ""
+"Μπορούμε να φτιάξουμε την εικόνα που αναζητάτε. Στείλτε μας ένα αίτημα."
+
+#: templates/catalog/product_list.html
+msgid "Request a custom icon"
+msgstr "Ζητήστε εικόνα κατά παραγγελία"
+
+#: templates/core/contact.html
+msgid "Contact us"
+msgstr "Επικοινωνήστε μαζί μας"
+
+#: templates/core/contact.html
+msgid "We are happy to help you choose an icon or answer any question."
+msgstr ""
+"Θα χαρούμε να σας βοηθήσουμε να διαλέξετε εικόνα ή να απαντήσουμε σε κάθε "
+"ερώτηση."
+
+#: templates/core/contact.html
+msgid "Send"
+msgstr "Αποστολή"
+
+#: templates/core/contact.html
+msgid "Hours"
+msgstr "Ωράριο"
+
+#: templates/core/contact.html
+msgid "Looking for a specific icon that is not in the shop?"
+msgstr "Αναζητάτε μια συγκεκριμένη εικόνα που δεν υπάρχει στο κατάστημα;"
+
+#: templates/core/demo_mailbox.html
+msgid ""
+"In the real shop these emails are sent to customers and to you. In the demo "
+"they appear here, newest first. Links inside them work, e.g. the link that "
+"confirms a new account."
+msgstr ""
+"Στο πραγματικό κατάστημα αυτά τα email αποστέλλονται στους πελάτες και σε "
+"εσάς. Στο demo εμφανίζονται εδώ, τα νεότερα πρώτα. Οι σύνδεσμοι μέσα τους "
+"λειτουργούν, π.χ. ο σύνδεσμος επιβεβαίωσης νέου λογαριασμού."
+
+#: templates/core/demo_mailbox.html
+msgid "To"
+msgstr "Προς"
+
+#: templates/core/demo_mailbox.html
+msgid "No emails yet. Create an account or place an order to see them here."
+msgstr ""
+"Δεν υπάρχουν ακόμη email. Δημιουργήστε λογαριασμό ή κάντε μια παραγγελία για"
+" να τα δείτε εδώ."
+
+#: templates/core/home.html
+msgid "Orthodox iconography"
+msgstr "Ορθόδοξη αγιογραφία"
+
+#: templates/core/home.html
+msgid "Byzantine icons, crafted with faith and tradition"
+msgstr "Βυζαντινές εικόνες, με πίστη και παράδοση"
+
+#: templates/core/home.html
+msgid ""
+"Discover icons of the Theotokos, Christ and the Saints. If you cannot find "
+"the icon you are looking for, we will make it for you."
+msgstr ""
+"Ανακαλύψτε εικόνες της Θεοτόκου, του Χριστού και των Αγίων. Αν δεν βρίσκετε "
+"την εικόνα που αναζητάτε, θα τη φτιάξουμε για εσάς."
+
+#: templates/core/home.html
+msgid "How it works"
+msgstr "Πώς λειτουργεί"
+
+#: templates/core/home.html
+msgid "Every order checked by us"
+msgstr "Ελέγχουμε κάθε παραγγελία"
+
+#: templates/core/home.html
+msgid "We confirm before you pay"
+msgstr "Επιβεβαιώνουμε πριν πληρώσετε"
+
+#: templates/core/home.html
+msgid "Bank transfer"
+msgstr "Τραπεζική κατάθεση"
+
+#: templates/core/home.html
+msgid "Simple and secure payment"
+msgstr "Απλή και ασφαλής πληρωμή"
+
+#: templates/core/home.html
+msgid "Custom icons"
+msgstr "Εικόνες κατά παραγγελία"
+
+#: templates/core/home.html
+msgid "Tell us what you need"
+msgstr "Πείτε μας τι χρειάζεστε"
+
+#: templates/core/home.html
+msgid "Business prices"
+msgstr "Τιμές επιχειρήσεων"
+
+#: templates/core/home.html
+msgid "Wholesale, excl. VAT"
+msgstr "Χονδρική, χωρίς ΦΠΑ"
+
+#: templates/core/home.html
+msgid "Featured icons"
+msgstr "Προτεινόμενες εικόνες"
+
+#: templates/core/home.html
+msgid "See all"
+msgstr "Όλες"
+
+#: templates/core/home.html
+msgid "Made to order"
+msgstr "Κατά παραγγελία"
+
+#: templates/core/home.html
+msgid "Can't find the icon you want?"
+msgstr "Δεν βρίσκετε την εικόνα που θέλετε;"
+
+#: templates/core/home.html
+msgid ""
+"Describe it, add a photo if you have one, and we will reply with a price. "
+"You can follow everything and talk to us from your account."
+msgstr ""
+"Περιγράψτε την, προσθέστε μια φωτογραφία αν έχετε, και θα σας απαντήσουμε με"
+" τιμή. Παρακολουθείτε τα πάντα και μιλάτε μαζί μας από τον λογαριασμό σας."
+
+#: templates/core/home.html
+msgid "New icons"
+msgstr "Νέες εικόνες"
+
+#: templates/core/home.html
+msgid "How ordering works"
+msgstr "Πώς παραγγέλνετε"
+
+#: templates/core/home.html
+msgid "For shops, churches & monasteries"
+msgstr "Για καταστήματα, ναούς & μονές"
+
+#: templates/core/home.html
+msgid "Ordering for a business?"
+msgstr "Παραγγέλνετε για επιχείρηση;"
+
+#: templates/core/home.html
+msgid ""
+"Open a business account to see wholesale prices without VAT and order larger"
+" quantities."
+msgstr ""
+"Ανοίξτε επαγγελματικό λογαριασμό για να βλέπετε τιμές χονδρικής χωρίς ΦΠΑ "
+"και να παραγγέλνετε μεγαλύτερες ποσότητες."
+
+#: templates/core/home.html
+msgid "Open a business account"
+msgstr "Άνοιγμα επαγγελματικού λογαριασμού"
+
+#: templates/core/home.html
+msgid "Learn more"
+msgstr "Μάθετε περισσότερα"
+
+#: templates/emails/_signature.txt
+msgid "Warm regards,"
+msgstr "Με εκτίμηση,"
+
+#: templates/emails/business_approved.txt
+msgid "Your business account is active"
+msgstr "Ο επαγγελματικός σας λογαριασμός ενεργοποιήθηκε"
+
+#: templates/emails/business_approved.txt
+#, python-format
+msgid ""
+"The business account for %(company)s is now approved. When you log in you "
+"will see our business prices, excluding VAT."
+msgstr ""
+"Ο επαγγελματικός λογαριασμός για «%(company)s» εγκρίθηκε. Όταν συνδέεστε θα "
+"βλέπετε τις τιμές επιχειρήσεων, χωρίς ΦΠΑ."
+
+#: templates/emails/new_message.txt
+#, python-format
+msgid "New message about %(no)s"
+msgstr "Νέο μήνυμα για %(no)s"
+
+#: templates/emails/new_message.txt
+#, python-format
+msgid "We sent you a message about %(no)s:"
+msgstr "Σας στείλαμε μήνυμα για %(no)s:"
+
+#: templates/emails/new_message.txt
+msgid "Reply from your account"
+msgstr "Απαντήστε από τον λογαριασμό σας"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "Order request %(no)s received"
+msgstr "Λάβαμε το αίτημα παραγγελίας %(no)s"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "Order %(no)s confirmed – payment details"
+msgstr "Η παραγγελία %(no)s επιβεβαιώθηκε – στοιχεία πληρωμής"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "Payment received for order %(no)s"
+msgstr "Λάβαμε την πληρωμή για την παραγγελία %(no)s"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "Order %(no)s has shipped"
+msgstr "Η παραγγελία %(no)s απεστάλη"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "Order %(no)s is in transit"
+msgstr "Η παραγγελία %(no)s είναι σε μεταφορά"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "Order %(no)s delivered"
+msgstr "Η παραγγελία %(no)s παραδόθηκε"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "About your order request %(no)s"
+msgstr "Σχετικά με το αίτημα παραγγελίας %(no)s"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "Order %(no)s cancelled"
+msgstr "Η παραγγελία %(no)s ακυρώθηκε"
+
+#: templates/emails/order_status.txt
+msgid ""
+"Thank you! We received your order request and will check it shortly. You "
+"will receive another email with the final amount and our bank details. "
+"Please do not pay yet."
+msgstr ""
+"Ευχαριστούμε! Λάβαμε το αίτημα παραγγελίας σας και θα το ελέγξουμε σύντομα. "
+"Θα λάβετε νέο email με το τελικό ποσό και τα τραπεζικά μας στοιχεία. "
+"Παρακαλούμε μην πληρώσετε ακόμη."
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid ""
+"Good news: your order is confirmed. Please deposit the total amount within "
+"%(days)s days to the bank account below, writing your order number as the "
+"payment reference. As soon as we receive the payment we will prepare your "
+"order."
+msgstr ""
+"Καλά νέα: η παραγγελία σας επιβεβαιώθηκε. Παρακαλούμε καταθέστε το συνολικό "
+"ποσό μέσα σε %(days)s ημέρες στον παρακάτω τραπεζικό λογαριασμό, γράφοντας "
+"τον αριθμό παραγγελίας ως αιτιολογία. Μόλις λάβουμε την πληρωμή θα "
+"ετοιμάσουμε την παραγγελία σας."
+
+#: templates/emails/order_status.txt
+msgid ""
+"We received your payment, thank you! We are now preparing your order and "
+"will let you know when it ships."
+msgstr ""
+"Λάβαμε την πληρωμή σας, ευχαριστούμε! Ετοιμάζουμε την παραγγελία σας και θα "
+"σας ενημερώσουμε μόλις αποσταλεί."
+
+#: templates/emails/order_status.txt
+msgid "Your order is on its way!"
+msgstr "Η παραγγελία σας είναι καθ’ οδόν!"
+
+#: templates/emails/order_status.txt
+msgid "Track parcel"
+msgstr "Παρακολούθηση δέματος"
+
+#: templates/emails/order_status.txt
+msgid "Your parcel is with the courier and on its way to you."
+msgstr "Το δέμα σας είναι στην εταιρεία courier και έρχεται προς εσάς."
+
+#: templates/emails/order_status.txt
+msgid "Latest update from the courier"
+msgstr "Τελευταία ενημέρωση από την εταιρεία courier"
+
+#: templates/emails/order_status.txt
+msgid ""
+"Your order has been delivered. We hope it brings you joy and blessings. If "
+"anything is not right, just reply to this email."
+msgstr ""
+"Η παραγγελία σας παραδόθηκε. Ευχόμαστε να σας φέρει χαρά και ευλογία. Αν "
+"κάτι δεν είναι σωστό, απλώς απαντήστε σε αυτό το email."
+
+#: templates/emails/order_status.txt
+msgid ""
+"Unfortunately we cannot accept this order request. We are sorry for any "
+"inconvenience."
+msgstr ""
+"Δυστυχώς δεν μπορούμε να δεχθούμε αυτό το αίτημα παραγγελίας. Ζητούμε "
+"συγγνώμη για την αναστάτωση."
+
+#: templates/emails/order_status.txt
+msgid ""
+"Your order has been cancelled. If this was a mistake, just reply to this "
+"email."
+msgstr ""
+"Η παραγγελία σας ακυρώθηκε. Αν έγινε κατά λάθος, απλώς απαντήστε σε αυτό το "
+"email."
+
+#: templates/emails/order_status.txt
+msgid "Note from us"
+msgstr "Σημείωση από εμάς"
+
+#: templates/emails/order_status.txt
+msgid "PAYMENT DETAILS"
+msgstr "ΣΤΟΙΧΕΙΑ ΠΛΗΡΩΜΗΣ"
+
+#: templates/emails/order_status.txt
+msgid "Amount"
+msgstr "Ποσό"
+
+#: templates/emails/order_status.txt
+msgid "Reference"
+msgstr "Αιτιολογία"
+
+#: templates/emails/order_status.txt
+msgid "Bank"
+msgstr "Τράπεζα"
+
+#: templates/emails/order_status.txt
+msgid "Beneficiary"
+msgstr "Δικαιούχος"
+
+#: templates/emails/order_status.txt
+msgid "Order"
+msgstr "Παραγγελία"
+
+#: templates/emails/order_status.txt
+msgid "Total"
+msgstr "Σύνολο"
+
+#: templates/emails/order_status.txt
+#, python-format
+msgid "incl. %(r)s%% VAT"
+msgstr "με ΦΠΑ %(r)s%%"
+
+#: templates/emails/order_status.txt
+msgid "Follow your order and send us a message"
+msgstr "Παρακολουθήστε την παραγγελία σας και στείλτε μας μήνυμα"
+
+#: templates/emails/password_reset.txt
+msgid "Hello,"
+msgstr "Γεια σας,"
+
+#: templates/emails/password_reset.txt
+msgid ""
+"Someone asked to reset the password for your account. If it was you, open "
+"this link to choose a new password:"
+msgstr ""
+"Ζητήθηκε επαναφορά του κωδικού για τον λογαριασμό σας. Αν ήσασταν εσείς, "
+"ανοίξτε αυτόν τον σύνδεσμο για να ορίσετε νέο κωδικό:"
+
+#: templates/emails/password_reset.txt
+msgid "If you did not ask for this, you can ignore this email."
+msgstr "Αν δεν το ζητήσατε εσείς, αγνοήστε αυτό το email."
+
+#: templates/emails/password_reset_subject.txt
+msgid "Reset your password"
+msgstr "Επαναφορά κωδικού"
+
+#: templates/emails/request_status.txt
+#, python-format
+msgid "Custom request %(no)s received"
+msgstr "Λάβαμε το αίτημά σας %(no)s"
+
+#: templates/emails/request_status.txt
+#, python-format
+msgid "Price offer for your request %(no)s"
+msgstr "Προσφορά τιμής για το αίτημά σας %(no)s"
+
+#: templates/emails/request_status.txt
+#, python-format
+msgid "Update on your request %(no)s"
+msgstr "Ενημέρωση για το αίτημά σας %(no)s"
+
+#: templates/emails/request_status.txt
+#, python-format
+msgid ""
+"Thank you for your request for “%(subject)s”. We will look at it and get "
+"back to you soon, possibly with a few questions."
+msgstr ""
+"Ευχαριστούμε για το αίτημά σας για «%(subject)s». Θα το εξετάσουμε και θα "
+"επικοινωνήσουμε σύντομα μαζί σας, ίσως με κάποιες ερωτήσεις."
+
+#: templates/emails/request_status.txt
+#, python-format
+msgid "We have prepared a price offer for “%(subject)s”."
+msgstr "Ετοιμάσαμε προσφορά τιμής για «%(subject)s»."
+
+#: templates/emails/request_status.txt
+msgid ""
+"You can accept or decline the offer from your account. If you accept, we "
+"will send you the payment details right away."
+msgstr ""
+"Μπορείτε να αποδεχθείτε ή να απορρίψετε την προσφορά από τον λογαριασμό σας."
+" Αν την αποδεχθείτε, θα σας στείλουμε αμέσως τα στοιχεία πληρωμής."
+
+#: templates/emails/request_status.txt
+msgid ""
+"Your custom request has been closed. If you would like to discuss it again, "
+"just reply to this email or send us a message from your account."
+msgstr ""
+"Το αίτημά σας έκλεισε. Αν θέλετε να το συζητήσουμε ξανά, απαντήστε σε αυτό "
+"το email ή στείλτε μας μήνυμα από τον λογαριασμό σας."
+
+#: templates/emails/request_status.txt
+#, python-format
+msgid "The status of your request is now: %(status)s."
+msgstr "Η κατάσταση του αιτήματός σας είναι τώρα: %(status)s."
+
+#: templates/emails/request_status.txt
+msgid "View your request"
+msgstr "Δείτε το αίτημά σας"
+
+#: templates/emails/verify_email.txt
+msgid "Confirm your email address"
+msgstr "Επιβεβαιώστε τη διεύθυνση email σας"
+
+#: templates/emails/verify_email.txt
+#, python-format
+msgid "Hello %(name)s,"
+msgstr "Γεια σας %(name)s,"
+
+#: templates/emails/verify_email.txt
+msgid ""
+"Thank you for creating an account. Please confirm your email address by "
+"opening this link:"
+msgstr ""
+"Ευχαριστούμε που δημιουργήσατε λογαριασμό. Επιβεβαιώστε τη διεύθυνση email "
+"σας ανοίγοντας αυτόν τον σύνδεσμο:"
+
+#: templates/emails/verify_email.txt
+msgid ""
+"The link works for 3 days. Until you confirm, you cannot send order "
+"requests. If you did not create this account, just ignore this email and it "
+"will be removed."
+msgstr ""
+"Ο σύνδεσμος ισχύει για 3 ημέρες. Μέχρι να επιβεβαιώσετε, δεν μπορείτε να "
+"στέλνετε αιτήματα παραγγελίας. Αν δεν δημιουργήσατε εσείς αυτόν τον "
+"λογαριασμό, αγνοήστε αυτό το email και ο λογαριασμός θα διαγραφεί."
+
+#: templates/orders/_order_table.html
+msgid "Date"
+msgstr "Ημερομηνία"
+
+#: templates/orders/_order_table.html
+msgid "No orders yet."
+msgstr "Δεν έχετε παραγγελίες ακόμη."
+
+#: templates/orders/_payment_box.html
+msgid "Please complete your payment"
+msgstr "Ολοκληρώστε την πληρωμή σας"
+
+#: templates/orders/_payment_box.html
+#, python-format
+msgid ""
+"Your order is confirmed. Please deposit the amount below within %(days)s "
+"days and write the order number as the payment reference."
+msgstr ""
+"Η παραγγελία σας επιβεβαιώθηκε. Καταθέστε το παρακάτω ποσό μέσα σε %(days)s "
+"ημέρες, με αιτιολογία τον αριθμό παραγγελίας."
+
+#: templates/orders/_request_table.html
+msgid "Icon"
+msgstr "Εικόνα"
+
+#: templates/orders/_request_table.html
+msgid "No custom requests yet."
+msgstr "Δεν έχετε αιτήματα ακόμη."
+
+#: templates/orders/cart.html
+msgid "Your cart"
+msgstr "Το καλάθι σας"
+
+#: templates/orders/cart.html
+msgid "Remove"
+msgstr "Αφαίρεση"
+
+#: templates/orders/cart.html
+msgid "Update cart"
+msgstr "Ενημέρωση καλαθιού"
+
+#: templates/orders/cart.html
+msgid "Summary"
+msgstr "Σύνοψη"
+
+#: templates/orders/cart.html
+msgid "confirmed by us"
+msgstr "επιβεβαιώνονται από εμάς"
+
+#: templates/orders/cart.html
+msgid "Prices exclude VAT. VAT is added at checkout."
+msgstr "Οι τιμές είναι χωρίς ΦΠΑ. Ο ΦΠΑ προστίθεται στην παραγγελία."
+
+#: templates/orders/cart.html
+msgid "Prices include VAT."
+msgstr "Οι τιμές περιλαμβάνουν ΦΠΑ."
+
+#: templates/orders/cart.html
+msgid "Continue to order request"
+msgstr "Συνέχεια στο αίτημα παραγγελίας"
+
+#: templates/orders/cart.html
+msgid ""
+"Sending the request does not charge you. We confirm availability first and "
+"then email you the payment details."
+msgstr ""
+"Η αποστολή του αιτήματος δεν σας χρεώνει. Πρώτα επιβεβαιώνουμε τη "
+"διαθεσιμότητα και μετά σας στέλνουμε τα στοιχεία πληρωμής."
+
+#: templates/orders/cart.html
+msgid "Your cart is empty"
+msgstr "Το καλάθι σας είναι άδειο"
+
+#: templates/orders/cart.html
+msgid "Browse our icons and add the ones you like."
+msgstr "Δείτε τις εικόνες μας και προσθέστε όσες σας αρέσουν."
+
+#: templates/orders/checkout.html
+msgid "Order request"
+msgstr "Αίτημα παραγγελίας"
+
+#: templates/orders/checkout.html
+msgid "Send order request"
+msgstr "Αποστολή αιτήματος παραγγελίας"
+
+#: templates/orders/checkout.html
+msgid ""
+"Check your details. After you send the request we review it and email you "
+"the final amount with our bank details."
+msgstr ""
+"Ελέγξτε τα στοιχεία σας. Αφού στείλετε το αίτημα, θα το εξετάσουμε και θα "
+"σας στείλουμε με email το τελικό ποσό και τα τραπεζικά μας στοιχεία."
+
+#: templates/orders/checkout.html
+msgid "Delivery details"
+msgstr "Στοιχεία αποστολής"
+
+#: templates/orders/checkout.html
+#, python-format
+msgid "We will email you at <strong>%(email)s</strong>."
+msgstr "Θα σας ενημερώσουμε στο <strong>%(email)s</strong>."
+
+#: templates/orders/checkout.html
+msgid "Your order"
+msgstr "Η παραγγελία σας"
+
+#: templates/orders/checkout.html
+msgid "Shipping (estimate)"
+msgstr "Μεταφορικά (εκτίμηση)"
+
+#: templates/orders/checkout.html
+msgid "free"
+msgstr "δωρεάν"
+
+#: templates/orders/checkout.html
+msgid "Estimated total"
+msgstr "Εκτιμώμενο σύνολο"
+
+#: templates/orders/checkout.html
+#, python-format
+msgid ""
+"Amounts exclude VAT; %(rate)s%% VAT is added on the final invoice (0%% for "
+"EU businesses with a valid VAT number)."
+msgstr ""
+"Τα ποσά είναι χωρίς ΦΠΑ· ο ΦΠΑ %(rate)s%% προστίθεται στο τελικό τιμολόγιο "
+"(0%% για επιχειρήσεις της ΕΕ με έγκυρο ΑΦΜ)."
+
+#: templates/orders/checkout.html
+msgid "Prices include VAT. We confirm the final shipping cost before you pay."
+msgstr ""
+"Οι τιμές περιλαμβάνουν ΦΠΑ. Επιβεβαιώνουμε το τελικό κόστος αποστολής πριν "
+"πληρώσετε."
+
+#: templates/orders/custom_request_form.html
+msgid ""
+"Tell us as much as you can. We will reply with questions or a price offer, "
+"by email and in your account."
+msgstr ""
+"Πείτε μας όσο περισσότερα μπορείτε. Θα σας απαντήσουμε με ερωτήσεις ή "
+"προσφορά τιμής, με email και στον λογαριασμό σας."
+
+#: templates/orders/custom_request_form.html
+msgid "Send request"
+msgstr "Αποστολή αιτήματος"
+
+#: templates/orders/custom_request_intro.html
+msgid ""
+"Did not find the icon you were looking for? A patron saint, a specific size,"
+" a family icon or a copy of an old icon? Tell us and we will reply with a "
+"price offer."
+msgstr ""
+"Δεν βρήκατε την εικόνα που αναζητούσατε; Έναν προστάτη άγιο, ένα "
+"συγκεκριμένο μέγεθος, μια οικογενειακή εικόνα ή αντίγραφο μιας παλιάς "
+"εικόνας; Πείτε μας και θα σας απαντήσουμε με προσφορά τιμής."
+
+#: templates/orders/custom_request_intro.html
+msgid "Describe it"
+msgstr "Περιγράψτε την"
+
+#: templates/orders/custom_request_intro.html
+msgid "Saint or scene, size, and a photo if you have one."
+msgstr "Άγιος ή παράσταση, μέγεθος και φωτογραφία αν έχετε."
+
+#: templates/orders/custom_request_intro.html
+msgid "We talk"
+msgstr "Συζητάμε"
+
+#: templates/orders/custom_request_intro.html
+msgid "We ask any questions through your account and by email."
+msgstr "Σας ρωτάμε ό,τι χρειαστεί μέσω του λογαριασμού σας και με email."
+
+#: templates/orders/custom_request_intro.html
+msgid "Price offer"
+msgstr "Προσφορά τιμής"
+
+#: templates/orders/custom_request_intro.html
+msgid "You accept the offer online and receive the payment details."
+msgstr "Αποδέχεστε την προσφορά online και λαμβάνετε τα στοιχεία πληρωμής."
+
+#: templates/orders/custom_request_intro.html
+msgid "You need an account so we can contact you about your request."
+msgstr "Χρειάζεστε λογαριασμό ώστε να επικοινωνούμε μαζί σας για το αίτημα."
+
+#: templates/orders/custom_request_intro.html
+msgid "I already have an account"
+msgstr "Έχω ήδη λογαριασμό"
+
+#: templates/orders/order_detail.html
+msgid ""
+"We are reviewing your order. You will receive an email with the final amount"
+" and payment details. Please do not pay yet."
+msgstr ""
+"Εξετάζουμε την παραγγελία σας. Θα λάβετε email με το τελικό ποσό και τα "
+"στοιχεία πληρωμής. Παρακαλούμε μην πληρώσετε ακόμη."
+
+#: templates/orders/order_detail.html
+msgid "Your order is on its way."
+msgstr "Η παραγγελία σας είναι καθ’ οδόν."
+
+#: templates/orders/order_detail.html
+msgid "Item"
+msgstr "Είδος"
+
+#: templates/orders/order_detail.html
+msgid "Qty"
+msgstr "Τεμ."
+
+#: templates/orders/order_detail.html
+#, python-format
+msgid "incl. %(r)s%% VAT %(v)s"
+msgstr "με ΦΠΑ %(r)s%% %(v)s"
+
+#: templates/orders/order_detail.html
+msgid "Delivery address"
+msgstr "Διεύθυνση αποστολής"
+
+#: templates/orders/order_detail.html
+msgid "Your notes"
+msgstr "Οι σημειώσεις σας"
+
+#: templates/orders/order_detail.html
+msgid "History"
+msgstr "Ιστορικό"
+
+#: templates/orders/order_detail.html
+msgid "Cancel this order request?"
+msgstr "Ακύρωση αυτού του αιτήματος παραγγελίας;"
+
+#: templates/orders/order_detail.html
+msgid "Cancel order request"
+msgstr "Ακύρωση αιτήματος"
+
+#: templates/orders/order_placed.html
+msgid "Thank you"
+msgstr "Ευχαριστούμε"
+
+#: templates/orders/order_placed.html
+msgid "Thank you for your order request!"
+msgstr "Ευχαριστούμε για το αίτημα παραγγελίας!"
+
+#: templates/orders/order_placed.html
+#, python-format
+msgid ""
+"Your request number is <strong>%(no)s</strong>. We sent a confirmation to "
+"%(email)s."
+msgstr ""
+"Ο αριθμός του αιτήματός σας είναι <strong>%(no)s</strong>. Στείλαμε "
+"επιβεβαίωση στο %(email)s."
+
+#: templates/orders/order_placed.html
+msgid ""
+"We will check your order and email you the final amount with our bank "
+"details. Please do not pay until you receive that email."
+msgstr ""
+"Θα ελέγξουμε την παραγγελία σας και θα σας στείλουμε με email το τελικό ποσό"
+" με τα τραπεζικά μας στοιχεία. Παρακαλούμε μην πληρώσετε πριν λάβετε αυτό το"
+" email."
+
+#: templates/orders/order_placed.html
+msgid "Continue browsing"
+msgstr "Συνέχεια περιήγησης"
+
+#: templates/orders/quote_accept.html
+msgid "Accept offer"
+msgstr "Αποδοχή προσφοράς"
+
+#: templates/orders/quote_accept.html
+msgid ""
+"Confirm your delivery details. We will then email you the payment details."
+msgstr ""
+"Επιβεβαιώστε τα στοιχεία αποστολής. Στη συνέχεια θα σας στείλουμε με email "
+"τα στοιχεία πληρωμής."
+
+#: templates/orders/quote_accept.html
+msgid "Accept and place order"
+msgstr "Αποδοχή και παραγγελία"
+
+#: templates/orders/request_detail.html
+msgid "Our offer"
+msgstr "Η προσφορά μας"
+
+#: templates/orders/request_detail.html
+msgid "Decline this offer?"
+msgstr "Απόρριψη της προσφοράς;"
+
+#: templates/orders/request_detail.html
+msgid "Decline"
+msgstr "Απόρριψη"
+
+#: templates/orders/request_detail.html
+msgid "Questions about the offer? Send us a message below."
+msgstr "Ερωτήσεις για την προσφορά; Στείλτε μας μήνυμα παρακάτω."
+
+#: templates/orders/request_detail.html
+msgid "You accepted our offer."
+msgstr "Αποδεχθήκατε την προσφορά μας."
+
+#: templates/orders/request_detail.html
+msgid "View order"
+msgstr "Προβολή παραγγελίας"
+
+#: templates/orders/request_detail.html
+msgid "We received your request and will reply soon."
+msgstr "Λάβαμε το αίτημά σας και θα απαντήσουμε σύντομα."
+
+#: templates/orders/request_detail.html
+msgid "Details"
+msgstr "Λεπτομέρειες"
+
+#: templates/orders/request_detail.html
+msgid "Preferred size"
+msgstr "Επιθυμητό μέγεθος"
+
+#: templates/orders/request_detail.html
+msgid "Budget"
+msgstr "Προϋπολογισμός"
+
+#: templates/orders/request_detail.html
+msgid "Needed by"
+msgstr "Χρειάζεται έως"
+
+#: templates/partials/field.html
+msgid "optional"
+msgstr "προαιρετικό"
+
+#: templates/partials/form_errors.html
+msgid "Please check the fields marked below."
+msgstr "Ελέγξτε τα πεδία που επισημαίνονται παρακάτω."
+
+#: templates/partials/product_card.html
+msgid "Sold out"
+msgstr "Εξαντλήθηκε"
+
+#: templates/partials/steps.html
+msgid "Send your order"
+msgstr "Στείλτε την παραγγελία"
+
+#: templates/partials/steps.html
+msgid "Add icons to your cart and send the order request. No payment yet."
+msgstr ""
+"Προσθέστε εικόνες στο καλάθι και στείλτε το αίτημα παραγγελίας. Χωρίς "
+"πληρωμή ακόμη."
+
+#: templates/partials/steps.html
+msgid "We confirm it"
+msgstr "Την επιβεβαιώνουμε"
+
+#: templates/partials/steps.html
+msgid "We check availability and shipping, then email you the final amount."
+msgstr ""
+"Ελέγχουμε διαθεσιμότητα και μεταφορικά και σας στέλνουμε με email το τελικό "
+"ποσό."
+
+#: templates/partials/steps.html
+msgid "You pay by bank deposit using your order number as the reference."
+msgstr "Πληρώνετε με κατάθεση, με αιτιολογία τον αριθμό παραγγελίας."
+
+#: templates/partials/steps.html
+msgid "Delivery"
+msgstr "Παράδοση"
+
+#: templates/partials/steps.html
+msgid ""
+"We ship it and send you the tracking number. Follow every step in your "
+"account."
+msgstr ""
+"Την αποστέλλουμε και σας δίνουμε τον αριθμό αποστολής. Παρακολουθείτε κάθε "
+"βήμα στον λογαριασμό σας."
+
+#: templates/partials/thread.html
+msgid "Messages"
+msgstr "Μηνύματα"
+
+#: templates/partials/thread.html
+msgid ""
+"Questions about this? Send us a message and we will reply here and by email."
+msgstr ""
+"Έχετε ερωτήσεις; Στείλτε μας μήνυμα και θα απαντήσουμε εδώ και με email."
+
+#: templates/partials/thread.html
+msgid "Send message"
+msgstr "Αποστολή μηνύματος"

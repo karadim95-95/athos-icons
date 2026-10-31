@@ -1,0 +1,10 @@
+{% load i18n %}{% autoescape off %}{% translate "Confirm your email address" %}
+{% blocktranslate with name=customer.first_name|default:customer.email %}Hello {{ name }},{% endblocktranslate %}
+
+{% translate "Thank you for creating an account. Please confirm your email address by opening this link:" %}
+
+{{ link }}
+
+{% translate "The link works for 3 days. Until you confirm, you cannot send order requests. If you did not create this account, just ignore this email and it will be removed." %}
+
+{% include "emails/_signature.txt" %}{% endautoescape %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Thank you" %}{% endblock %}
+{% block content %}
+<div class="wrap medium center">
+  <span class="ornament">✠</span>
+  <h1>{% translate "Thank you for your order request!" %}</h1>
+  <p class="muted">{% blocktranslate with no=order.number email=order.email %}Your request number is <strong>{{ no }}</strong>. We sent a confirmation to {{ email }}.{% endblocktranslate %}</p>
+  <p>{% translate "We will check your order and email you the final amount with our bank details. Please do not pay until you receive that email." %}</p>
+  <div style="margin:28px 0 40px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a class="btn" href="{{ order.get_absolute_url }}">{% translate "View order" %}</a>
+    <a class="btn btn-ghost" href="{% url 'catalog:products' %}">{% translate "Continue browsing" %}</a>
+  </div>
+  {% include "partials/steps.html" %}
+</div>
+{% endblock %}

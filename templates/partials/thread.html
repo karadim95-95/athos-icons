@@ -1,0 +1,20 @@
+{% load i18n %}
+<div class="block">
+  <h2>{% translate "Messages" %}</h2>
+  {% if thread.messages.all %}
+  <div class="thread">
+    {% for m in thread.messages.all %}
+      <div class="msg{% if not m.from_shop %} mine{% endif %}">
+        <small>{% if m.from_shop %}{{ shop.shop_name }}{% else %}{% translate "You" %}{% endif %} · {{ m.created_at|date:"d/m/Y H:i" }}</small>
+        {{ m.body|linebreaks }}
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="muted">{% translate "Questions about this? Send us a message and we will reply here and by email." %}</p>
+  {% endif %}
+  <form method="post" class="panel">{% csrf_token %}
+    {% include "partials/field.html" with field=form.body %}
+    <button class="btn">{% translate "Send message" %}</button>
+  </form>
+</div>

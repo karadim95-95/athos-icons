@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Demo mailbox" %}{% endblock %}
+{% block content %}
+<div class="wrap medium">
+  <h1>{% translate "Demo mailbox" %}</h1>
+  <p class="muted">{% translate "In the real shop these emails are sent to customers and to you. In the demo they appear here, newest first. Links inside them work, e.g. the link that confirms a new account." %}</p>
+  {% for email in emails %}
+  <details class="mail"{% if forloop.first %} open{% endif %}>
+    <summary><strong>{{ email.subject }}</strong><span class="muted small">{% translate "To" %}: {{ email.to }} · {{ email.date|date:"d/m/Y H:i" }}</span></summary>
+    <pre>{{ email.body|urlize }}</pre>
+  </details>
+  {% empty %}
+  <p class="panel">{% translate "No emails yet. Create an account or place an order to see them here." %}</p>
+  {% endfor %}
+</div>
+{% endblock %}

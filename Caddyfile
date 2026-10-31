@@ -1,0 +1,16 @@
+{$DOMAIN} {
+	encode zstd gzip
+	request_body {
+		max_size 200MB
+	}
+
+	# Uploaded photos are served directly, without going through Django.
+	handle_path /media/* {
+		root * /srv/shopdata/media
+		file_server
+	}
+
+	handle {
+		reverse_proxy web:8000
+	}
+}

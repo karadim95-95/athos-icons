@@ -1,0 +1,43 @@
+{% extends "accounts/layout.html" %}{% load i18n shop %}
+{% block title %}{{ req.number }}{% endblock %}
+{% block account %}
+<div class="breadcrumbs"><a href="{% url 'orders:request_list' %}">{% translate "Custom requests" %}</a> / {{ req.number }}</div>
+<div class="section-head">
+  <div><h1 style="margin:0">{{ req.subject }}</h1><span class="muted small">{{ req.number }} · {{ req.created_at|date:"d/m/Y" }}</span></div>
+  <span class="pill {{ req.status }}">{{ req.get_status_display }}</span>
+</div>
+
+{% if req.can_respond_to_quote %}
+<div class="payment-box">
+  <h3>{% translate "Our offer" %}</h3>
+  {% if req.quote_note %}<p>{{ req.quote_note|linebreaksbr }}</p>{% endif %}
+  <dl>
+    <dt>{% translate "Price" %}</dt><dd>{{ req.quoted_price|euro }}{% if req.is_business %} {% translate "excl. VAT" %}{% endif %}</dd>
+    <dt>{% translate "Shipping" %}</dt><dd>{{ req.quoted_shipping|euro }}</dd>
+    <dt>{% translate "Total" %}</dt><dd>{{ req.quote_total|euro }}{% if req.is_business %} + {% translate "VAT" %}{% endif %}</dd>
+  </dl>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
+    <a class="btn btn-gold" href="{% url 'orders:quote_accept' req.number %}">{% translate "Accept offer" %}</a>
+    <form method="post" action="{% url 'orders:quote_decline' req.number %}">{% csrf_token %}<button class="btn btn-ghost" data-confirm="{% translate 'Decline this offer?' %}">{% translate "Decline" %}</button></form>
+  </div>
+  <p class="small muted" style="margin:12px 0 0">{% translate "Questions about the offer? Send us a message below." %}</p>
+</div>
+{% elif req.order %}
+<div class="notice ok">{% translate "You accepted our offer." %} <a href="{{ req.order.get_absolute_url }}">{% translate "View order" %} {{ req.order.number }}</a></div>
+{% elif req.status == "new" %}
+<div class="notice">{% translate "We received your request and will reply soon." %}</div>
+{% endif %}
+
+<div class="panel block">
+  <table class="specs" style="margin-top:0">
+    <tr><th>{% translate "Details" %}</th><td>{{ req.description|linebreaksbr }}</td></tr>
+    {% if req.dimensions %}<tr><th>{% translate "Preferred size" %}</th><td>{{ req.dimensions }}</td></tr>{% endif %}
+    <tr><th>{% translate "Quantity" %}</th><td>{{ req.quantity }}</td></tr>
+    {% if req.budget %}<tr><th>{% translate "Budget" %}</th><td>{{ req.budget }}</td></tr>{% endif %}
+    {% if req.needed_by %}<tr><th>{% translate "Needed by" %}</th><td>{{ req.needed_by|date:"d/m/Y" }}</td></tr>{% endif %}
+  </table>
+  {% if req.images.all %}<div class="ref-images">{% for img in req.images.all %}<a href="{{ img.image.url }}" target="_blank"><img src="{{ img.thumb_url }}" alt=""></a>{% endfor %}</div>{% endif %}
+</div>
+
+{% include "partials/thread.html" with thread=req %}
+{% endblock %}

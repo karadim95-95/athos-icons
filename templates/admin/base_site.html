@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}{% load i18n %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+{% block branding %}<div id="site-name"><a href="{% url 'admin:index' %}">✠ {{ site_header|default:_('Django administration') }}</a>{% if demo_mode %} <a href="{% url 'core:demo_mailbox' %}" style="font-size:13px;margin-left:12px;color:#fff">✉ {% translate "Demo mailbox" %}</a>{% endif %}</div>{% endblock %}
+{% block extrastyle %}{{ block.super }}
+<style>
+  :root, html[data-theme="light"] {
+    --primary: #262c32; --secondary: #3a3f45; --accent: #e2c47f; --primary-fg: #fff;
+    --header-color: #e2c47f; --header-branding-color: #e2c47f; --header-bg: #1c2126; --header-link-color: #fff;
+    --breadcrumbs-bg: #3a3f45; --link-fg: #85652b; --link-hover-color: #1c2126; --link-selected-fg: #85652b;
+    --button-bg: #85652b; --button-hover-bg: #6d5222; --default-button-bg: #262c32; --default-button-hover-bg: #000;
+    --selected-row: #fbf3df;
+  }
+  .attention { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; margin: 0 0 24px; }
+  .attention a { display: block; padding: 14px 16px; border-radius: 8px; border: 1px solid var(--hairline-color); text-decoration: none; background: var(--body-bg); }
+  .attention a.hot { border-color: #e2c47f; background: #fff8e6; }
+  .attention b { display: block; font-size: 26px; line-height: 1.1; color: var(--body-fg); }
+  .attention span { color: var(--body-quiet-color); }
+  .quick { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 24px; }
+  .quick a { padding: 10px 16px; border-radius: 6px; background: var(--button-bg); color: #fff !important; text-decoration: none; font-weight: 600; }
+  .quick a.alt { background: var(--default-button-bg); }
+  @media (prefers-color-scheme: dark) { .attention a.hot { background: #3a3220; } }
+</style>
+{% endblock %}
+{% block nav-global %}{% endblock %}

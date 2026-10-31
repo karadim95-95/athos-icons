@@ -1,0 +1,6 @@
+{% extends "accounts/layout.html" %}{% load i18n %}
+{% block title %}{% translate "Custom requests" %}{% endblock %}
+{% block account %}
+<div class="section-head"><h1 style="margin:0">{% translate "Custom requests" %}</h1><a class="btn btn-gold" href="{% url 'orders:custom_request' %}">{% translate "New request" %}</a></div>
+{% include "orders/_request_table.html" %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{% load i18n %}{% autoescape off %}{% translate "Your business account is active" %}
+{% blocktranslate with name=customer.first_name|default:customer.email %}Hello {{ name }},{% endblocktranslate %}
+
+{% blocktranslate with company=customer.company_name %}The business account for {{ company }} is now approved. When you log in you will see our business prices, excluding VAT.{% endblocktranslate %}
+
+{{ site_url }}
+
+{% include "emails/_signature.txt" %}{% endautoescape %}

@@ -1,0 +1,3 @@
+{% extends "accounts/layout.html" %}{% load i18n %}
+{% block title %}{% translate "My orders" %}{% endblock %}
+{% block account %}<h1>{% translate "My orders" %}</h1>{% include "orders/_order_table.html" %}{% endblock %}

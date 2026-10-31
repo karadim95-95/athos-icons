@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Custom icon" %}{% endblock %}
+{% block content %}
+<div class="wrap medium">
+  <span class="eyebrow">{% translate "Made to order" %}</span>
+  <h1>{% translate "Request a custom icon" %}</h1>
+  <p class="muted">{% translate "Tell us as much as you can. We will reply with questions or a price offer, by email and in your account." %}</p>
+  <form method="post" enctype="multipart/form-data" class="panel" novalidate>{% csrf_token %}
+    {% include "partials/form_errors.html" %}
+    {% include "partials/field.html" with field=form.subject %}
+    {% include "partials/field.html" with field=form.description %}
+    <div class="form-grid">
+      {% include "partials/field.html" with field=form.dimensions %}
+      {% include "partials/field.html" with field=form.quantity %}
+      {% include "partials/field.html" with field=form.budget %}
+      {% include "partials/field.html" with field=form.needed_by %}
+    </div>
+    {% include "partials/field.html" with field=form.images %}
+    <button class="btn btn-gold">{% translate "Send request" %}</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+# One-command deployment on any small Linux server (VPS):
+#   1. point your domain's DNS to the server
+#   2. cp .env.example .env  and fill it in
+#   3. docker compose up -d --build
+#   4. docker compose exec web python manage.py createsuperuser
+# Caddy gets the HTTPS certificate automatically.
+x-app: &app
+  build: .
+  # On the server, IMAGE points to the image published by the Deploy workflow (see README).
+  image: ${IMAGE:-athos-shop}
+  env_file: .env
+  environment:
+    SQLITE_PATH: /data/db.sqlite3
+    MEDIA_ROOT: /data/media
+  volumes:
+    - shopdata:/data
+  restart: unless-stopped
+
+services:
+  web:
+    <<: *app
+
+  # Background jobs every 2 hours: asks the couriers about shipped orders (only if
+  # TRACKING_API_KEY is set) and removes accounts whose email was never confirmed.
+  jobs:
+    <<: *app
+    command: sh -c "sleep 60; while true; do python manage.py update_tracking; python manage.py delete_unverified_accounts; sleep 7200; done"
+    depends_on:
+      - web
+
+  caddy:
+    image: caddy:2.8
+    env_file: .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - shopdata:/srv/shopdata:ro
+      - caddy_data:/data
+    depends_on:
+      - web
+    restart: unless-stopped
+
+volumes:
+  shopdata:     # database + uploaded photos — back this up!
+  caddy_data:

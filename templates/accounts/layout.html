@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<div class="wrap account">
+  {% with path=request.path %}
+  <nav class="account-nav" aria-label="{% translate 'My account' %}">
+    <a href="{% url 'accounts:dashboard' %}" {% if request.resolver_match.url_name == "dashboard" %}aria-current="page"{% endif %}>{% translate "Overview" %}</a>
+    <a href="{% url 'orders:order_list' %}" {% if "/account/orders/" in path %}aria-current="page"{% endif %}>{% translate "My orders" %}</a>
+    <a href="{% url 'orders:request_list' %}" {% if "/account/requests/" in path %}aria-current="page"{% endif %}>{% translate "Custom requests" %}</a>
+    <a href="{% url 'accounts:profile' %}" {% if "/account/details/" in path %}aria-current="page"{% endif %}>{% translate "My details" %}</a>
+    <a href="{% url 'accounts:password_change' %}" {% if request.resolver_match.url_name == "password_change" %}aria-current="page"{% endif %}>{% translate "Password" %}</a>
+    <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button>{% translate "Log out" %}</button></form>
+  </nav>
+  {% endwith %}
+  <div>{% block account %}{% endblock %}</div>
+</div>
+{% endblock %}

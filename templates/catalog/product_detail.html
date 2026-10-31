@@ -1,0 +1,65 @@
+{% extends "base.html" %}{% load i18n shop %}
+{% block title %}{{ product.local_name }}{% endblock %}
+{% block description %}{{ product.local_description|truncatewords:30 }}{% endblock %}
+{% block og_title %}{{ product.local_name }}{% endblock %}
+{% block og_extra %}{% with img=product.main_image %}{% if img %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ img.image.url }}">{% endif %}{% endwith %}{% endblock %}
+{% block content %}
+{% price product as p %}
+<div class="wrap">
+  <div class="breadcrumbs" style="margin-top:24px"><a href="{% url 'core:home' %}">{% translate "Home" %}</a> / <a href="{% url 'catalog:products' %}">{% translate "Icons" %}</a>{% if product.category %} / <a href="{{ product.category.get_absolute_url }}">{{ product.category.local_name }}</a>{% endif %}</div>
+  <div class="product">
+    <div>
+      {% with images=product.images.all %}
+      <div class="gallery-main">
+        {% if images %}<img src="{{ images.0.image.url }}" alt="{{ product.local_name }}" data-gallery-main>{% else %}{% include "partials/placeholder.html" %}{% endif %}
+      </div>
+      {% if images|length > 1 %}
+      <div class="thumbs">
+        {% for img in images %}<button type="button" data-gallery-thumb data-full="{{ img.image.url }}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="{% translate 'Photo' %} {{ forloop.counter }}"><img src="{{ img.thumb_url }}" alt=""></button>{% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="product-info">
+      {% if product.category %}<span class="eyebrow">{{ product.category.local_name }}</span>{% endif %}
+      <h1>{{ product.local_name }}</h1>
+      <div class="buy-box">
+        {% include "partials/price.html" with big=1 %}
+        {% if p.has_discount %}<p class="small" style="color:var(--wine);margin:6px 0 0">{% blocktranslate with d=product.discount_percent %}You save {{ d }}%{% endblocktranslate %}</p>{% endif %}
+        {% if product.is_available %}
+          <p class="stock in" style="margin:10px 0 0">● {% translate "Available to order" %}</p>
+          <form method="post" action="{% url 'orders:cart_add' product.pk %}">{% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <div class="buy-row">
+              <label class="visually-hidden" for="qty">{% translate "Quantity" %}</label>
+              <input id="qty" type="number" name="quantity" value="1" min="1" max="999">
+              <button class="btn btn-gold">{% translate "Add to cart" %}</button>
+            </div>
+          </form>
+          <p class="small muted" style="margin:12px 0 0">{% translate "No payment now: we confirm your order first and then email you the bank details." %}</p>
+        {% else %}
+          <p class="stock out" style="margin:10px 0">● {% translate "Currently sold out" %}</p>
+          <a class="btn btn-ghost" href="{% url 'orders:custom_request' %}">{% translate "Ask us to make one for you" %}</a>
+        {% endif %}
+      </div>
+
+      {% if product.dimensions or product.materials %}
+      <table class="specs">
+        {% if product.dimensions %}<tr><th>{% translate "Dimensions" %}</th><td>{{ product.dimensions }}</td></tr>{% endif %}
+        {% if product.materials %}<tr><th>{% translate "Materials / technique" %}</th><td>{{ product.materials }}</td></tr>{% endif %}
+      </table>
+      {% endif %}
+      {% if product.local_description %}<div class="prose">{{ product.local_description|linebreaks }}</div>{% endif %}
+      <div class="notice info small">{% translate "Would you like a different size or a variation of this icon?" %} <a href="{% url 'orders:custom_request' %}">{% translate "Send us a custom request" %}</a>.</div>
+    </div>
+  </div>
+
+  {% if related %}
+  <section class="section" style="padding-top:0">
+    <div class="section-head"><h2>{% translate "You may also like" %}</h2></div>
+    <div class="grid">{% for product in related %}{% include "partials/product_card.html" %}{% endfor %}</div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

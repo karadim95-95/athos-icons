@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Log in" %}{% endblock %}
+{% block content %}
+<div class="wrap narrow">
+  <div class="panel">
+    <h1 style="font-size:2rem">{% translate "Log in" %}</h1>
+    <form method="post" novalidate>{% csrf_token %}
+      {% include "partials/form_errors.html" %}
+      {% include "partials/field.html" with field=form.username %}
+      {% include "partials/field.html" with field=form.password %}
+      <input type="hidden" name="next" value="{{ next }}">
+      <button class="btn btn-block">{% translate "Log in" %}</button>
+    </form>
+    <p class="small" style="margin:16px 0 0"><a href="{% url 'accounts:password_reset' %}">{% translate "Forgot your password?" %}</a></p>
+    <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+    <p class="muted" style="margin-bottom:10px">{% translate "New here?" %}</p>
+    <a class="btn btn-ghost btn-block" href="{% url 'accounts:register' %}{% if next %}?next={{ next|urlencode }}{% endif %}">{% translate "Create an account" %}</a>
+  </div>
+</div>
+{% endblock %}

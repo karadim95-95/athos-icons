@@ -1,0 +1,3 @@
+{% load i18n %}<div class="hp" aria-hidden="true">{{ form.website }}</div>{{ form.form_ts }}
+{% if turnstile_site_key %}{% get_current_language as LANG %}<div class="cf-turnstile field" data-sitekey="{{ turnstile_site_key }}" data-language="{{ LANG }}"></div>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>{% endif %}

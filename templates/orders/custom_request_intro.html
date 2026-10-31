@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% translate "Custom icon" %}{% endblock %}
+{% block content %}
+<div class="wrap medium">
+  <span class="eyebrow">{% translate "Made to order" %}</span>
+  <h1>{% translate "Request a custom icon" %}</h1>
+  <p class="prose">{% translate "Did not find the icon you were looking for? A patron saint, a specific size, a family icon or a copy of an old icon? Tell us and we will reply with a price offer." %}</p>
+  <div class="steps" style="grid-template-columns:repeat(3,1fr);margin:28px 0">
+    <div class="step"><h4>{% translate "Describe it" %}</h4><p>{% translate "Saint or scene, size, and a photo if you have one." %}</p></div>
+    <div class="step"><h4>{% translate "We talk" %}</h4><p>{% translate "We ask any questions through your account and by email." %}</p></div>
+    <div class="step"><h4>{% translate "Price offer" %}</h4><p>{% translate "You accept the offer online and receive the payment details." %}</p></div>
+  </div>
+  <div class="notice">{% translate "You need an account so we can contact you about your request." %}</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap">
+    <a class="btn btn-gold" href="{% url 'accounts:register' %}?next={{ request.path|urlencode }}">{% translate "Create an account" %}</a>
+    <a class="btn btn-ghost" href="{% url 'accounts:login' %}?next={{ request.path|urlencode }}">{% translate "I already have an account" %}</a>
+  </div>
+</div>
+{% endblock %}

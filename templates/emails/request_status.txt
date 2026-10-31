@@ -1,0 +1,19 @@
+{% load i18n shop %}{% autoescape off %}{% if req.status == "new" %}{% blocktranslate with no=req.number %}Custom request {{ no }} received{% endblocktranslate %}{% elif req.status == "quoted" %}{% blocktranslate with no=req.number %}Price offer for your request {{ no }}{% endblocktranslate %}{% else %}{% blocktranslate with no=req.number %}Update on your request {{ no }}{% endblocktranslate %}{% endif %}
+{% blocktranslate with name=customer.first_name|default:customer.email %}Hello {{ name }},{% endblocktranslate %}
+
+{% if req.status == "new" %}{% blocktranslate with subject=req.subject %}Thank you for your request for “{{ subject }}”. We will look at it and get back to you soon, possibly with a few questions.{% endblocktranslate %}{% elif req.status == "quoted" %}{% blocktranslate with subject=req.subject %}We have prepared a price offer for “{{ subject }}”.{% endblocktranslate %}
+
+{% if req.quote_note %}{{ req.quote_note }}
+
+{% endif %}{% translate "Price" %}: {{ req.quoted_price|euro }}{% if req.is_business %} ({% translate "excl. VAT" %}){% endif %}
+{% translate "Shipping" %}: {{ req.quoted_shipping|euro }}
+{% translate "Total" %}: {{ req.quote_total|euro }}{% if req.is_business %} + {% translate "VAT" %}{% endif %}
+
+{% translate "You can accept or decline the offer from your account. If you accept, we will send you the payment details right away." %}{% elif req.status == "declined" or req.status == "closed" %}{% translate "Your custom request has been closed. If you would like to discuss it again, just reply to this email or send us a message from your account." %}{% else %}{% blocktranslate with status=req.get_status_display %}The status of your request is now: {{ status }}.{% endblocktranslate %}{% endif %}
+{% if note %}
+{{ note }}
+{% endif %}
+{% translate "View your request" %}:
+{{ site_url }}{{ req.get_absolute_url }}
+
+{% include "emails/_signature.txt" %}{% endautoescape %}

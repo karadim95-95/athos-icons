@@ -1,0 +1,10 @@
+{% load i18n shop %}{% if requests %}
+<table class="table">
+  <thead><tr><th>{% translate "Request" %}</th><th>{% translate "Date" %}</th><th>{% translate "Icon" %}</th><th>{% translate "Status" %}</th></tr></thead>
+  <tbody>
+  {% for r in requests %}
+    <tr><td><a href="{{ r.get_absolute_url }}">{{ r.number }}</a></td><td>{{ r.created_at|date:"d/m/Y" }}</td><td>{{ r.subject|truncatechars:40 }}</td><td><span class="pill {{ r.status }}">{{ r.get_status_display }}</span></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="empty"><p class="muted">{% translate "No custom requests yet." %}</p><a class="btn btn-ghost" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a></div>{% endif %}

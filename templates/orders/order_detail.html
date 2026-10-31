@@ -1,0 +1,63 @@
+{% extends "accounts/layout.html" %}{% load i18n shop %}
+{% block title %}{{ order.number }}{% endblock %}
+{% block account %}
+<div class="breadcrumbs"><a href="{% url 'orders:order_list' %}">{% translate "My orders" %}</a> / {{ order.number }}</div>
+<div class="section-head">
+  <div><h1 style="margin:0">{% translate "Order" %} {{ order.number }}</h1><span class="muted small">{{ order.created_at|date:"d/m/Y H:i" }}</span></div>
+  <span class="pill {{ order.status }}">{{ order.get_status_display }}</span>
+</div>
+
+{% if order.status != "rejected" and order.status != "cancelled" %}
+<ol class="progress">{% for label, done in steps %}<li class="{% if done %}done{% endif %}">{{ label }}</li>{% endfor %}</ol>
+{% endif %}
+
+{% if order.status == "pending" %}<div class="notice">{% translate "We are reviewing your order. You will receive an email with the final amount and payment details. Please do not pay yet." %}</div>{% endif %}
+{% if order.status == "awaiting_payment" %}{% include "orders/_payment_box.html" %}{% endif %}
+{% if on_the_way and order.tracking_number or on_the_way and order.tracking_url %}
+  <div class="notice ok">{% translate "Your order is on its way." %} {% if order.tracking_number %}{% translate "Tracking number" %}: <strong>{{ order.tracking_number }}</strong>{% endif %} {% if order.tracking_url %}<a href="{{ order.tracking_url }}" target="_blank" rel="noopener">{% translate "Track parcel" %}</a>{% endif %}
+    {% if order.tracking_event %}<div class="small" style="margin-top:6px">{% translate "Latest update from the courier" %}: <strong>{{ order.get_tracking_status_display }}</strong> · {{ order.tracking_event }}{% if order.tracking_event_at %} ({{ order.tracking_event_at|date:"d/m/Y H:i" }}){% endif %}</div>{% endif %}
+  </div>
+{% endif %}
+
+<div class="block">
+  <table class="table">
+    <thead><tr><th>{% translate "Item" %}</th><th>{% translate "Qty" %}</th><th class="num">{% translate "Price" %}</th><th class="num">{% translate "Total" %}</th></tr></thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr><td>{% if item.product %}<a href="{{ item.product.get_absolute_url }}">{{ item.product_name }}</a>{% else %}{{ item.product_name }}{% endif %}</td><td>{{ item.quantity }}</td><td class="num">{{ item.unit_price|euro }}</td><td class="num">{{ item.line_total|euro }}</td></tr>
+      {% endfor %}
+      <tr><td colspan="3">{% translate "Shipping" %}</td><td class="num">{{ order.shipping_cost|euro }}</td></tr>
+      {% if order.prices_include_vat %}
+        <tr><td colspan="3"><strong>{% translate "Total" %}</strong> <span class="muted small">({% blocktranslate with v=order.vat_amount|euro r=order.vat_rate|floatformat:"-2" %}incl. {{ r }}% VAT {{ v }}{% endblocktranslate %})</span></td><td class="num"><strong>{{ order.total|euro }}</strong></td></tr>
+      {% else %}
+        <tr><td colspan="3">{% translate "Net amount" %}</td><td class="num">{{ order.net_total|euro }}</td></tr>
+        <tr><td colspan="3">{% translate "VAT" %} {{ order.vat_rate|floatformat:"-2" }}%</td><td class="num">{{ order.vat_amount|euro }}</td></tr>
+        <tr><td colspan="3"><strong>{% translate "Total" %}</strong></td><td class="num"><strong>{{ order.total|euro }}</strong></td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<div class="form-grid block">
+  <div class="panel">
+    <h3>{% translate "Delivery address" %}</h3>
+    <p style="margin:0">{{ order.full_name }}{% if order.company_name %}<br>{{ order.company_name }}{% endif %}<br>{{ order.address }}<br>{{ order.postal_code }} {{ order.city }}<br>{{ order.country }}<br>{{ order.phone }}</p>
+    {% if order.vat_number %}<p class="small muted" style="margin:8px 0 0">{% translate "VAT number" %}: {{ order.vat_number }} {% if order.tax_office %}· {{ order.tax_office }}{% endif %}</p>{% endif %}
+    {% if order.customer_notes %}<p class="small" style="margin:12px 0 0"><strong>{% translate "Your notes" %}:</strong> {{ order.customer_notes }}</p>{% endif %}
+  </div>
+  <div class="panel">
+    <h3>{% translate "History" %}</h3>
+    <ul class="timeline">
+      {% for e in order.events.all %}<li><strong>{{ e.get_status_display }}</strong><br><time>{{ e.created_at|date:"d/m/Y H:i" }}</time>{% if e.note %}<div class="small">{{ e.note|linebreaksbr }}</div>{% endif %}</li>{% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% include "partials/thread.html" with thread=order %}
+
+{% if order.can_cancel %}
+<form method="post" action="{% url 'orders:order_cancel' order.number %}">{% csrf_token %}
+  <button class="btn btn-danger" data-confirm="{% translate 'Cancel this order request?' %}">{% translate "Cancel order request" %}</button>
+</form>
+{% endif %}
+{% endblock %}

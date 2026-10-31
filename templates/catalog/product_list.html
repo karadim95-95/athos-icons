@@ -1,0 +1,53 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{% if category %}{{ category.local_name }}{% else %}{% translate "Icons" %}{% endif %}{% endblock %}
+{% block content %}
+<div class="wrap">
+  <div class="page-head">
+    <div class="breadcrumbs"><a href="{% url 'core:home' %}">{% translate "Home" %}</a> / <a href="{% url 'catalog:products' %}">{% translate "Icons" %}</a>{% if category %} / {{ category.local_name }}{% endif %}</div>
+    <h1>{% if query %}{% blocktranslate %}Results for “{{ query }}”{% endblocktranslate %}{% elif category %}{{ category.local_name }}{% else %}{% translate "All icons" %}{% endif %}</h1>
+    {% if category.local_description %}<p>{{ category.local_description }}</p>{% endif %}
+  </div>
+  <div class="shop-layout">
+    <aside class="sidebar">
+      <h4>{% translate "Collections" %}</h4>
+      <ul>
+        <li><a href="{% url 'catalog:products' %}" {% if not category and not request.GET.sale %}aria-current="page"{% endif %}>{% translate "All icons" %}</a></li>
+        {% for c in categories %}<li><a href="{{ c.get_absolute_url }}" {% if c == category %}aria-current="page"{% endif %}>{{ c.local_name }}</a></li>{% endfor %}
+        <li><a href="{% url 'catalog:products' %}?sale=1" {% if request.GET.sale %}aria-current="page"{% endif %}>{% translate "Offers" %}</a></li>
+      </ul>
+    </aside>
+    <div>
+      <form class="toolbar" method="get">
+        <span class="muted small">{% blocktranslate count n=page_obj.paginator.count %}{{ n }} icon{% plural %}{{ n }} icons{% endblocktranslate %}</span>
+        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+        {% if request.GET.sale %}<input type="hidden" name="sale" value="1">{% endif %}
+        <label class="visually-hidden" for="sort">{% translate "Sort by" %}</label>
+        <select id="sort" name="sort" data-autosubmit>
+          <option value="new" {% if sort == "new" %}selected{% endif %}>{% translate "Newest" %}</option>
+          <option value="price" {% if sort == "price" %}selected{% endif %}>{% translate "Price: low to high" %}</option>
+          <option value="-price" {% if sort == "-price" %}selected{% endif %}>{% translate "Price: high to low" %}</option>
+          <option value="name" {% if sort == "name" %}selected{% endif %}>{% translate "Name" %}</option>
+        </select>
+        <noscript><button class="btn btn-ghost">{% translate "Sort" %}</button></noscript>
+      </form>
+      {% if page_obj.object_list %}
+        <div class="grid">{% for product in page_obj.object_list %}{% include "partials/product_card.html" %}{% endfor %}</div>
+        {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination" aria-label="{% translate 'Pages' %}">
+          {% for n in page_obj.paginator.page_range %}
+            {% if n == page_obj.number %}<span class="current">{{ n }}</span>
+            {% else %}<a href="?page={{ n }}{% if query %}&q={{ query|urlencode }}{% endif %}&sort={{ sort }}{% if request.GET.sale %}&sale=1{% endif %}">{{ n }}</a>{% endif %}
+          {% endfor %}
+        </nav>
+        {% endif %}
+      {% else %}
+        <div class="empty">
+          <h3>{% translate "No icons found" %}</h3>
+          <p class="muted">{% translate "We can make the icon you are looking for. Send us a custom request." %}</p>
+          <a class="btn btn-gold" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

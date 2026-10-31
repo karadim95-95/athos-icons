@@ -1,0 +1,11 @@
+{% extends "accounts/layout.html" %}{% load i18n %}
+{% block title %}{% translate "Confirm your email" %}{% endblock %}
+{% block account %}
+<h1>{% translate "Confirm your email" %}</h1>
+<div class="panel">
+  <p>{% blocktranslate with email=user.email %}We sent a link to <strong>{{ email }}</strong>. Open it to confirm your email address. Then you can send order requests and custom icon requests.{% endblocktranslate %}</p>
+  <p class="muted small">{% translate "This keeps fake accounts out of the shop and makes sure we can reach you about your order. Can't find the email? Check your spam folder, or send it again." %}</p>
+  <form method="post">{% csrf_token %}<button class="btn btn-ghost">{% translate "Send the link again" %}</button></form>
+  <p class="muted small" style="margin:16px 0 0">{% translate "Wrong address? Write to us through the contact page and we will fix it." %}</p>
+</div>
+{% endblock %}

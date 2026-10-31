@@ -1,0 +1,7 @@
+.venv
+data
+media
+staticfiles
+.env
+**/__pycache__
+_shots

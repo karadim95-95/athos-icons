@@ -1,0 +1,5 @@
+# Extra packages for the downloadable demo (demo/build.py).
+-r requirements.txt
+waitress==3.0.2
+# Time zones for Windows, which has no system database.
+tzdata==2026.6

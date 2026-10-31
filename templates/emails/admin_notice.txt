@@ -1,0 +1,7 @@
+{% autoescape off %}{{ title }}
+{{ title }}
+
+{% for line in lines %}{{ line }}
+{% endfor %}
+{{ link }}
+{% endautoescape %}

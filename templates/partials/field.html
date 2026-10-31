@@ -1,0 +1,10 @@
+{% load i18n %}<div class="field{% if field.errors %} has-error{% endif %}{% if field.widget_type == 'checkbox' %} check{% endif %}{% if full %} full{% endif %}">
+  {% if field.widget_type == 'checkbox' %}
+    <label>{{ field }} <span>{{ field.label }}</span></label>
+  {% else %}
+    <label for="{{ field.id_for_label }}">{{ field.label }}{% if not field.field.required and not field.field.show_required %} <span class="muted small">({% translate "optional" %})</span>{% endif %}</label>
+    {{ field }}
+  {% endif %}
+  {% if field.help_text %}<div class="help">{{ field.help_text|safe }}</div>{% endif %}
+  {{ field.errors }}
+</div>

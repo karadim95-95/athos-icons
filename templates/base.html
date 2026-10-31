@@ -1,0 +1,138 @@
+{% load static i18n shop %}{% get_current_language as LANG %}<!doctype html>
+<html lang="{{ LANG }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ shop.local_tagline }}{% endblock %} | {{ shop.shop_name }}</title>
+  <meta name="description" content="{% block description %}{{ shop.local_tagline }}{% endblock %}">
+  <meta property="og:site_name" content="{{ shop.shop_name }}">
+  <meta property="og:title" content="{% block og_title %}{{ shop.shop_name }}{% endblock %}">
+  {% block og_extra %}{% endblock %}
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%23262c32'/%3E%3Cpath d='M20 6v28M16 10h8M12 16h16M15 27l10-3' stroke='%23e2c47f' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preload" href="{% static 'fonts/eb-garamond-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+  <script src="{% static 'js/shop.js' %}" defer></script>
+</head>
+<body>
+{% if demo_mode %}
+<div class="demo-bar">{% translate "Demo version: nothing is really sent or paid." %}
+  <a href="{% url 'core:demo_mailbox' %}">{% translate "Demo mailbox" %}</a>
+  <span>{% translate "Accounts (password demo1234):" %} maria@demo.gr · admin@demo.gr</span>
+</div>
+{% endif %}
+{% if user.is_staff %}
+<div class="admin-bar">{% blocktranslate with email=user.email %}You are logged in as the shop admin ({{ email }}). Admin accounts cannot place orders.{% endblocktranslate %}
+  <a href="{% url 'admin:index' %}">{% translate "Admin" %}</a>
+  <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button>{% translate "Log out" %}</button></form>
+</div>
+{% endif %}
+<div class="topbar">
+  <div class="wrap">
+    <span class="announce">{{ shop.local_announcement|default:shop.local_tagline }}</span>
+    <form class="lang-switch" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button name="language" value="el" {% if LANG == "el" %}aria-current="true"{% endif %}>ΕΛ</button>
+      <span aria-hidden="true">·</span>
+      <button name="language" value="en" {% if LANG == "en" %}aria-current="true"{% endif %}>EN</button>
+    </form>
+  </div>
+</div>
+
+<header class="header">
+  <div class="wrap">
+    <button class="icon-btn menu-toggle" data-toggle="main-nav" aria-expanded="false" aria-label="{% translate 'Menu' %}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a class="logo" href="{% url 'core:home' %}">
+      {% include "partials/logo_mark.html" %}
+      <span class="logo-text">{{ shop.shop_name }}<small>{% translate "Byzantine icons" %}</small></span>
+    </a>
+    {% with path=request.path %}
+    <nav class="nav" id="main-nav">
+      <a href="{% url 'catalog:products' %}" {% if "/shop/" in path %}aria-current="page"{% endif %}>{% translate "Icons" %}</a>
+      <a href="{% url 'orders:custom_request' %}" {% if "/custom-icon/" in path %}aria-current="page"{% endif %}>{% translate "Custom icon" %}</a>
+      <a href="{% url 'core:page' 'business' %}" {% if "/p/business/" in path %}aria-current="page"{% endif %}>{% translate "For businesses" %}</a>
+      <a href="{% url 'core:page' 'about' %}" {% if "/p/about/" in path %}aria-current="page"{% endif %}>{% translate "About us" %}</a>
+      <a href="{% url 'core:contact' %}" {% if "/contact/" in path %}aria-current="page"{% endif %}>{% translate "Contact" %}</a>
+    </nav>
+    {% endwith %}
+    <div class="header-actions">
+      <button class="icon-btn" data-toggle="search-panel" aria-expanded="false" aria-label="{% translate 'Search' %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+      </button>
+      <a class="icon-btn" href="{% url 'accounts:dashboard' %}" aria-label="{% translate 'My account' %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.3 7.5-5.3s6.3 1.7 7.5 5.3"/></svg>
+        {% if unread_count %}<span class="count">{{ unread_count }}</span>{% endif %}
+      </a>
+      <a class="icon-btn" href="{% url 'orders:cart' %}" aria-label="{% translate 'Cart' %}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3" stroke-linecap="round"/></svg>
+        {% if cart_count %}<span class="count">{{ cart_count }}</span>{% endif %}
+      </a>
+    </div>
+  </div>
+  <div class="search-panel" id="search-panel">
+    <form class="wrap search-form" action="{% url 'catalog:products' %}" role="search">
+      <input type="search" name="q" placeholder="{% translate 'Search icons, e.g. Panagia, Saint Nicholas…' %}" value="{{ query|default:'' }}">
+      <button class="btn btn-gold">{% translate "Search" %}</button>
+    </form>
+  </div>
+</header>
+
+{% if user.is_authenticated and user.is_business %}
+  <div class="business-bar">{% blocktranslate with company=user.company_name %}Business account: {{ company }} · all prices are shown <strong>excluding VAT</strong>{% endblocktranslate %}</div>
+{% elif user.is_authenticated and user.business_pending %}
+  <div class="business-bar">{% translate "Your business account is waiting for approval. Until then you see retail prices incl. VAT." %}</div>
+{% endif %}
+
+{% if messages %}
+<div class="wrap flash-wrap">
+  {% for message in messages %}<div class="flash {{ message.tags }}" role="status">{{ message }}</div>{% endfor %}
+</div>
+{% endif %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <a class="logo" href="{% url 'core:home' %}">{% include "partials/logo_mark.html" %}<span class="logo-text">{{ shop.shop_name }}</span></a>
+      <p>{{ shop.local_tagline }}</p>
+    </div>
+    <div>
+      <h4>{% translate "Shop" %}</h4>
+      <ul>
+        <li><a href="{% url 'catalog:products' %}">{% translate "All icons" %}</a></li>
+        <li><a href="{% url 'catalog:products' %}?sale=1">{% translate "Offers" %}</a></li>
+        <li><a href="{% url 'orders:custom_request' %}">{% translate "Custom icon request" %}</a></li>
+        <li><a href="{% url 'accounts:register' %}">{% translate "Business account" %}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>{% translate "Information" %}</h4>
+      <ul>
+        {% for p in footer_pages %}<li><a href="{{ p.get_absolute_url }}">{{ p.local_title }}</a></li>{% endfor %}
+        <li><a href="{% url 'orders:order_list' %}">{% translate "Order status" %}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>{% translate "Contact" %}</h4>
+      <ul>
+        {% if shop.phone %}<li><a href="tel:{{ shop.phone|cut:' ' }}">{{ shop.phone }}</a></li>{% endif %}
+        {% if shop.contact_email %}<li><a href="mailto:{{ shop.contact_email }}">{{ shop.contact_email }}</a></li>{% endif %}
+        {% if shop.business_hours %}<li>{{ shop.business_hours }}</li>{% endif %}
+        {% if shop.address %}<li>{{ shop.address }}</li>{% endif %}
+        {% if shop.facebook_url %}<li><a href="{{ shop.facebook_url }}" rel="noopener">Facebook</a></li>{% endif %}
+        {% if shop.instagram_url %}<li><a href="{{ shop.instagram_url }}" rel="noopener">Instagram</a></li>{% endif %}
+        <li><a href="{% url 'core:contact' %}">{% translate "Contact form" %}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="wrap">
+      <span>© {% now "Y" %} {{ shop.shop_name }}</span>
+      <span>{% translate "Payment by bank transfer after we confirm your order." %}</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

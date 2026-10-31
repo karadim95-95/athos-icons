@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% load i18n %}
+{% block title %}{{ page.local_title }}{% endblock %}
+{% block content %}
+<div class="wrap medium">
+  <h1>{{ page.local_title }}</h1>
+  <div class="prose">{{ page.local_body|linebreaks }}</div>
+  {% if page.slug == "business" %}
+    <p style="margin-top:28px"><a class="btn" href="{% url 'accounts:register' %}?type=business">{% translate "Open a business account" %}</a></p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "accounts/layout.html" %}{% load i18n %}
+{% block title %}{% translate "My details" %}{% endblock %}
+{% block account %}
+<h1>{% translate "My details" %}</h1>
+<p class="muted">{{ user.email }} · {{ user.get_account_type_display }}{% if user.business_pending %} ({% translate "awaiting approval" %}){% endif %}</p>
+<form method="post" class="panel" novalidate>{% csrf_token %}
+  {% include "partials/form_errors.html" %}
+  <div class="form-grid">{% for field in form %}{% include "partials/field.html" %}{% endfor %}</div>
+  <button class="btn">{% translate "Save" %}</button>
+</form>
+<p class="small muted" style="margin-top:18px">{% translate "To change your email or close your account, please send us a message." %}</p>
+{% endblock %}

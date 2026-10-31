@@ -1,0 +1,14 @@
+{% load i18n shop %}{% price product as p %}
+<a class="card" href="{{ product.get_absolute_url }}">
+  <div class="card-media">
+    {% with img=product.main_image %}{% if img %}<img src="{{ img.thumb_url }}" alt="{{ product.local_name }}" loading="lazy">{% else %}{% include "partials/placeholder.html" %}{% endif %}{% endwith %}
+    {% if p.has_discount %}<span class="badge">−{{ product.discount_percent }}%</span>{% endif %}
+    {% if not product.is_available %}<span class="badge soldout">{% translate "Sold out" %}</span>{% endif %}
+  </div>
+  <div class="card-body">
+    {% if product.category %}<span class="card-cat">{{ product.category.local_name }}</span>{% endif %}
+    <h3>{{ product.local_name }}</h3>
+    {% if product.dimensions %}<span class="muted small">{{ product.dimensions }}</span>{% endif %}
+    {% include "partials/price.html" %}
+  </div>
+</a>

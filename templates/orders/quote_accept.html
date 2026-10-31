@@ -1,0 +1,11 @@
+{% extends "accounts/layout.html" %}{% load i18n shop %}
+{% block title %}{% translate "Accept offer" %}{% endblock %}
+{% block account %}
+<h1>{% translate "Accept offer" %}</h1>
+<div class="notice"><strong>{{ req.subject }}</strong> — {{ req.quote_total|euro }}{% if req.is_business %} + {% translate "VAT" %}{% endif %}. {% translate "Confirm your delivery details. We will then email you the payment details." %}</div>
+<form method="post" class="panel" novalidate>{% csrf_token %}
+  {% include "partials/form_errors.html" %}
+  <div class="form-grid">{% for field in form %}{% if field.name == "save_to_profile" %}{% include "partials/field.html" with full=1 %}{% else %}{% include "partials/field.html" %}{% endif %}{% endfor %}</div>
+  <button class="btn btn-gold">{% translate "Accept and place order" %}</button>
+</form>
+{% endblock %}
