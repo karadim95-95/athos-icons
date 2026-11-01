@@ -397,6 +397,10 @@ msgid "Mark as available"
 msgstr "Σήμανση ως διαθέσιμο"
 
 #: catalog/admin.py
+msgid "Add the watermark to their photos"
+msgstr "Προσθήκη υδατογραφήματος στις φωτογραφίες τους"
+
+#: catalog/admin.py
 msgid "Click the ones that apply."
 msgstr "Κάντε κλικ σε όσα ισχύουν."
 
@@ -462,6 +466,14 @@ msgid "Discount {}%%"
 msgstr "Έκπτωση {}%%"
 
 #: catalog/admin.py
+msgid "Watermarks are switched off in the shop settings."
+msgstr "Το υδατογράφημα είναι απενεργοποιημένο στις ρυθμίσεις καταστήματος."
+
+#: catalog/admin.py
+msgid "Their photos already have the watermark."
+msgstr "Οι φωτογραφίες τους έχουν ήδη υδατογράφημα."
+
+#: catalog/admin.py
 msgid "Enter the price for this size."
 msgstr "Συμπληρώστε την τιμή για αυτό το μέγεθος."
 
@@ -484,6 +496,13 @@ msgstr "με ΦΠΑ (€)"
 #: catalog/admin.py
 msgid "copy"
 msgstr "αντίγραφο"
+
+#: catalog/admin.py
+#, python-format
+msgid "%d photo watermarked."
+msgid_plural "%d photos watermarked."
+msgstr[0] "Προστέθηκε υδατογράφημα σε %d φωτογραφία."
+msgstr[1] "Προστέθηκε υδατογράφημα σε %d φωτογραφίες."
 
 #: catalog/apps.py
 msgid "Catalog"
@@ -758,6 +777,10 @@ msgid "homepage image"
 msgstr "φωτογραφία αρχικής σελίδας"
 
 #: core/models.py
+msgid "watermark product photos"
+msgstr "υδατογράφημα στις φωτογραφίες προϊόντων"
+
+#: core/models.py
 msgid "contact email"
 msgstr "email επικοινωνίας"
 
@@ -833,6 +856,15 @@ msgstr "σελίδες"
 msgid "Short message in the thin bar at the very top, e.g. a shipping offer."
 msgstr ""
 "Σύντομο μήνυμα στη λεπτή μπάρα στην κορυφή, π.χ. προσφορά μεταφορικών."
+
+#: core/models.py
+msgid ""
+"Your logo and shop name, faded and repeated over every product photo you "
+"upload, so others cannot simply reuse your photos."
+msgstr ""
+"Το λογότυπο και το όνομα του καταστήματος, αχνά και επαναλαμβανόμενα, σε "
+"κάθε φωτογραφία προϊόντος που ανεβάζετε, ώστε να μην μπορούν άλλοι να "
+"χρησιμοποιήσουν απλά τις φωτογραφίες σας."
 
 #: core/models.py
 msgid ""
@@ -2087,10 +2119,6 @@ msgid "Order archive"
 msgstr "Αρχείο παραγγελιών"
 
 #: templates/admin/index.html
-msgid "Custom requests"
-msgstr "Αιτήματα κατά παραγγελία"
-
-#: templates/admin/index.html
 msgid "View shop"
 msgstr "Προβολή καταστήματος"
 
@@ -2128,12 +2156,32 @@ msgid "Log out"
 msgstr "Αποσύνδεση"
 
 #: templates/base.html
+msgid "Contact us"
+msgstr "Επικοινωνήστε μαζί μας"
+
+#: templates/base.html
 msgid "Menu"
 msgstr "Μενού"
 
 #: templates/base.html
 msgid "Byzantine icons"
 msgstr "Βυζαντινές εικόνες"
+
+#: templates/base.html
+msgid "Search"
+msgstr "Αναζήτηση"
+
+#: templates/base.html
+msgid "My account"
+msgstr "Ο λογαριασμός μου"
+
+#: templates/base.html
+msgid "Search icons, e.g. Panagia, Saint Nicholas…"
+msgstr "Αναζήτηση εικόνων, π.χ. Παναγία, Άγιος Νικόλαος…"
+
+#: templates/base.html
+msgid "Close"
+msgstr "Κλείσιμο"
 
 #: templates/base.html
 msgid "Icons"
@@ -2150,22 +2198,6 @@ msgstr "Για επιχειρήσεις"
 #: templates/base.html
 msgid "About us"
 msgstr "Σχετικά με εμάς"
-
-#: templates/base.html
-msgid "Search"
-msgstr "Αναζήτηση"
-
-#: templates/base.html
-msgid "My account"
-msgstr "Ο λογαριασμός μου"
-
-#: templates/base.html
-msgid "Cart"
-msgstr "Καλάθι"
-
-#: templates/base.html
-msgid "Search icons, e.g. Panagia, Saint Nicholas…"
-msgstr "Αναζήτηση εικόνων, π.χ. Παναγία, Άγιος Νικόλαος…"
 
 #: templates/base.html
 #, python-format
@@ -2185,8 +2217,9 @@ msgstr ""
 "λιανικής με ΦΠΑ."
 
 #: templates/base.html
-msgid "Follow us"
-msgstr "Ακολουθήστε μας"
+#, python-format
+msgid "Free shipping for orders over %(amount)s"
+msgstr "Δωρεάν μεταφορικά για αγορές άνω των %(amount)s"
 
 #: templates/base.html
 msgid "All icons"
@@ -2213,8 +2246,16 @@ msgid "Order status"
 msgstr "Κατάσταση παραγγελίας"
 
 #: templates/base.html
+msgid "Custom requests"
+msgstr "Αιτήματα κατά παραγγελία"
+
+#: templates/base.html
 msgid "Contact form"
 msgstr "Φόρμα επικοινωνίας"
+
+#: templates/base.html
+msgid "Follow us"
+msgstr "Ακολουθήστε μας"
 
 #: templates/base.html
 msgid "Payment by bank transfer after we confirm your order."
@@ -2225,15 +2266,6 @@ msgid "Photo"
 msgstr "Φωτογραφία"
 
 #: templates/catalog/product_detail.html
-#, python-format
-msgid "You save %(d)s%%"
-msgstr "Κερδίζετε %(d)s%%"
-
-#: templates/catalog/product_detail.html
-msgid "Available to order"
-msgstr "Διαθέσιμο για παραγγελία"
-
-#: templates/catalog/product_detail.html
 msgid "Dimensions"
 msgstr "Διαστάσεις"
 
@@ -2242,12 +2274,21 @@ msgid "cm"
 msgstr "εκ."
 
 #: templates/catalog/product_detail.html
+#, python-format
+msgid "You save %(d)s%%"
+msgstr "Κερδίζετε %(d)s%%"
+
+#: templates/catalog/product_detail.html
 msgid "Quantity"
 msgstr "Ποσότητα"
 
 #: templates/catalog/product_detail.html
 msgid "Add to cart"
 msgstr "Προσθήκη στο καλάθι"
+
+#: templates/catalog/product_detail.html
+msgid "Available to order"
+msgstr "Διαθέσιμο για παραγγελία"
 
 #: templates/catalog/product_detail.html
 msgid ""
@@ -2266,12 +2307,16 @@ msgid "Ask us to make one for you"
 msgstr "Ζητήστε να σας το φτιάξουμε"
 
 #: templates/catalog/product_detail.html
-msgid "Technique"
-msgstr "Τεχνοτροπία"
+msgid "Description"
+msgstr "Περιγραφή"
 
 #: templates/catalog/product_detail.html
-msgid "Materials"
-msgstr "Υλικά"
+msgid "Specifications"
+msgstr "Χαρακτηριστικά"
+
+#: templates/catalog/product_detail.html
+msgid "Payment & delivery"
+msgstr "Πληρωμή & Αποστολή"
 
 #: templates/catalog/product_detail.html
 msgid "Would you like a different size or a variation of this icon?"
@@ -2280,6 +2325,14 @@ msgstr "Θέλετε άλλο μέγεθος ή μια παραλλαγή αυτ
 #: templates/catalog/product_detail.html
 msgid "Send us a custom request"
 msgstr "Στείλτε μας αίτημα"
+
+#: templates/catalog/product_detail.html
+msgid "Technique"
+msgstr "Τεχνοτροπία"
+
+#: templates/catalog/product_detail.html
+msgid "Materials"
+msgstr "Υλικά"
 
 #: templates/catalog/product_detail.html
 msgid "You may also like"
@@ -2347,10 +2400,6 @@ msgid "Request a custom icon"
 msgstr "Ζητήστε εικόνα κατά παραγγελία"
 
 #: templates/core/contact.html
-msgid "Contact us"
-msgstr "Επικοινωνήστε μαζί μας"
-
-#: templates/core/contact.html
 msgid "We are happy to help you choose an icon or answer any question."
 msgstr ""
 "Θα χαρούμε να σας βοηθήσουμε να διαλέξετε εικόνα ή να απαντήσουμε σε κάθε "
@@ -2405,40 +2454,8 @@ msgstr ""
 "την εικόνα που αναζητάτε, θα τη φτιάξουμε για εσάς."
 
 #: templates/core/home.html
-msgid "How it works"
-msgstr "Πώς λειτουργεί"
-
-#: templates/core/home.html
-msgid "Every order checked by us"
-msgstr "Ελέγχουμε κάθε παραγγελία"
-
-#: templates/core/home.html
-msgid "We confirm before you pay"
-msgstr "Επιβεβαιώνουμε πριν πληρώσετε"
-
-#: templates/core/home.html
-msgid "Bank transfer"
-msgstr "Τραπεζική κατάθεση"
-
-#: templates/core/home.html
-msgid "Simple and secure payment"
-msgstr "Απλή και ασφαλής πληρωμή"
-
-#: templates/core/home.html
-msgid "Custom icons"
-msgstr "Εικόνες κατά παραγγελία"
-
-#: templates/core/home.html
-msgid "Tell us what you need"
-msgstr "Πείτε μας τι χρειάζεστε"
-
-#: templates/core/home.html
-msgid "Business prices"
-msgstr "Τιμές επιχειρήσεων"
-
-#: templates/core/home.html
-msgid "Wholesale, excl. VAT"
-msgstr "Χονδρική, χωρίς ΦΠΑ"
+msgid "more"
+msgstr "περισσότερα"
 
 #: templates/core/home.html
 msgid "Featured icons"
@@ -2447,10 +2464,6 @@ msgstr "Προτεινόμενες εικόνες"
 #: templates/core/home.html
 msgid "See all"
 msgstr "Όλες"
-
-#: templates/core/home.html
-msgid "Made to order"
-msgstr "Κατά παραγγελία"
 
 #: templates/core/home.html
 msgid "Can't find the icon you want?"
@@ -2936,6 +2949,10 @@ msgstr ""
 "πληρώσετε."
 
 #: templates/orders/custom_request_form.html
+msgid "Made to order"
+msgstr "Κατά παραγγελία"
+
+#: templates/orders/custom_request_form.html
 msgid ""
 "Tell us as much as you can. We will reply with questions or a price offer, "
 "by email and in your account."
@@ -3131,6 +3148,10 @@ msgstr "Προϋπολογισμός"
 msgid "Needed by"
 msgstr "Χρειάζεται έως"
 
+#: templates/partials/cart_button.html
+msgid "Cart"
+msgstr "Καλάθι"
+
 #: templates/partials/field.html
 msgid "optional"
 msgstr "προαιρετικό"
@@ -3153,6 +3174,10 @@ msgstr[1] "%(n)s μεγέθη"
 #: templates/partials/product_card.html
 msgid "Sold out"
 msgstr "Εξαντλήθηκε"
+
+#: templates/partials/product_card.html
+msgid "View"
+msgstr "Προβολή"
 
 #: templates/partials/social.html
 #, python-format
@@ -3182,6 +3207,10 @@ msgid "We check availability and shipping, then email you the final amount."
 msgstr ""
 "Ελέγχουμε διαθεσιμότητα και μεταφορικά και σας στέλνουμε με email το τελικό "
 "ποσό."
+
+#: templates/partials/steps.html
+msgid "Bank transfer"
+msgstr "Τραπεζική κατάθεση"
 
 #: templates/partials/steps.html
 msgid "You pay by bank deposit using your order number as the reference."

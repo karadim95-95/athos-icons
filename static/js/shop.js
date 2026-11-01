@@ -10,6 +10,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Once the header has scrolled away, the menu row (which stays on top) also shows the cart
+  const header = document.querySelector(".header");
+  if (header) {
+    const onScroll = () => document.body.classList.toggle("scrolled", window.scrollY > header.offsetHeight);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  // Product page tabs: description, details, payment & delivery (without JavaScript all are shown)
+  document.querySelectorAll("[data-tabs]").forEach((tabs) => {
+    const buttons = tabs.querySelectorAll('[role="tab"]');
+    const show = (chosen) => buttons.forEach((b) => {
+      b.setAttribute("aria-selected", b === chosen);
+      document.getElementById(b.getAttribute("aria-controls")).hidden = b !== chosen;
+    });
+    buttons.forEach((b) => b.addEventListener("click", () => show(b)));
+    show(buttons[0]);
+  });
+
   // Product gallery: click a thumbnail to show it large
   const main = document.querySelector("[data-gallery-main]");
   document.querySelectorAll("[data-gallery-thumb]").forEach((thumb) => {

@@ -1,0 +1,4 @@
+{% load i18n %}<a class="icon-btn{% if extra_class %} {{ extra_class }}{% endif %}" href="{% url 'orders:cart' %}" aria-label="{% translate 'Cart' %}">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M5 8h14l-1.2 11.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3" stroke-linecap="round"/></svg>
+  {% if cart_count %}<span class="count">{{ cart_count }}</span>{% endif %}
+</a>

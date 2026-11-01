@@ -1,4 +1,4 @@
-"""Image helpers: shrink phone photos, fix their rotation and make thumbnails."""
+"""Image helpers: shrink phone photos, fix their rotation, watermark them and make thumbnails."""
 
 import os
 import uuid
@@ -10,6 +10,8 @@ from django.core.files.base import ContentFile
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
 from PIL import Image, ImageOps
+
+from .watermark import add_watermark
 
 FULL_SIZE = 1800
 THUMB_SIZE = 640
@@ -36,7 +38,8 @@ def validate_image_size(file):
         raise ValidationError(_("Each image must be smaller than %(mb)s MB.") % {"mb": settings.MAX_UPLOAD_MB})
 
 
-def _render(img, max_px):
+def _shrink(img, max_px):
+    """A copy at most max_px wide and tall, on white if it had see-through parts."""
     img = img.copy()
     img.thumbnail((max_px, max_px), Image.LANCZOS)
     if img.mode not in ("RGB", "L"):
@@ -47,14 +50,19 @@ def _render(img, max_px):
         else:
             background.paste(img.convert("RGB"))
         img = background
+    return img
+
+
+def _jpeg(img):
     out = BytesIO()
     img.save(out, format="JPEG", quality=85, optimize=True, progressive=True)
     return ContentFile(out.getvalue())
 
 
-def process_image_field(instance, field_name, thumb_field_name=None):
+def process_image_field(instance, field_name, thumb_field_name=None, watermark=""):
     """
-    Resize a freshly uploaded image in place (and optionally build a thumbnail).
+    Resize a freshly uploaded image in place (and optionally build a thumbnail). With a
+    `watermark` (the shop name), the logo and that name are laid over it, faded and repeated.
 
     Only runs for new uploads, so editing a product later never re-compresses
     the same photo over and over.
@@ -64,11 +72,13 @@ def process_image_field(instance, field_name, thumb_field_name=None):
         return
     field.open()
     with Image.open(field) as img:
-        img = ImageOps.exif_transpose(img)
-        base = uuid.uuid4().hex
-        field.save(f"{base}.jpg", _render(img, FULL_SIZE), save=False)
-        if thumb_field_name:
-            getattr(instance, thumb_field_name).save(f"{base}_t.jpg", _render(img, THUMB_SIZE), save=False)
+        img = _shrink(ImageOps.exif_transpose(img), FULL_SIZE)
+    if watermark:
+        img = add_watermark(img, watermark)
+    base = uuid.uuid4().hex
+    field.save(f"{base}.jpg", _jpeg(img), save=False)
+    if thumb_field_name:
+        getattr(instance, thumb_field_name).save(f"{base}_t.jpg", _jpeg(_shrink(img, THUMB_SIZE)), save=False)
 
 
 def delete_files(*fields):

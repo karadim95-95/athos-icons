@@ -187,7 +187,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ["name", "name_en", "description"]
     list_per_page = 50
     actions = ["duplicate", *[f"discount_{d}" for d in (10, 20, 30, 50)], "remove_discount",
-               "mark_unavailable", "mark_available"]
+               "mark_unavailable", "mark_available", "watermark_photos"]
     fieldsets = [
         (None, {"fields": ["name", "name_en", "category", "description", "description_en", "dimensions",
                            "materials", "techniques"]}),
@@ -315,3 +315,15 @@ class ProductAdmin(admin.ModelAdmin):
     def mark_available(self, request, queryset):
         n = queryset.update(is_available=True)
         self.message_user(request, ngettext("%d product updated.", "%d products updated.", n) % n)
+
+    @admin.action(description=_("Add the watermark to their photos"))
+    def watermark_photos(self, request, queryset):
+        if not SiteSettings.load().watermark_photos:
+            self.message_user(request, _("Watermarks are switched off in the shop settings."), messages.ERROR)
+            return
+        photos = ProductImage.objects.filter(product__in=queryset, watermarked=False)
+        for photo in photos:
+            photo.add_watermark()
+        n = len(photos)
+        self.message_user(request, ngettext("%d photo watermarked.", "%d photos watermarked.", n) % n
+                          if n else _("Their photos already have the watermark."), messages.SUCCESS)

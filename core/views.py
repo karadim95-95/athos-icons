@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
-from catalog.models import Category, Product
+from catalog.models import Category, Product, ProductImage
 from orders import emails
 
 from . import antispam, demo
@@ -17,10 +17,18 @@ from .models import Page
 def home(request):
     products = Product.objects.visible().select_related("category").prefetch_related("images")
     featured = list(products.filter(is_featured=True)[:8])
+    categories = list(Category.objects.filter(is_active=True).annotate(
+        n=Count("products", filter=Q(products__is_active=True))
+    ).filter(n__gt=0)[:8])
+    # A collection without its own picture shows a photo of one of its icons (featured ones first).
+    covers = {}
+    for image in (ProductImage.objects.filter(product__in=products, product__category__in=categories)
+                  .order_by("-product__is_featured", "product__id", "order").select_related("product")):
+        covers.setdefault(image.product.category_id, image.image.url)
+    for category in categories:
+        category.cover = category.image.url if category.image else covers.get(category.pk)
     return render(request, "core/home.html", {
-        "categories": Category.objects.filter(is_active=True).annotate(
-            n=Count("products", filter=Q(products__is_active=True))
-        ).filter(n__gt=0)[:8],
+        "categories": categories,
         "featured": featured,
         "new_products": products.exclude(pk__in=[p.pk for p in featured])[:8],
         "on_sale": products.filter(discount_percent__gt=0, is_available=True)[:4],

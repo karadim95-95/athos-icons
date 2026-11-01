@@ -2,6 +2,7 @@ import math
 import unicodedata
 from decimal import ROUND_HALF_UP, Decimal
 
+from django.core.files.base import ContentFile
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.signals import post_delete
@@ -11,7 +12,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 from core.images import delete_files, process_image_field, upload_to, validate_image_size
-from core.models import localized
+from core.models import SiteSettings, localized
 
 CENT = Decimal("0.01")
 
@@ -320,6 +321,7 @@ class ProductImage(models.Model):
     image = models.ImageField(_("image"), upload_to=upload_to("products"), validators=[validate_image_size])
     thumb = models.ImageField(upload_to=upload_to("products/thumbs"), blank=True, editable=False)
     order = models.PositiveSmallIntegerField(_("position"), default=0, help_text=_("The lowest number is the main photo."))
+    watermarked = models.BooleanField(default=False, editable=False)
 
     class Meta:
         ordering = ["order", "id"]
@@ -330,8 +332,20 @@ class ProductImage(models.Model):
         return f"{self.product} #{self.order}"
 
     def save(self, *args, **kwargs):
-        process_image_field(self, "image", "thumb")
+        if self.image and not self.image._committed:  # a newly uploaded photo
+            site = SiteSettings.load()
+            self.watermarked = site.watermark_photos
+            process_image_field(self, "image", "thumb", watermark=site.shop_name if self.watermarked else "")
         super().save(*args, **kwargs)
+
+    def add_watermark(self):
+        """Watermark a photo uploaded while watermarks were off; it is saved again under a new name."""
+        old = [f.name for f in (self.image, self.thumb) if f]
+        with self.image.open() as photo:
+            self.image = ContentFile(photo.read(), name="photo.jpg")
+        self.save()
+        for name in old:
+            self.image.storage.delete(name)
 
     @property
     def thumb_url(self):

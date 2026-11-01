@@ -9,7 +9,7 @@ from .models import Page, SiteSettings
 class SiteSettingsAdmin(admin.ModelAdmin):
     fieldsets = [
         (_("Shop"), {"fields": ["shop_name", ("tagline", "tagline_en"), ("announcement", "announcement_en"),
-                                "hero_image"]}),
+                                "hero_image", "watermark_photos"]}),
         (_("Contact"), {"fields": ["contact_email", "phone", "address", "business_hours"]}),
         (_("Social media"), {"fields": ["facebook_url", "instagram_url", "tiktok_url", "youtube_url", "pinterest_url"],
                              "description": _("Fill in the profiles you have: their icons appear at the top and "

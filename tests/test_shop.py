@@ -29,9 +29,10 @@ from catalog.pricing import price_info
 from core import antispam
 from core.models import SiteSettings
 from core.storage import FreshStaticStorage
+from core.watermark import stamp
 from orders import services, tracking
 from orders.couriers import acs, geniki
-from orders.models import CustomRequest, Order
+from orders.models import CustomRequest, CustomRequestImage, Order
 
 MEDIA = tempfile.mkdtemp()
 PRIVATE = tempfile.mkdtemp()
@@ -309,6 +310,54 @@ class ImageTests(ShopTestCase):
         with Image.open(image.image.path) as full, Image.open(image.thumb.path) as thumb:
             self.assertLessEqual(max(full.size), 1800)
             self.assertLessEqual(max(thumb.size), 640)
+
+    @staticmethod
+    def contrast(field):
+        """How far apart the darkest and lightest pixels are: close to 0 for a plain one-colour photo."""
+        with Image.open(field.path) as image:
+            return max(high - low for low, high in image.getextrema())
+
+    def test_product_photos_get_the_watermark(self):
+        photo = ProductImage.objects.create(product=self.product, image=jpeg())
+        self.assertTrue(photo.watermarked)
+        self.assertGreater(self.contrast(photo.image), 20)  # the plain gold photo now shows the logo and name
+        self.assertGreater(self.contrast(photo.thumb), 20)
+        name = photo.image.name
+        photo.order = 3
+        photo.save()  # editing the photo's details never watermarks it twice
+        self.assertEqual(photo.image.name, name)
+
+    def test_watermarks_can_be_switched_off_and_added_later(self):
+        site = SiteSettings.load()
+        site.watermark_photos = False
+        site.save()
+        photo = ProductImage.objects.create(product=self.product, image=jpeg())
+        self.assertFalse(photo.watermarked)
+        self.assertLess(self.contrast(photo.image), 8)
+        self.client.force_login(self.owner)
+        url = reverse("admin:catalog_product_changelist")
+        action = {"action": "watermark_photos", "_selected_action": [self.product.pk]}
+        self.assertContains(self.client.post(url, action, follow=True), "Watermarks are switched off")
+        site.watermark_photos = True
+        site.save()
+        plain = Path(photo.image.path)
+        self.assertContains(self.client.post(url, action, follow=True), "1 photo watermarked.")
+        photo.refresh_from_db()
+        self.assertTrue(photo.watermarked)
+        self.assertGreater(self.contrast(photo.image), 20)
+        self.assertFalse(plain.exists())  # the copy without the watermark is gone
+        self.assertContains(self.client.post(url, action, follow=True), "already have the watermark")
+
+    def test_customers_reference_photos_are_not_watermarked(self):
+        request = CustomRequest.objects.create(user=self.customer, description="Saint Nicholas, 30 x 40")
+        photo = CustomRequestImage.objects.create(request=request, image=jpeg())
+        self.assertLess(self.contrast(photo.image), 8)
+
+    def test_watermark_with_a_greek_shop_name(self):
+        mark = stamp("Αγιογραφίες Athos", 40)
+        self.assertEqual(mark.height, 40)
+        self.assertGreater(mark.width, 150)  # the logo alone is 40 wide
+        self.assertGreater(mark.getextrema()[1], 200)  # the name and logo are drawn
 
 
 

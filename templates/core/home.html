@@ -1,107 +1,97 @@
 {% extends "base.html" %}{% load i18n shop %}
 {% block content %}
-<section class="hero">
-  <div class="wrap">
-    <div>
-      <span class="eyebrow">{% translate "Orthodox iconography" %}</span>
-      <h1>{% translate "Byzantine icons, crafted with faith and tradition" %}</h1>
-      <p>{% translate "Discover icons of the Theotokos, Christ and the Saints. If you cannot find the icon you are looking for, we will make it for you." %}</p>
-      <div class="hero-actions">
-        <a class="btn btn-gold" href="{% url 'catalog:products' %}">{% translate "Browse the icons" %}</a>
-        <a class="btn btn-light" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a>
-      </div>
+<section class="hero{% if shop.hero_image %} has-image{% endif %}"{% if shop.hero_image %} style="background-image:url('{{ shop.hero_image.url }}')"{% endif %}>
+  <div class="hero-inner">
+    <span class="eyebrow">{% translate "Orthodox iconography" %}</span>
+    <h1>{% translate "Byzantine icons, crafted with faith and tradition" %}</h1>
+    <p>{% translate "Discover icons of the Theotokos, Christ and the Saints. If you cannot find the icon you are looking for, we will make it for you." %}</p>
+    <div class="hero-actions">
+      <a class="btn btn-gold" href="{% url 'catalog:products' %}">{% translate "Browse the icons" %}</a>
+      <a class="btn btn-light" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a>
     </div>
-    <div class="arch"><div class="arch-inner">
-      {% if shop.hero_image %}<img src="{{ shop.hero_image.url }}" alt="">
-      {% else %}{% with first=featured.0|default:new_products.0 %}{% if first and first.main_image %}<img src="{{ first.main_image.image.url }}" alt="{{ first.local_name }}">{% else %}{% include "partials/placeholder.html" %}{% endif %}{% endwith %}{% endif %}
-    </div></div>
-  </div>
-</section>
-
-<section class="trust" aria-label="{% translate 'How it works' %}">
-  <div class="wrap">
-    <div class="trust-item"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 16.5 12.5 23 26 9.5"/></svg><div><strong>{% translate "Every order checked by us" %}</strong><span>{% translate "We confirm before you pay" %}</span></div></div>
-    <div class="trust-item"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="8" width="24" height="17" rx="2"/><path d="M4 13h24M9 20h5"/></svg><div><strong>{% translate "Bank transfer" %}</strong><span>{% translate "Simple and secure payment" %}</span></div></div>
-    <div class="trust-item"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 5v22M11 9h10M7 14h18M11 23l10-3"/></svg><div><strong>{% translate "Custom icons" %}</strong><span>{% translate "Tell us what you need" %}</span></div></div>
-    <div class="trust-item"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 26V11l11-6 11 6v15M11 26v-8h10v8"/></svg><div><strong>{% translate "Business prices" %}</strong><span>{% translate "Wholesale, excl. VAT" %}</span></div></div>
   </div>
 </section>
 
 {% if categories %}
-<section class="section">
-  <div class="wrap">
-    <div class="section-head centered"><span class="ornament">✠</span><h2>{% translate "Collections" %}</h2></div>
-    <div class="cat-grid">
-      {% for c in categories %}
-      <a class="cat-tile" href="{{ c.get_absolute_url }}">
-        {% if c.image %}<img src="{{ c.image.url }}" alt="" loading="lazy">{% else %}{% include "partials/placeholder.html" %}{% endif %}
-        <div class="cat-label"><span>{% blocktranslate count n=c.n %}{{ n }} icon{% plural %}{{ n }} icons{% endblocktranslate %}</span><h3>{{ c.local_name }}</h3></div>
-      </a>
-      {% endfor %}
-    </div>
+<section class="cat-section" aria-label="{% translate 'Collections' %}">
+  <div class="cat-grid">
+    {% for c in categories %}
+    <a class="cat-tile" href="{{ c.get_absolute_url }}">
+      {% if c.cover %}<img src="{{ c.cover }}" alt="" loading="lazy">{% endif %}
+      <h3>{{ c.local_name }}</h3>
+      <span class="cat-count">{% blocktranslate count n=c.n %}{{ n }} icon{% plural %}{{ n }} icons{% endblocktranslate %}</span>
+      <span class="btn">{% translate "more" %}</span>
+    </a>
+    {% endfor %}
   </div>
 </section>
 {% endif %}
 
 {% if featured %}
-<section class="section" style="padding-top:0">
+<section class="section">
   <div class="wrap">
-    <div class="section-head"><h2>{% translate "Featured icons" %}</h2><a href="{% url 'catalog:products' %}">{% translate "See all" %} →</a></div>
+    <div class="section-title"><h2>{% translate "Featured icons" %}</h2></div>
     <div class="grid">{% for product in featured %}{% include "partials/product_card.html" %}{% endfor %}</div>
+    <div class="section-more"><a class="btn btn-ghost" href="{% url 'catalog:products' %}">{% translate "See all" %}</a></div>
   </div>
 </section>
 {% endif %}
 
-<section class="section" style="padding-top:0">
-  <div class="wrap">
-    <div class="band">
-      <div>
-        <span class="eyebrow" style="color:var(--gold-light)">{% translate "Made to order" %}</span>
-        <h2>{% translate "Can't find the icon you want?" %}</h2>
-        <p>{% translate "Describe it, add a photo if you have one, and we will reply with a price. You can follow everything and talk to us from your account." %}</p>
-      </div>
-      <div class="band-actions"><a class="btn btn-gold" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a></div>
-    </div>
+<section class="feature">
+  <div class="feature-media" aria-hidden="true"></div>
+  <div class="feature-box">
+    {% include "partials/logo_mark.html" %}
+    <h2>{% translate "Can't find the icon you want?" %}</h2>
+    <p>{% translate "Describe it, add a photo if you have one, and we will reply with a price. You can follow everything and talk to us from your account." %}</p>
+    <a class="btn" href="{% url 'orders:custom_request' %}">{% translate "Request a custom icon" %}</a>
   </div>
 </section>
+
+{% if on_sale %}
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-title"><h2>{% translate "Offers" %}</h2></div>
+    <div class="grid">{% for product in on_sale %}{% include "partials/product_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
 
 {% if new_products %}
-<section class="section" style="padding-top:0">
+<div class="title-band pattern"><h2>{% translate "New icons" %}</h2></div>
+<section class="section">
   <div class="wrap">
-    <div class="section-head"><h2>{% translate "New icons" %}</h2><a href="{% url 'catalog:products' %}">{% translate "See all" %} →</a></div>
     <div class="grid">{% for product in new_products %}{% include "partials/product_card.html" %}{% endfor %}</div>
+    <div class="section-more"><a class="btn btn-ghost" href="{% url 'catalog:products' %}">{% translate "See all" %}</a></div>
   </div>
 </section>
 {% endif %}
 
 <section class="section" style="padding-top:0">
   <div class="wrap">
-    <div class="section-head centered"><span class="ornament">✠</span><h2>{% translate "How ordering works" %}</h2></div>
+    <div class="section-title"><h2>{% translate "How ordering works" %}</h2></div>
     {% include "partials/steps.html" %}
   </div>
 </section>
 
-<section class="section" style="padding-top:0">
+<section class="soft-band">
   <div class="wrap">
-    <div class="band light">
-      <div>
-        <span class="eyebrow">{% translate "For shops, churches & monasteries" %}</span>
-        <h2>{% translate "Ordering for a business?" %}</h2>
-        <p>{% translate "Open a business account to see wholesale prices without VAT and order larger quantities." %}</p>
-      </div>
-      <div class="band-actions">
-        <a class="btn" href="{% url 'accounts:register' %}?type=business">{% translate "Open a business account" %}</a>
-        <a class="btn btn-ghost" href="{% url 'core:page' 'business' %}">{% translate "Learn more" %}</a>
-      </div>
+    <div>
+      <span class="eyebrow">{% translate "For shops, churches & monasteries" %}</span>
+      <h2>{% translate "Ordering for a business?" %}</h2>
+      <p>{% translate "Open a business account to see wholesale prices without VAT and order larger quantities." %}</p>
+    </div>
+    <div class="band-actions">
+      <a class="btn" href="{% url 'accounts:register' %}?type=business">{% translate "Open a business account" %}</a>
+      <a class="btn btn-ghost" href="{% url 'core:page' 'business' %}">{% translate "Learn more" %}</a>
     </div>
   </div>
 </section>
 
 {% if shop.social_links or user.is_staff %}
-<section class="section follow-us" style="padding-top:0">
+<section class="section follow-us">
   <div class="wrap center">
-    <div class="section-head centered"><span class="ornament">✠</span><h2>{% translate "Follow us" %}</h2></div>
-    <p class="muted">{% translate "New icons, works in progress and the stories behind them, first on our social media." %}</p>
+    <div class="section-title"><h2>{% translate "Follow us" %}</h2>
+      <p>{% translate "New icons, works in progress and the stories behind them, first on our social media." %}</p></div>
     {% include "partials/social.html" with style="big" %}
   </div>
 </section>

@@ -5,10 +5,10 @@
 {% block og_extra %}{% with img=product.main_image %}{% if img %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ img.image.url }}">{% endif %}{% endwith %}{% endblock %}
 {% block content %}
 <div class="wrap">
-  <div class="breadcrumbs" style="margin-top:24px"><a href="{% url 'core:home' %}">{% translate "Home" %}</a> / <a href="{% url 'catalog:products' %}">{% translate "Icons" %}</a>{% if product.category %} / <a href="{{ product.category.get_absolute_url }}">{{ product.category.local_name }}</a>{% endif %}</div>
+  <div class="breadcrumbs"><a href="{% url 'core:home' %}">{% translate "Home" %}</a> / <a href="{% url 'catalog:products' %}">{% translate "Icons" %}</a>{% if product.category %} / <a href="{{ product.category.get_absolute_url }}">{{ product.category.local_name }}</a>{% endif %} / {{ product.local_name }}</div>
   <div class="product">
-    <div>
-      {% with images=product.images.all %}
+    {% with images=product.images.all %}
+    <div class="gallery{% if images|length < 2 %} single{% endif %}">
       <div class="gallery-main">
         {% if images %}<img src="{{ images.0.image.url }}" alt="{{ product.local_name }}" data-gallery-main>{% else %}{% include "partials/placeholder.html" %}{% endif %}
       </div>
@@ -17,69 +17,88 @@
         {% for img in images %}<button type="button" data-gallery-thumb data-full="{{ img.image.url }}" aria-current="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="{% translate 'Photo' %} {{ forloop.counter }}"><img src="{{ img.thumb_url }}" alt=""></button>{% endfor %}
       </div>
       {% endif %}
-      {% endwith %}
     </div>
+    {% endwith %}
 
     <div class="product-info">
-      {% if product.category %}<span class="eyebrow">{{ product.category.local_name }}</span>{% endif %}
       <h1>{{ product.local_name }}</h1>
-      <div class="buy-box">
-        {% include "partials/price.html" with big=1 %}
-        {% if groups %}<p class="config-summary" data-summary>{{ summary }}</p>{% endif %}
-        {% if p.has_discount %}<p class="small" style="color:var(--wine);margin:6px 0 0">{% blocktranslate with d=product.discount_percent %}You save {{ d }}%{% endblocktranslate %}</p>{% endif %}
-        {% if product.is_available %}
-          <p class="stock in" style="margin:10px 0 0">● {% translate "Available to order" %}</p>
-          <form method="post" action="{% url 'orders:cart_add' product.pk %}" data-configurator>{% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.path }}">
-            {% if sizes or choices %}
-            <div class="configurator">
-              {% if choices %}{% include "partials/choice.html" with choice=choices.0 %}{% endif %}
-              {% if sizes %}
-              <fieldset class="choice">
-                <legend>{% translate "Dimensions" %} <span class="unit">({% translate "cm" %})</span></legend>
-                <div class="choice-grid">
-                  {% for s in sizes %}
-                  <label class="choice-tile"><input type="radio" name="size" value="{{ s.option.pk }}" data-label="{{ s.option.size }}"{% if forloop.first %} checked{% endif %}>
-                    <span class="tile">{{ s.option.size|short_size }}{% if not groups %}<small>{{ s.price.final|euro }}</small>{% endif %}</span></label>
-                  {% endfor %}
-                </div>
-              </fieldset>
-              {% endif %}
-              {% for choice in choices|slice:"1:" %}{% include "partials/choice.html" %}{% endfor %}
-            </div>
-            {% if price_table %}{{ price_table|json_script:"price-table" }}{% endif %}
+      {% if product.local_description %}<p class="lead">{{ product.local_description|truncatewords:40 }}</p>{% endif %}
+      {% if product.is_available %}
+        <form method="post" action="{% url 'orders:cart_add' product.pk %}" data-configurator>{% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          {% if sizes or choices %}
+          <div class="configurator">
+            {% if choices %}{% include "partials/choice.html" with choice=choices.0 %}{% endif %}
+            {% if sizes %}
+            <fieldset class="choice">
+              <legend>{% translate "Dimensions" %} <span class="unit">({% translate "cm" %})</span></legend>
+              <div class="choice-grid">
+                {% for s in sizes %}
+                <label class="choice-tile"><input type="radio" name="size" value="{{ s.option.pk }}" data-label="{{ s.option.size }}"{% if forloop.first %} checked{% endif %}>
+                  <span class="tile">{{ s.option.size|short_size }}{% if not groups %}<small>{{ s.price.final|euro }}</small>{% endif %}</span></label>
+                {% endfor %}
+              </div>
+            </fieldset>
             {% endif %}
+            {% for choice in choices|slice:"1:" %}{% include "partials/choice.html" %}{% endfor %}
+          </div>
+          {% if price_table %}{{ price_table|json_script:"price-table" }}{% endif %}
+          {% endif %}
+          <div class="price-block">
+            {% include "partials/price.html" with big=1 %}
+            {% if groups %}<p class="config-summary" data-summary>{{ summary }}</p>{% endif %}
+            {% if p.has_discount %}<p class="saving">{% blocktranslate with d=product.discount_percent %}You save {{ d }}%{% endblocktranslate %}</p>{% endif %}
             <div class="buy-row">
               <label class="visually-hidden" for="qty">{% translate "Quantity" %}</label>
               <input id="qty" type="number" name="quantity" value="1" min="1" max="999">
               <button class="btn btn-gold">{% translate "Add to cart" %}</button>
             </div>
-          </form>
-          <p class="small muted" style="margin:12px 0 0">{% translate "No payment now: we confirm your order first and then email you the bank details." %}</p>
-        {% else %}
-          <p class="stock out" style="margin:10px 0">● {% translate "Currently sold out" %}</p>
+            <p class="stock in" style="margin:14px 0 0">● {% translate "Available to order" %}</p>
+            <p class="small muted" style="margin:6px 0 0">{% translate "No payment now: we confirm your order first and then email you the bank details." %}</p>
+          </div>
+        </form>
+      {% else %}
+        <div class="price-block">
+          {% include "partials/price.html" with big=1 %}
+          <p class="stock out" style="margin:12px 0">● {% translate "Currently sold out" %}</p>
           <a class="btn btn-ghost" href="{% url 'orders:custom_request' %}">{% translate "Ask us to make one for you" %}</a>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 
-      {% with materials=product.materials.all techniques=product.techniques.all %}
-      {% if sizes or product.dimensions or materials or techniques %}
+  {% with materials=product.materials.all techniques=product.techniques.all %}
+  <div class="tabs" data-tabs>
+    <div class="tab-list" role="tablist">
+      <button type="button" role="tab" id="tab-description" aria-controls="panel-description" aria-selected="true">{% translate "Description" %}</button>
+      {% if sizes or product.dimensions or materials or techniques %}<button type="button" role="tab" id="tab-details" aria-controls="panel-details" aria-selected="false">{% translate "Specifications" %}</button>{% endif %}
+      <button type="button" role="tab" id="tab-delivery" aria-controls="panel-delivery" aria-selected="false">{% translate "Payment & delivery" %}</button>
+    </div>
+    <div class="tab-panel" role="tabpanel" id="panel-description" aria-labelledby="tab-description">
+      {% if product.local_description %}<div class="prose">{{ product.local_description|linebreaks }}</div>{% endif %}
+      <div class="notice info small">{% translate "Would you like a different size or a variation of this icon?" %} <a href="{% url 'orders:custom_request' %}">{% translate "Send us a custom request" %}</a>.</div>
+    </div>
+    {% if sizes or product.dimensions or materials or techniques %}
+    <div class="tab-panel" role="tabpanel" id="panel-details" aria-labelledby="tab-details">
       <table class="specs">
         {% if sizes %}<tr><th>{% translate "Sizes" %}</th><td>{% for s in sizes %}{{ s.option.size }}{% if not forloop.last %} · {% endif %}{% endfor %}</td></tr>
         {% elif product.dimensions %}<tr><th>{% translate "Dimensions" %}</th><td>{{ product.dimensions }}</td></tr>{% endif %}
         {% if techniques %}<tr><th>{% translate "Technique" %}</th><td>{% for t in techniques %}{{ t.local_name }}{% if not forloop.last %} · {% endif %}{% endfor %}</td></tr>{% endif %}
         {% if materials %}<tr><th>{% translate "Materials" %}</th><td>{% for m in materials %}{{ m.local_name }}{% if not forloop.last %} · {% endif %}{% endfor %}</td></tr>{% endif %}
       </table>
-      {% endif %}
-      {% endwith %}
-      {% if product.local_description %}<div class="prose">{{ product.local_description|linebreaks }}</div>{% endif %}
-      <div class="notice info small">{% translate "Would you like a different size or a variation of this icon?" %} <a href="{% url 'orders:custom_request' %}">{% translate "Send us a custom request" %}</a>.</div>
+    </div>
+    {% endif %}
+    <div class="tab-panel" role="tabpanel" id="panel-delivery" aria-labelledby="tab-delivery">
+      <p>{% translate "No payment now: we confirm your order first and then email you the bank details." %}
+        {% if shop.free_shipping_over %}{% blocktranslate with amount=shop.free_shipping_over|euro %}Free shipping for orders over {{ amount }}{% endblocktranslate %}.{% endif %}</p>
+      {% include "partials/steps.html" %}
     </div>
   </div>
+  {% endwith %}
 
   {% if related %}
   <section class="section" style="padding-top:0">
-    <div class="section-head"><h2>{% translate "You may also like" %}</h2></div>
+    <div class="section-title"><h2>{% translate "You may also like" %}</h2></div>
     <div class="grid">{% for product in related %}{% include "partials/product_card.html" %}{% endfor %}</div>
   </section>
   {% endif %}

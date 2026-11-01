@@ -6,13 +6,13 @@
     {% if not product.is_available %}<span class="badge soldout">{% translate "Sold out" %}</span>{% endif %}
   </div>
   <div class="card-body">
-    {% if product.category %}<span class="card-cat">{{ product.category.local_name }}</span>{% endif %}
     <h3>{{ product.local_name }}</h3>
     {% with options=product.size_options %}
-    {% if options|length > 1 %}<span class="muted small">{% blocktranslate count n=options|length %}{{ n }} size{% plural %}{{ n }} sizes{% endblocktranslate %}</span>
-    {% elif options %}<span class="muted small">{{ options.0.size }}</span>
-    {% elif product.dimensions %}<span class="muted small">{{ product.dimensions }}</span>{% endif %}
+    {% if options|length > 1 %}<span class="meta">{% blocktranslate count n=options|length %}{{ n }} size{% plural %}{{ n }} sizes{% endblocktranslate %}</span>
+    {% elif options %}<span class="meta">{{ options.0.size }}</span>
+    {% elif product.dimensions %}<span class="meta">{{ product.dimensions }}</span>{% endif %}
     {% endwith %}
     {% include "partials/price.html" %}
+    <span class="card-view">{% translate "View" %}</span>
   </div>
 </a>

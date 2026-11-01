@@ -33,6 +33,11 @@ class SiteSettings(models.Model):
     hero_image = models.ImageField(
         _("homepage image"), upload_to=upload_to("site"), blank=True, validators=[validate_image_size]
     )
+    watermark_photos = models.BooleanField(
+        _("watermark product photos"), default=True,
+        help_text=_("Your logo and shop name, faded and repeated over every product photo you upload, "
+                    "so others cannot simply reuse your photos."),
+    )
 
     contact_email = models.EmailField(
         _("contact email"), blank=True,
